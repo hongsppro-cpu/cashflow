@@ -26,7 +26,7 @@
     body { background: var(--bg); color: var(--text); padding: 12px; font-size: 16px; line-height: 1.4; }
     .container { max-width: 480px; margin: 0 auto; padding-bottom: 70px; }
 
-    /* 화면 상단 토스트 알림 (alert 대체) */
+    /* 화면 상단 토스트 알림 */
     #toast {
       position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
       background: var(--success); color: #070d1e; font-weight: 800; font-size: 0.9rem;
@@ -44,7 +44,7 @@
     .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
     .card-title { font-size: 0.95rem; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
-    /* 목표 방어선 배너 (보색 대비 네온) */
+    /* 목표 방어선 배너 */
     .target-banner {
       background: linear-gradient(135deg, #132247 0%, #0d1730 100%);
       border: 2px solid var(--target-neon); border-radius: 14px; padding: 16px; margin-bottom: 14px;
@@ -53,7 +53,7 @@
     .target-label { font-size: 0.9rem; color: var(--target-neon); font-weight: 700; }
     .target-val { font-size: 1.85rem; font-weight: 900; color: var(--target-neon); text-shadow: 0 0 10px rgba(250, 204, 21, 0.4); }
 
-    /* 입력 컨트롤 (터치 영역 최소 50px 확보) */
+    /* 입력 컨트롤 */
     label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px; }
     input[type="number"], input[type="text"], input[type="date"], select {
       width: 100%; height: 50px; background: #070d1e; border: 1.5px solid var(--border); border-radius: 8px;
@@ -102,36 +102,30 @@
     .chart-bar-bg { height: 16px; background: #1a2744; border-radius: 8px; overflow: hidden; position: relative; }
     .chart-bar-fill { height: 100%; border-radius: 8px; transition: width 0.4s ease; }
 
-    /* 고정비 팝업 모달 */
+    /* 고정비 모달 */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 16px; }
-    .modal-card { width: 100%; max-width: 440px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-    .modal-item { display: flex; justify-content: space-between; font-size: 0.95rem; padding: 8px 0; border-bottom: 1px solid #1f2f50; }
-    .modal-item:last-child { border-bottom: none; }
+    .modal-card { width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; background: var(--card-bg); border: 2px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
   </style>
 </head>
 <body>
 
-<!-- 화면 알림 토스트 배너 -->
 <div id="toast"></div>
 
 <div class="container">
   
-  <!-- 상단 헤더 -->
   <div class="header">
     <h1>현금흐름 방어선 매니저</h1>
-    <button type="button" class="btn-fixed-popup" onclick="openFixedModal()">📋 고정비 내역</button>
+    <button type="button" class="btn-fixed-popup" onclick="openFixedModal()">⚙️ 고정비 관리</button>
   </div>
 
-  <!-- 목표 방어선 배너 -->
   <div class="target-banner">
     <div>
       <div class="target-label">1일 고정 방어선 (목표)</div>
-      <div style="font-size:0.8rem; color:#cbd5e1;">주유비(8천원) 포함 손익분기점</div>
+      <div style="font-size:0.8rem; color:#cbd5e1;">월 고정비: <span id="banner-total-fixed">0원</span> 기준</div>
     </div>
-    <div class="target-val">92,025원</div>
+    <div class="target-val" id="banner-daily-target">0원</div>
   </div>
 
-  <!-- 일일 정산 입력 카드 -->
   <div class="card">
     <div class="card-title">
       <span id="input-status-title">일일 정산 등록</span>
@@ -148,7 +142,6 @@
       <input type="number" id="input-income" placeholder="0" step="1000" oninput="updateCalculationPreview()">
     </div>
 
-    <!-- 세부 지출 항목 등록 -->
     <div style="margin-top:14px; border-top:1px dashed var(--border); padding-top:12px;">
       <label>지출 항목 추가 (카테고리)</label>
       <div style="display:grid; grid-template-columns: 1fr 1.3fr; gap:8px;">
@@ -168,12 +161,10 @@
       <div class="expense-list" id="expense-tag-container"></div>
     </div>
 
-    <!-- 과소비 경고 -->
     <div class="alert-box" id="food-warning-box">
       ⚠️ 식비·간식비 과소비: 수입의 <span id="food-warning-pct">0</span>% 지출 (권장 15% 이하)
     </div>
 
-    <!-- 4분할 결과 보드 -->
     <div class="result-grid">
       <div class="result-box">
         <div class="label">총수입</div>
@@ -197,7 +188,6 @@
     <button type="button" class="btn-danger" id="btn-delete" style="display:none;" onclick="deleteDayRecord()">해당 날짜 기록 삭제</button>
   </div>
 
-  <!-- 캘린더 -->
   <div class="card">
     <div class="cal-header">
       <button type="button" onclick="changeMonth(-1)" style="background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;padding:0 10px;">◀</button>
@@ -211,7 +201,6 @@
     <div class="cal-grid" id="cal-cells"></div>
   </div>
 
-  <!-- 결산 탭 (주간 / 월말 / 반기) -->
   <div class="card">
     <div class="tab-nav">
       <button type="button" class="tab-btn active" id="tab-btn-week" onclick="switchStatsTab('week')">주간</button>
@@ -252,7 +241,6 @@
     </div>
   </div>
 
-  <!-- 데이터 백업/복원 -->
   <div class="card" style="font-size:0.85rem;">
     <div class="card-title">데이터 영구 보관 & 복원</div>
     <div style="display:flex; gap:8px;">
@@ -263,41 +251,93 @@
   </div>
 </div>
 
-<!-- 고정비 팝업 모달 -->
+<!-- 고정비 관리 모달 팝업 -->
 <div class="modal-overlay" id="fixed-modal" onclick="closeFixedModal(event)">
   <div class="modal-card" onclick="event.stopPropagation()">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-      <h2 style="font-size:1.15rem; font-weight:800; color:var(--primary);">월 고정비 지출 명세</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h2 style="font-size:1.15rem; font-weight:800; color:var(--primary);">월 고정비 관리 & 방어선 수정</h2>
       <button type="button" onclick="closeFixedModal(null)" style="background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer;">✕</button>
     </div>
-    <div>
-      <div class="modal-item"><span>주식 모으기 (일 5만/20일)</span><b>1,000,000원</b></div>
-      <div class="modal-item"><span>신용회복위원회 분할상환</span><b>635,974원</b></div>
-      <div class="modal-item"><span>가족 지원금</span><b>600,000원</b></div>
-      <div class="modal-item"><span style="color:var(--target-neon);">기본 주유비 (일 8천원 고정)</span><b style="color:var(--target-neon);">240,000원</b></div>
-      <div class="modal-item"><span>핸드폰 요금</span><b>141,420원</b></div>
-      <div class="modal-item"><span>주택연금</span><b>100,000원</b></div>
-      <div class="modal-item"><span>삼성화재 실비 / 핸드폰 보험</span><b>43,359원</b></div>
+    
+    <!-- 현재 등록된 고정비 목록 (삭제 가능) -->
+    <div id="fixed-expenses-list-container" style="max-height:200px; overflow-y:auto; padding-right:4px;"></div>
+
+    <!-- 신규 고정비 항목 추가 폼 -->
+    <div style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
+      <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700; margin-bottom:6px;">+ 새 고정비 항목 추가</div>
+      <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:6px;">
+        <input type="text" id="new-fixed-name" placeholder="항목명 (예: 알뜰폰)" style="height:44px; font-size:0.95rem;">
+        <input type="number" id="new-fixed-amount" placeholder="월 금액 (원)" step="1000" style="height:44px; font-size:0.95rem;">
+      </div>
+      <button type="button" class="btn-main" style="height:44px; margin-top:6px; font-size:0.95rem;" onclick="addFixedCostItem()">고정비 항목 추가</button>
     </div>
-    <div style="margin-top:14px; padding-top:12px; border-top:2px solid var(--border); display:flex; justify-content:space-between; font-size:1.1rem; font-weight:900;">
-      <span>총 고정 지출 합계</span>
-      <span style="color:var(--target-neon);">2,760,753원</span>
+
+    <!-- 실시간 합계 및 1일 방어선 -->
+    <div style="margin-top:12px; padding-top:10px; border-top:2px solid var(--border); display:flex; justify-content:space-between; font-size:1.05rem; font-weight:900;">
+      <span>월 고정 지출 합계</span>
+      <span style="color:var(--target-neon);" id="modal-fixed-total">0원</span>
     </div>
-    <div style="text-align:right; font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
-      30일 기준 1일 방어선: 92,025원
+    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; color:var(--text-muted); margin-top:4px;">
+      <span>30일 기준 1일 방어선 (목표)</span>
+      <b style="color:var(--target-neon); font-size:1.15rem;" id="modal-daily-target">0원</b>
     </div>
-    <button type="button" class="btn-main" style="height:44px; margin-top:16px;" onclick="closeFixedModal(null)">닫기</button>
+
+    <div style="display:flex; gap:8px; margin-top:14px;">
+      <button type="button" style="flex:1; height:42px; background:#1e293b; color:var(--text-muted); border:1px solid var(--border); border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;" onclick="resetFixedExpensesToDefault()">기본값 복원</button>
+      <button type="button" class="btn-main" style="flex:1; height:42px; margin-top:0;" onclick="closeFixedModal(null)">적용 및 닫기</button>
+    </div>
   </div>
 </div>
 
 <script>
   const MASTER_STORAGE_KEY = 'delivery_flow_master_db';
-  const DAILY_TARGET = 92025;
+  const FIXED_STORAGE_KEY = 'delivery_fixed_expenses_master_db';
+
+  // 기본 고정비 데이터 세트
+  const DEFAULT_FIXED_EXPENSES = [
+    { id: 1, name: '주식 모으기 (일 5만/20일)', amount: 1000000 },
+    { id: 2, name: '신용회복위원회 분할상환', amount: 635974 },
+    { id: 3, name: '가족 지원금', amount: 600000 },
+    { id: 4, name: '기본 주유비 (일 8천원 고정)', amount: 240000 },
+    { id: 5, name: '핸드폰 요금', amount: 141420 },
+    { id: 6, name: '주택연금', amount: 100000 },
+    { id: 7, name: '삼성화재 실비 / 핸드폰 보험', amount: 43359 }
+  ];
+
+  // 고정비 로더
+  function loadFixedExpenses() {
+    try {
+      const saved = localStorage.getItem(FIXED_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    return JSON.parse(JSON.stringify(DEFAULT_FIXED_EXPENSES));
+  }
+
+  function saveFixedExpenses() {
+    localStorage.setItem(FIXED_STORAGE_KEY, JSON.stringify(fixedExpenses));
+  }
+
+  function getMonthlyFixedTotal() {
+    return fixedExpenses.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+  }
+
+  function getDailyTarget() {
+    const total = getMonthlyFixedTotal();
+    return Math.round(total / 30);
+  }
+
+  let fixedExpenses = loadFixedExpenses();
+  let DAILY_TARGET = getDailyTarget();
   let currentDate = new Date();
   let db = loadDatabase();
   let currentExpenses = [];
 
-  // 안전 데이터 로더 (과거 데이터 자동 흡수 및 구조 정규화)
+  // 안전 데이터베이스 로더
   function loadDatabase() {
     let data = {};
     try {
@@ -323,7 +363,6 @@
       data = {};
     }
 
-    // 데이터 구조 안전화 (과거 단일 expense 값을 expenses 배열로 자동 치환)
     Object.keys(data).forEach(d => {
       if (data[d]) {
         if (!Array.isArray(data[d].expenses)) {
@@ -361,8 +400,9 @@
     return `${y}-${m}-${d}`;
   }
 
-  // 고정비 팝업 제어
+  // 고정비 모달 제어
   function openFixedModal() {
+    renderFixedExpensesList();
     const m = document.getElementById('fixed-modal');
     if (m) m.style.display = 'flex';
   }
@@ -371,7 +411,104 @@
     if (m) m.style.display = 'none';
   }
 
-  // 카테고리 선택 반응
+  // 고정비 목록 렌더링
+  function renderFixedExpensesList() {
+    const container = document.getElementById('fixed-expenses-list-container');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (fixedExpenses.length === 0) {
+      container.innerHTML = '<div style="font-size:0.85rem; color:var(--text-muted); text-align:center; padding:12px;">등록된 고정비 항목이 없습니다.</div>';
+      return;
+    }
+
+    fixedExpenses.forEach(item => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #1f2f50; font-size:0.9rem;';
+      row.innerHTML = `
+        <div style="flex:1; padding-right:8px;">
+          <span style="font-weight:600; color:#fff;">${item.name}</span>
+          <b style="color:var(--primary); margin-left:6px;">${Number(item.amount).toLocaleString()}원</b>
+        </div>
+        <button type="button" onclick="deleteFixedCostItem(${item.id})" style="background:rgba(239,68,68,0.15); border:1px solid var(--danger); color:var(--danger); border-radius:6px; padding:4px 8px; font-size:0.75rem; font-weight:700; cursor:pointer;">삭제</button>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  // 고정비 항목 추가
+  function addFixedCostItem() {
+    const nameInput = document.getElementById('new-fixed-name');
+    const amtInput = document.getElementById('new-fixed-amount');
+    const name = nameInput.value.trim();
+    const amt = Number(amtInput.value) || 0;
+
+    if (!name) {
+      showToast('⚠️ 고정비 항목명을 입력해 주세요.', false);
+      return;
+    }
+    if (amt <= 0) {
+      showToast('⚠️ 올바른 금액을 입력해 주세요.', false);
+      return;
+    }
+
+    fixedExpenses.push({ id: Date.now(), name: name, amount: amt });
+    saveFixedExpenses();
+    nameInput.value = '';
+    amtInput.value = '';
+    recomputeAllSystem(true);
+  }
+
+  // 고정비 항목 삭제
+  function deleteFixedCostItem(id) {
+    const idx = fixedExpenses.findIndex(item => item.id === id);
+    if (idx !== -1) {
+      const deletedName = fixedExpenses[idx].name;
+      fixedExpenses.splice(idx, 1);
+      saveFixedExpenses();
+      recomputeAllSystem(false);
+      showToast(`🗑️ '${deletedName}' 항목이 삭제되었습니다.`, false);
+    }
+  }
+
+  // 고정비 기본값 복원
+  function resetFixedExpensesToDefault() {
+    if (!confirm('고정비 목록을 초기 기본값으로 복원하시겠습니까?')) return;
+    fixedExpenses = JSON.parse(JSON.stringify(DEFAULT_FIXED_EXPENSES));
+    saveFixedExpenses();
+    recomputeAllSystem(true);
+  }
+
+  // ★ 고정비 변경 시 전체 시스템 실시간 재계산 및 갱신 함수
+  function recomputeAllSystem(showNotice = false) {
+    DAILY_TARGET = getDailyTarget();
+    const monthlyTotal = getMonthlyFixedTotal();
+
+    // 1. 배너 갱신
+    const bannerDaily = document.getElementById('banner-daily-target');
+    const bannerTotal = document.getElementById('banner-total-fixed');
+    if (bannerDaily) bannerDaily.innerText = DAILY_TARGET.toLocaleString() + '원';
+    if (bannerTotal) bannerTotal.innerText = monthlyTotal.toLocaleString() + '원';
+
+    // 2. 모달 내부 합계 갱신
+    const modalDaily = document.getElementById('modal-daily-target');
+    const modalTotal = document.getElementById('modal-fixed-total');
+    if (modalDaily) modalDaily.innerText = DAILY_TARGET.toLocaleString() + '원';
+    if (modalTotal) modalTotal.innerText = monthlyTotal.toLocaleString() + '원';
+
+    // 3. UI 뷰 일괄 재렌더링
+    renderFixedExpensesList();
+    updateCalculationPreview();
+    renderCalendar();
+    renderWeeklyStats();
+    renderMonthStats();
+    renderHalfStats();
+
+    if (showNotice) {
+      showToast('✅ 고정비가 반영되어 전체 방어선 및 통계가 갱신되었습니다!', true);
+    }
+  }
+
   function onCategoryChanged(val) {
     const dInput = document.getElementById('input-detail');
     if (!dInput) return;
@@ -379,7 +516,6 @@
     if (val === '기타') dInput.focus();
   }
 
-  // 날짜 변경 시 정산 상태 로드
   function onDateChanged(dateStr) {
     if (!dateStr) return;
     const record = db[dateStr];
@@ -403,7 +539,6 @@
     highlightSelectedCell(dateStr);
   }
 
-  // 세부 지출 항목 추가
   function addExpenseItem() {
     const cat = document.getElementById('select-category').value;
     const detail = document.getElementById('input-detail').value.trim();
@@ -447,7 +582,6 @@
     });
   }
 
-  // 실시간 4분할 결과 보드 계산
   function updateCalculationPreview() {
     const inc = Number(document.getElementById('input-income').value) || 0;
     const pendingExpense = Number(document.getElementById('input-expense-val').value) || 0;
@@ -474,7 +608,6 @@
       resEl.style.color = 'var(--danger)';
     }
 
-    // 과소비 경고 판별 (수입 15% 초과)
     const foodAmt = currentExpenses.filter(it => it.category === '식비' || it.category === '간식비').reduce((s, it) => s + it.amount, 0);
     const warnBox = document.getElementById('food-warning-box');
     if (inc > 0 && foodAmt > 0) {
@@ -486,7 +619,6 @@
     } else { warnBox.style.display = 'none'; }
   }
 
-  // 정산 저장 (미등록된 입력 지출 자동 포함)
   function saveDayRecord() {
     const dateStr = document.getElementById('input-date').value;
     if (!dateStr) {
@@ -494,7 +626,6 @@
       return;
     }
 
-    // 사용자가 [추가] 버튼을 누르지 않고 남겨둔 지출액 자동 수집
     const pendingAmt = Number(document.getElementById('input-expense-val').value) || 0;
     if (pendingAmt > 0) {
       const cat = document.getElementById('select-category').value;
@@ -517,7 +648,6 @@
     showToast(`✅ ${dateStr} 정산이 저장되었습니다!`, true);
   }
 
-  // 당일 기록 삭제
   function deleteDayRecord() {
     const dateStr = document.getElementById('input-date').value;
     if (!dateStr || !db[dateStr]) return;
@@ -533,7 +663,6 @@
     showToast(`🗑️ ${dateStr} 기록이 삭제되었습니다.`, false);
   }
 
-  // 월간 캘린더 렌더링
   function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -593,7 +722,6 @@
     renderWeeklyStats();
   }
 
-  // 결산 탭 전환
   function switchStatsTab(type) {
     ['week', 'month', 'half'].forEach(t => {
       const btn = document.getElementById(`tab-btn-${t}`);
@@ -603,7 +731,6 @@
     });
   }
 
-  // 주간 통계 리포트
   function renderWeeklyStats() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -658,7 +785,6 @@
     }
   }
 
-  // 월말 및 반기 결산 그래프 렌더링 엔진
   function renderAggregatedView(filterFn, containerId, title) {
     let tInc = 0, tExp = 0, tSurplus = 0, recordedDays = 0, metDays = 0;
     let catMap = { '식비': 0, '간식비': 0, '쇼핑': 0, '기타': 0 };
@@ -768,14 +894,20 @@
     }, 'half-stats-container', `${h === 1 ? '상반기' : '하반기'}`);
   }
 
-  // 데이터 백업 및 복원
+  // 데이터 및 고정비 동시 백업/복원
   function exportData() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+    const payload = {
+      db: db,
+      fixedExpenses: fixedExpenses,
+      version: 'master_v2',
+      exportDate: getKSTDateString(new Date())
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload));
     const a = document.createElement('a');
     a.href = dataStr;
     a.download = `budget_backup_${getKSTDateString(new Date())}.json`;
     a.click();
-    showToast('💾 백업 파일 다운로드 완료', true);
+    showToast('💾 정산 데이터 및 고정비 설정 백업 완료', true);
   }
 
   function importData(e) {
@@ -784,28 +916,36 @@
     const reader = new FileReader();
     reader.onload = function(evt) {
       try {
-        db = JSON.parse(evt.target.result);
-        localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(db));
-        initApp();
-        showToast('✅ 데이터 복원 완료!', true);
-      } catch (err) { showToast('⚠️ 백업 파일 형식이 올바르지 않습니다.', false); }
+        const parsed = JSON.parse(evt.target.result);
+        if (parsed && typeof parsed === 'object') {
+          if (parsed.db && typeof parsed.db === 'object') {
+            db = parsed.db;
+            if (Array.isArray(parsed.fixedExpenses) && parsed.fixedExpenses.length > 0) {
+              fixedExpenses = parsed.fixedExpenses;
+              saveFixedExpenses();
+            }
+          } else {
+            db = parsed;
+          }
+          localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(db));
+          recomputeAllSystem(false);
+          showToast('✅ 데이터 및 고정비 복원 완료!', true);
+        }
+      } catch (err) {
+        showToast('⚠️ 백업 파일 형식이 올바르지 않습니다.', false);
+      }
     };
     reader.readAsText(file);
   }
 
-  // 앱 시동 초기화
   function initApp() {
     const todayStr = getKSTDateString(new Date());
     const dateInput = document.getElementById('input-date');
     if (dateInput) dateInput.value = todayStr;
     onDateChanged(todayStr);
-    renderCalendar();
-    renderWeeklyStats();
-    renderMonthStats();
-    renderHalfStats();
+    recomputeAllSystem(false);
   }
 
-  // DOM 로드 즉시 실행
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
   } else {
