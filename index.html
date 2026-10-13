@@ -2,170 +2,197 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>배달 현금흐름 방어선 관리기</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#070d1e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>배달 현금흐름 방어선 매니저</title>
+
+  <!-- PWA 인라인 매니페스트 (설치 및 Standalone 전체화면 지원) -->
+  <link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoi7ZiE6riI7Z2Q66aEIOuwpeyWtOyEoCIsInNob3J0X25hbWUiOiLtlZjquIjsnbzrj7kiLCJzdGFydF91cmwiOiIuLyIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiMwNzBkMWUiLCJ0aGVtZV9jb2xvciI6IiMwNzBkMWUifQ==">
+
   <style>
     :root {
-      --bg: #0f172a;
-      --card-bg: #1e293b;
+      --bg: #070d1e;
+      --card-bg: #131c31;
+      --border: #263554;
       --text: #f8fafc;
       --text-muted: #94a3b8;
+      --target-neon: #facc15; /* 네온 옐로우 (보색 대비 강조) */
       --primary: #38bdf8;
       --success: #22c55e;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --border: #334155;
+      --danger: #f87171;
+      --warning: #fb923c;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); padding-bottom: 60px; }
-    .container { max-width: 480px; margin: 0 auto; padding: 14px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); padding: 12px; font-size: 16px; line-height: 1.4; }
+    .container { max-width: 480px; margin: 0 auto; padding-bottom: 70px; }
 
-    .header { text-align: center; margin-bottom: 12px; }
-    .header h1 { font-size: 1.15rem; color: var(--primary); font-weight: 700; }
+    /* 헤더 */
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+    .header h1 { font-size: 1.25rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .btn-fixed-popup { background: #1e293b; border: 1px solid var(--primary); color: var(--primary); font-size: 0.85rem; font-weight: 700; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
 
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; }
-    .card-title { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    /* 대시보드 카드 */
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+    .card-title { font-size: 0.95rem; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
-    .highlight-val { font-size: 1.35rem; font-weight: 800; color: #fff; }
+    /* 목표 방어선 강조 (보색 대비 네온) */
+    .target-banner {
+      background: linear-gradient(135deg, #132247 0%, #0d1730 100%);
+      border: 2px solid var(--target-neon); border-radius: 14px; padding: 16px; margin-bottom: 14px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .target-label { font-size: 0.9rem; color: var(--target-neon); font-weight: 700; text-transform: uppercase; }
+    .target-val { font-size: 1.85rem; font-weight: 900; color: var(--target-neon); text-shadow: 0 0 10px rgba(250, 204, 21, 0.4); }
 
-    /* 입력 폼 */
-    label { font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
+    /* 입력 컨트롤 (폴드 터치 최적화: 최소 48px 높이) */
+    label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px; }
     input[type="number"], input[type="text"], input[type="date"], select {
-      width: 100%; background: #0f172a; border: 1px solid var(--border); border-radius: 6px;
-      color: #fff; padding: 9px; font-size: 0.9rem; font-weight: bold;
+      width: 100%; height: 50px; background: #070d1e; border: 1.5px solid var(--border); border-radius: 8px;
+      color: #fff; padding: 0 14px; font-size: 1.1rem; font-weight: 700; outline: none; transition: border-color 0.2s;
     }
-    .btn-action {
-      width: 100%; background: var(--primary); color: #0f172a; border: none; border-radius: 6px;
-      padding: 10px; font-weight: 700; font-size: 0.88rem; cursor: pointer; margin-top: 6px;
-    }
-    .btn-sub {
-      background: #334155; color: #fff; border: none; border-radius: 6px; padding: 9px 12px;
-      font-weight: 700; font-size: 0.8rem; cursor: pointer; white-space: nowrap;
-    }
+    input:focus, select:focus { border-color: var(--primary); }
+
+    .btn-main { width: 100%; height: 52px; background: var(--primary); color: #070d1e; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 10px; }
+    .btn-danger { width: 100%; height: 44px; background: transparent; color: var(--danger); border: 1.5px solid var(--danger); border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 8px; }
+
+    /* 4분할 결과 보드 */
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .result-box { background: #070d1e; border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
+    .result-box .label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+    .result-box .val { font-size: 1.15rem; font-weight: 800; color: #fff; }
+
+    /* 과소비 경고 */
+    .alert-box { margin-top: 10px; padding: 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; background: rgba(251, 146, 60, 0.15); border: 1.5px solid var(--warning); color: var(--warning); display: none; }
 
     /* 지출 태그 */
-    .expense-list { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
-    .expense-tag {
-      display: flex; justify-content: space-between; align-items: center; background: #0f172a;
-      border: 1px solid var(--border); padding: 6px 10px; border-radius: 6px; font-size: 0.75rem;
-    }
-    .expense-tag button { background: none; border: none; color: var(--danger); font-weight: bold; cursor: pointer; margin-left: 8px; }
-
-    /* 경고 박스 */
-    .alert-box {
-      margin-top: 8px; padding: 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold;
-      background: rgba(245, 158, 11, 0.15); border: 1px solid var(--warning); color: var(--warning);
-      display: none;
-    }
+    .expense-list { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .expense-tag { display: flex; justify-content: space-between; align-items: center; background: #070d1e; border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; font-size: 0.95rem; }
+    .expense-tag button { background: none; border: none; color: var(--danger); font-size: 1.2rem; font-weight: bold; cursor: pointer; padding: 0 6px; }
 
     /* 캘린더 */
-    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; font-size: 0.9rem; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; text-align: center; }
-    .day-name { font-size: 0.65rem; color: var(--text-muted); padding: 2px 0; }
-    .day-cell {
-      min-height: 52px; background: #0f172a; border: 1px solid var(--border); border-radius: 5px;
-      padding: 3px; font-size: 0.7rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer;
-    }
-    .day-cell.selected { border-color: var(--primary); background: #132d4a; }
-    .day-num { font-weight: 600; text-align: left; }
-    .cell-badge { font-size: 0.58rem; border-radius: 3px; padding: 1px 2px; font-weight: 800; }
-    .badge-surplus { background: rgba(34, 197, 94, 0.2); color: var(--success); }
-    .badge-met { background: rgba(56, 189, 248, 0.2); color: var(--primary); }
-    .badge-deficit { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: 800; font-size: 1.1rem; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+    .day-name { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; padding: 4px 0; }
+    .day-cell { min-height: 60px; background: #070d1e; border: 1.5px solid var(--border); border-radius: 8px; padding: 4px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
+    .day-cell.selected { border-color: var(--target-neon); background: #132442; }
+    .day-num { font-size: 0.85rem; font-weight: 700; text-align: left; }
+    .cell-badge { font-size: 0.65rem; border-radius: 4px; padding: 2px; font-weight: 800; }
+    .badge-surplus { background: rgba(34, 197, 94, 0.25); color: var(--success); }
+    .badge-met { background: rgba(56, 189, 248, 0.25); color: var(--primary); }
+    .badge-deficit { background: rgba(248, 113, 113, 0.25); color: var(--danger); }
 
-    /* 탭 제어 */
-    .tab-nav { display: flex; gap: 4px; margin-bottom: 10px; }
-    .tab-btn {
-      flex: 1; padding: 7px; background: #0f172a; border: 1px solid var(--border);
-      border-radius: 6px; color: var(--text-muted); font-size: 0.75rem; font-weight: bold; cursor: pointer;
-    }
-    .tab-btn.active { background: var(--border); color: #fff; }
+    /* 통계 탭 */
+    .tab-nav { display: flex; gap: 6px; margin-bottom: 12px; }
+    .tab-btn { flex: 1; height: 44px; background: #070d1e; border: 1px solid var(--border); border-radius: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 800; cursor: pointer; }
+    .tab-btn.active { background: var(--border); color: #fff; border-color: var(--primary); }
 
-    /* 통계 공통 */
-    .stat-row { display: flex; justify-content: space-between; font-size: 0.78rem; padding: 6px 0; border-bottom: 1px solid #243247; }
-    .stat-row:last-child { border-bottom: none; }
-    .stat-box { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-    .stat-box-card { background: #0f172a; padding: 9px; border-radius: 6px; border: 1px solid var(--border); }
-    .stat-box-card span { font-size: 0.68rem; color: var(--text-muted); display: block; }
-    .stat-box-card b { font-size: 0.95rem; }
+    /* 결산 차트 (CSS Bar Chart) */
+    .chart-container { margin-top: 14px; background: #070d1e; border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+    .chart-bar-wrap { margin-bottom: 10px; }
+    .chart-bar-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; }
+    .chart-bar-bg { height: 16px; background: #1a2744; border-radius: 8px; overflow: hidden; position: relative; }
+    .chart-bar-fill { height: 100%; border-radius: 8px; transition: width 0.4s ease; }
 
-    .cat-stat-bar { margin-top: 10px; font-size: 0.72rem; }
-    .cat-stat-item { display: flex; justify-content: space-between; margin-bottom: 3px; color: var(--text-muted); }
-    .other-detail-box { margin-top: 8px; padding: 8px; background: #0f172a; border-radius: 6px; border: 1px solid var(--border); font-size: 0.72rem; }
-    .other-detail-item { display: flex; justify-content: space-between; margin-bottom: 2px; }
+    /* 모달 팝업 */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 16px; }
+    .modal-card { width: 100%; max-width: 440px; background: var(--card-bg); border: 2px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .modal-item { display: flex; justify-content: space-between; font-size: 0.95rem; padding: 8px 0; border-bottom: 1px solid #1f2f50; }
+    .modal-item:last-child { border-bottom: none; }
   </style>
 </head>
 <body>
 <div class="container">
+  
+  <!-- 상단 헤더 -->
   <div class="header">
-    <h1>현금흐름 방어선 관리기</h1>
+    <h1>현금흐름 방어선 매니저</h1>
+    <button class="btn-fixed-popup" onclick="openFixedModal()">📋 고정비 내역</button>
   </div>
 
-  <!-- 방어선 대시보드 -->
-  <div class="card">
-    <div class="card-title">1일 고정 방어선 (목표 순수익)</div>
-    <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-      <div>
-        <span class="highlight-val">92,025</span> <span style="font-size:0.8rem;">원 / 일</span>
-      </div>
-      <div style="font-size:0.75rem; color:var(--text-muted);">
-        월 고정 지출 2,760,753원 기준
-      </div>
-    </div>
-  </div>
-
-  <!-- 정산 입력 -->
-  <div class="card">
-    <div class="card-title">당일 수입 및 지출 정산</div>
+  <!-- 목표 방어선 강조 배너 (보색 대비) -->
+  <div class="target-banner">
     <div>
-      <label>기준 일자</label>
+      <div class="target-label">1일 고정 방어선 (목표)</div>
+      <div style="font-size:0.8rem; color:#cbd5e1;">주유비 포함 일일 손익분기점</div>
+    </div>
+    <div class="target-val">92,025원</div>
+  </div>
+
+  <!-- 일일 정산 입력 카드 -->
+  <div class="card">
+    <div class="card-title">
+      <span id="input-status-title">일일 정산 등록</span>
+      <span id="edit-badge" style="display:none; font-size:0.75rem; background:#38bdf8; color:#070d1e; padding:2px 8px; border-radius:4px;">수정 모드</span>
+    </div>
+
+    <div>
+      <label>기준 일자 선택</label>
       <input type="date" id="input-date" onchange="onDateChanged(this.value)">
     </div>
 
-    <div style="margin-top:10px;">
+    <div style="margin-top:12px;">
       <label>하루 총 배달 수입 (원)</label>
       <input type="number" id="input-income" placeholder="0" step="1000" oninput="updateCalculationPreview()">
     </div>
 
-    <!-- 세부 지출 항목 추가 -->
-    <div style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
-      <label>지출 항목 추가 (카테고리별 분류)</label>
-      <div style="display:grid; grid-template-columns: 1fr 1.2fr; gap:6px;">
+    <!-- 세부 지출 등록 -->
+    <div style="margin-top:14px; border-top:1px dashed var(--border); padding-top:12px;">
+      <label>지출 항목 추가 (카테고리)</label>
+      <div style="display:grid; grid-template-columns: 1fr 1.3fr; gap:8px;">
         <select id="select-category" onchange="onCategoryChanged(this.value)">
           <option value="식비">식비</option>
           <option value="간식비">간식비</option>
           <option value="쇼핑">쇼핑</option>
           <option value="기타">기타 (직접입력)</option>
         </select>
-        <input type="text" id="input-detail" placeholder="상세 내용 (선택)">
+        <input type="text" id="input-detail" placeholder="상세 내용">
       </div>
-      <div style="display:flex; gap:6px; margin-top:6px;">
-        <input type="number" id="input-expense-val" placeholder="지출액 입력" step="500">
-        <button class="btn-sub" onclick="addExpenseItem()">추가</button>
+      <div style="display:flex; gap:8px; margin-top:8px;">
+        <input type="number" id="input-expense-val" placeholder="지출액 (원)" step="500">
+        <button style="width:85px; height:50px; background:#263554; color:#fff; border:none; border-radius:8px; font-weight:800; font-size:0.95rem; cursor:pointer;" onclick="addExpenseItem()">추가</button>
       </div>
 
-      <!-- 추가된 지출 태그 -->
       <div class="expense-list" id="expense-tag-container"></div>
     </div>
 
-    <!-- 과소비 경고 영역 -->
+    <!-- 과소비 경고 -->
     <div class="alert-box" id="food-warning-box">
-      ⚠️ 식비·간식비 과소비 경고: 수입의 <span id="food-warning-pct">0</span>% 지출 (권장 15% 이하)
+      ⚠️ 식비·간식비 과소비: 수입의 <span id="food-warning-pct">0</span>% 지출 (권장 15% 이하)
     </div>
 
-    <div id="calc-preview" style="margin-top:12px; font-size:0.78rem; color:var(--text-muted); display:flex; justify-content:space-between;">
-      <span>순수익: <b id="preview-net" style="color:#fff;">0</b>원</span>
-      <span>결과: <b id="preview-status">-</b></span>
+    <!-- 4분할 결과 보드 -->
+    <div class="result-grid">
+      <div class="result-box">
+        <div class="label">총수입</div>
+        <div class="val" id="disp-income" style="color:var(--primary);">0원</div>
+      </div>
+      <div class="result-box">
+        <div class="label">순수익</div>
+        <div class="val" id="disp-net">0원</div>
+      </div>
+      <div class="result-box">
+        <div class="label">총지출액</div>
+        <div class="val" id="disp-expense" style="color:var(--warning);">0원</div>
+      </div>
+      <div class="result-box">
+        <div class="label">결과 (초과/미달)</div>
+        <div class="val" id="disp-result">-</div>
+      </div>
     </div>
-    <button class="btn-action" onclick="saveDayRecord()">정산 최종 저장</button>
+
+    <button class="btn-main" id="btn-save" onclick="saveDayRecord()">정산 최종 저장</button>
+    <button class="btn-danger" id="btn-delete" style="display:none;" onclick="deleteDayRecord()">해당 날짜 기록 삭제</button>
   </div>
 
   <!-- 캘린더 -->
   <div class="card">
     <div class="cal-header">
-      <button onclick="changeMonth(-1)" style="background:none;border:none;color:var(--text);font-size:1rem;cursor:pointer;">◀</button>
+      <button onclick="changeMonth(-1)" style="background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;padding:0 10px;">◀</button>
       <span id="cal-month-title">2026년 10월</span>
-      <button onclick="changeMonth(1)" style="background:none;border:none;color:var(--text);font-size:1rem;cursor:pointer;">▶</button>
+      <button onclick="changeMonth(1)" style="background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;padding:0 10px;">▶</button>
     </div>
     <div class="cal-grid">
       <div class="day-name">일</div><div class="day-name">월</div><div class="day-name">화</div>
@@ -174,10 +201,10 @@
     <div class="cal-grid" id="cal-cells"></div>
   </div>
 
-  <!-- 통계 탭: 주간 / 월말 / 반기 -->
+  <!-- 결산 탭 (주간 / 월말 / 반기) -->
   <div class="card">
     <div class="tab-nav">
-      <button class="tab-btn active" id="tab-btn-week" onclick="switchStatsTab('week')">주간 통계</button>
+      <button class="tab-btn active" id="tab-btn-week" onclick="switchStatsTab('week')">주간</button>
       <button class="tab-btn" id="tab-btn-month" onclick="switchStatsTab('month')">월말 결산</button>
       <button class="tab-btn" id="tab-btn-half" onclick="switchStatsTab('half')">반기 결산</button>
     </div>
@@ -187,12 +214,11 @@
       <div id="weekly-stats-container"></div>
     </div>
 
-    <!-- 월말 결산 영역 -->
+    <!-- 월말 결산 -->
     <div id="tab-month-content" style="display:none;">
-      <div style="display:flex; gap:8px; margin-bottom:8px;">
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
         <select id="month-year-select" onchange="renderMonthStats()" style="width:50%;">
-          <option value="2026" selected>2026년</option>
-          <option value="2027">2027년</option>
+          <option value="2026" selected>2026년</option><option value="2027">2027년</option>
         </select>
         <select id="month-select" onchange="renderMonthStats()" style="width:50%;">
           <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option>
@@ -204,12 +230,11 @@
       <div id="month-stats-container"></div>
     </div>
 
-    <!-- 반기 결산 영역 -->
+    <!-- 반기 결산 -->
     <div id="tab-half-content" style="display:none;">
-      <div style="display:flex; gap:8px; margin-bottom:8px;">
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
         <select id="half-year-select" onchange="renderHalfStats()" style="width:50%;">
-          <option value="2026" selected>2026년</option>
-          <option value="2027">2027년</option>
+          <option value="2026" selected>2026년</option><option value="2027">2027년</option>
         </select>
         <select id="half-select" onchange="renderHalfStats()" style="width:50%;">
           <option value="1">상반기 (1~6월)</option>
@@ -221,20 +246,47 @@
   </div>
 
   <!-- 데이터 백업/복원 -->
-  <div class="card" style="font-size:0.75rem;">
+  <div class="card" style="font-size:0.85rem;">
     <div class="card-title">데이터 영구 보관 & 복원</div>
-    <div style="display:flex; gap:6px;">
-      <button class="btn-sub" style="flex:1;" onclick="exportData()">데이터 백업 (JSON)</button>
+    <div style="display:flex; gap:8px;">
+      <button style="flex:1; height:44px; background:#1e293b; color:#fff; border:1px solid var(--border); border-radius:8px; font-weight:700;" onclick="exportData()">데이터 백업 (JSON)</button>
       <input type="file" id="file-import" style="display:none;" onchange="importData(event)">
-      <button class="btn-sub" style="flex:1;" onclick="document.getElementById('file-import').click()">데이터 복원</button>
+      <button style="flex:1; height:44px; background:#1e293b; color:#fff; border:1px solid var(--border); border-radius:8px; font-weight:700;" onclick="document.getElementById('file-import').click()">데이터 복원</button>
     </div>
+  </div>
+</div>
+
+<!-- 고정비 팝업 모달 -->
+<div class="modal-overlay" id="fixed-modal" onclick="closeFixedModal(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <h2 style="font-size:1.15rem; font-weight:800; color:var(--primary);">월 고정비 지출 명세</h2>
+      <button onclick="closeFixedModal(null)" style="background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer;">✕</button>
+    </div>
+    <div>
+      <div class="modal-item"><span>주식 모으기 (일 5만/20일)</span><b>1,000,000원</b></div>
+      <div class="modal-item"><span>신용회복위원회 분할상환</span><b>635,974원</b></div>
+      <div class="modal-item"><span>가족 지원금</span><b>600,000원</b></div>
+      <div class="modal-item"><span style="color:var(--target-neon);">기본 주유비 (일 8천원 고정)</span><b style="color:var(--target-neon);">240,000원</b></div>
+      <div class="modal-item"><span>핸드폰 요금</span><b>141,420원</b></div>
+      <div class="modal-item"><span>주택연금</span><b>100,000원</b></div>
+      <div class="modal-item"><span>삼성화재 실비 / 핸드폰 보험</span><b>43,359원</b></div>
+    </div>
+    <div style="margin-top:14px; padding-top:12px; border-top:2px solid var(--border); display:flex; justify-content:space-between; font-size:1.1rem; font-weight:900;">
+      <span>총 고정 지출 합계</span>
+      <span style="color:var(--target-neon);">2,760,753원</span>
+    </div>
+    <div style="text-align:right; font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
+      30일 기준 일일 방어선: 92,025원
+    </div>
+    <button class="btn-main" style="height:44px; margin-top:16px;" onclick="closeFixedModal(null)">닫기</button>
   </div>
 </div>
 
 <script>
   const DAILY_TARGET = 92025;
   let currentDate = new Date();
-  let db = JSON.parse(localStorage.getItem('delivery_budget_v4') || '{}');
+  let db = JSON.parse(localStorage.getItem('delivery_budget_v5') || '{}');
   let currentExpenses = [];
 
   function init() {
@@ -254,20 +306,32 @@
     return `${y}-${m}-${d}`;
   }
 
+  function openFixedModal() { document.getElementById('fixed-modal').style.display = 'flex'; }
+  function closeFixedModal(e) { document.getElementById('fixed-modal').style.display = 'none'; }
+
   function onCategoryChanged(val) {
-    const detailInput = document.getElementById('input-detail');
-    if (val === '기타') {
-      detailInput.placeholder = '지출처 직접 입력 (필수)';
-      detailInput.focus();
-    } else {
-      detailInput.placeholder = '상세 내용 (선택)';
-    }
+    const dInput = document.getElementById('input-detail');
+    dInput.placeholder = val === '기타' ? '지출처 입력 (필수)' : '상세 내용';
+    if(val === '기타') dInput.focus();
   }
 
   function onDateChanged(dateStr) {
-    const record = db[dateStr] || { income: '', expenses: [] };
-    document.getElementById('input-income').value = record.income || '';
-    currentExpenses = record.expenses ? [...record.expenses] : [];
+    const record = db[dateStr];
+    const isEdit = !!record;
+    
+    document.getElementById('input-status-title').innerText = isEdit ? '정산 수정' : '일일 정산 등록';
+    document.getElementById('edit-badge').style.display = isEdit ? 'inline-block' : 'none';
+    document.getElementById('btn-save').innerText = isEdit ? '수정 완료 (덮어쓰기)' : '정산 최종 저장';
+    document.getElementById('btn-delete').style.display = isEdit ? 'block' : 'none';
+
+    if (isEdit) {
+      document.getElementById('input-income').value = record.income || '';
+      currentExpenses = record.expenses ? JSON.parse(JSON.stringify(record.expenses)) : [];
+    } else {
+      document.getElementById('input-income').value = '';
+      currentExpenses = [];
+    }
+
     renderExpenseTags();
     updateCalculationPreview();
     highlightSelectedCell(dateStr);
@@ -278,14 +342,8 @@
     const detail = document.getElementById('input-detail').value.trim();
     const amt = Number(document.getElementById('input-expense-val').value) || 0;
 
-    if (amt <= 0) {
-      alert('지출 금액을 입력해 주세요.');
-      return;
-    }
-    if (cat === '기타' && !detail) {
-      alert('기타 항목의 상세 내용을 입력해 주세요.');
-      return;
-    }
+    if (amt <= 0) { alert('지출 금액을 입력해 주세요.'); return; }
+    if (cat === '기타' && !detail) { alert('기타 항목의 지출처를 입력해 주세요.'); return; }
 
     currentExpenses.push({ category: cat, detail: detail, amount: amt });
     document.getElementById('input-expense-val').value = '';
@@ -294,8 +352,8 @@
     updateCalculationPreview();
   }
 
-  function removeExpenseItem(index) {
-    currentExpenses.splice(index, 1);
+  function removeExpenseItem(idx) {
+    currentExpenses.splice(idx, 1);
     renderExpenseTags();
     updateCalculationPreview();
   }
@@ -309,71 +367,78 @@
       const label = item.detail ? `${item.category}(${item.detail})` : item.category;
       tag.innerHTML = `
         <span>${label}: <b>${item.amount.toLocaleString()}원</b></span>
-        <button onclick="removeExpenseItem(${idx})">×</button>
+        <button onclick="removeExpenseItem(${idx})">✕</button>
       `;
       container.appendChild(tag);
     });
   }
 
-  function getDayTotalExpense() {
-    return currentExpenses.reduce((sum, item) => sum + item.amount, 0);
-  }
-
   function updateCalculationPreview() {
     const inc = Number(document.getElementById('input-income').value) || 0;
-    const exp = getDayTotalExpense();
+    const exp = currentExpenses.reduce((s, it) => s + it.amount, 0);
     const net = inc - exp;
     const diff = net - DAILY_TARGET;
 
-    document.getElementById('preview-net').innerText = net.toLocaleString();
-    const statusEl = document.getElementById('preview-status');
-
+    document.getElementById('disp-income').innerText = inc.toLocaleString() + '원';
+    document.getElementById('disp-expense').innerText = exp.toLocaleString() + '원';
+    document.getElementById('disp-net').innerText = net.toLocaleString() + '원';
+    
+    const resEl = document.getElementById('disp-result');
     if (inc === 0 && exp === 0) {
-      statusEl.innerText = '-';
-      statusEl.style.color = 'var(--text-muted)';
+      resEl.innerText = '-';
+      resEl.style.color = 'var(--text-muted)';
     } else if (diff > 0) {
-      statusEl.innerText = `+${diff.toLocaleString()}원 초과 달성`;
-      statusEl.style.color = 'var(--success)';
+      resEl.innerText = `+${diff.toLocaleString()}원 초과`;
+      resEl.style.color = 'var(--success)';
     } else if (diff === 0) {
-      statusEl.innerText = '방어선 정확히 달성';
-      statusEl.style.color = 'var(--primary)';
+      resEl.innerText = '목표 달성';
+      resEl.style.color = 'var(--primary)';
     } else {
-      statusEl.innerText = `${diff.toLocaleString()}원 미달`;
-      statusEl.style.color = 'var(--danger)';
+      resEl.innerText = `${diff.toLocaleString()}원 미달`;
+      resEl.style.color = 'var(--danger)';
     }
 
-    // 식비/간식비 과소비 판별 (수입의 15% 초과)
-    const foodSnackAmt = currentExpenses
-      .filter(it => it.category === '식비' || it.category === '간식비')
-      .reduce((s, it) => s + it.amount, 0);
-
+    // 과소비 경고
+    const foodAmt = currentExpenses.filter(it => it.category === '식비' || it.category === '간식비').reduce((s, it) => s + it.amount, 0);
     const warnBox = document.getElementById('food-warning-box');
-    if (inc > 0 && foodSnackAmt > 0) {
-      const rate = Math.round((foodSnackAmt / inc) * 100);
+    if (inc > 0 && foodAmt > 0) {
+      const rate = Math.round((foodAmt / inc) * 100);
       if (rate > 15) {
         document.getElementById('food-warning-pct').innerText = rate;
         warnBox.style.display = 'block';
-      } else {
-        warnBox.style.display = 'none';
-      }
-    } else {
-      warnBox.style.display = 'none';
-    }
+      } else { warnBox.style.display = 'none'; }
+    } else { warnBox.style.display = 'none'; }
   }
 
   function saveDayRecord() {
     const dateStr = document.getElementById('input-date').value;
     if (!dateStr) return;
-
     const income = Number(document.getElementById('input-income').value) || 0;
-    db[dateStr] = { income, expenses: [...currentExpenses] };
 
-    localStorage.setItem('delivery_budget_v4', JSON.stringify(db));
+    db[dateStr] = { income, expenses: [...currentExpenses] };
+    localStorage.setItem('delivery_budget_v5', JSON.stringify(db));
+
     renderCalendar();
     renderWeeklyStats();
     renderMonthStats();
     renderHalfStats();
-    alert(`${dateStr} 정산 저장 완료`);
+    onDateChanged(dateStr);
+    alert(`${dateStr} 정산이 정상 저장되었습니다.`);
+  }
+
+  function deleteDayRecord() {
+    const dateStr = document.getElementById('input-date').value;
+    if (!confirm(`${dateStr} 기록을 완전히 삭제하시겠습니까?`)) return;
+
+    delete db[dateStr];
+    localStorage.setItem('delivery_budget_v5', JSON.stringify(db));
+
+    renderCalendar();
+    renderWeeklyStats();
+    renderMonthStats();
+    renderHalfStats();
+    onDateChanged(dateStr);
+    alert('삭제되었습니다.');
   }
 
   function renderCalendar() {
@@ -389,8 +454,7 @@
     for (let i = 0; i < firstDay; i++) {
       const empty = document.createElement('div');
       empty.className = 'day-cell';
-      empty.style.border = 'none';
-      empty.style.background = 'transparent';
+      empty.style.border = 'none'; empty.style.background = 'transparent';
       grid.appendChild(empty);
     }
 
@@ -403,7 +467,6 @@
       cell.id = `cell-${dStr}`;
 
       if (dStr === curSelected) cell.classList.add('selected');
-
       cell.onclick = () => {
         document.getElementById('input-date').value = dStr;
         onDateChanged(dStr);
@@ -413,16 +476,10 @@
       if (db[dStr]) {
         const inc = db[dStr].income;
         const exp = (db[dStr].expenses || []).reduce((s, it) => s + it.amount, 0);
-        const net = inc - exp;
-        const diff = net - DAILY_TARGET;
-
-        if (diff > 0) {
-          badgeHtml = `<div class="cell-badge badge-surplus">+${Math.round(diff/1000)}k</div>`;
-        } else if (diff === 0) {
-          badgeHtml = `<div class="cell-badge badge-met">달성</div>`;
-        } else {
-          badgeHtml = `<div class="cell-badge badge-deficit">${Math.round(diff/1000)}k</div>`;
-        }
+        const diff = (inc - exp) - DAILY_TARGET;
+        if (diff > 0) badgeHtml = `<div class="cell-badge badge-surplus">+${Math.round(diff/1000)}k</div>`;
+        else if (diff === 0) badgeHtml = `<div class="cell-badge badge-met">달성</div>`;
+        else badgeHtml = `<div class="cell-badge badge-deficit">${Math.round(diff/1000)}k</div>`;
       }
 
       cell.innerHTML = `<span class="day-num">${d}</span>${badgeHtml}`;
@@ -432,8 +489,8 @@
 
   function highlightSelectedCell(dateStr) {
     document.querySelectorAll('.day-cell').forEach(el => el.classList.remove('selected'));
-    const target = document.getElementById(`cell-${dateStr}`);
-    if (target) target.classList.add('selected');
+    const t = document.getElementById(`cell-${dateStr}`);
+    if (t) t.classList.add('selected');
   }
 
   function changeMonth(delta) {
@@ -469,50 +526,28 @@
     container.innerHTML = '';
 
     weeks.forEach((wDates, idx) => {
-      let totalInc = 0, totalExp = 0, surplusDays = 0, deficitDays = 0, activeDays = 0, totalSurplusNet = 0;
-      let catMap = { '식비': 0, '간식비': 0, '쇼핑': 0, '기타': 0 };
-
+      let tInc = 0, tExp = 0, activeDays = 0, tSurplus = 0;
       wDates.forEach(dStr => {
         if (db[dStr]) {
           activeDays++;
           const inc = db[dStr].income;
-          const expenses = db[dStr].expenses || [];
-          const exp = expenses.reduce((s, it) => {
-            catMap[it.category] = (catMap[it.category] || 0) + it.amount;
-            return s + it.amount;
-          }, 0);
-
-          const net = inc - exp;
-          const diff = net - DAILY_TARGET;
-
-          totalInc += inc;
-          totalExp += exp;
-          totalSurplusNet += diff;
-
-          if (diff >= 0) surplusDays++;
-          else deficitDays++;
+          const exp = (db[dStr].expenses || []).reduce((s, it) => s + it.amount, 0);
+          tInc += inc; tExp += exp;
+          tSurplus += (inc - exp) - DAILY_TARGET;
         }
       });
 
       if (activeDays > 0) {
         const row = document.createElement('div');
-        row.className = 'stat-row';
-        row.style.flexDirection = 'column';
+        row.style.cssText = 'padding:10px 0; border-bottom:1px solid #1f2f50; font-size:0.9rem;';
         row.innerHTML = `
-          <div style="display:flex; justify-content:space-between;">
-            <div>
-              <b>${idx + 1}주차 (${wDates[0].slice(5)}~)</b> 
-              <span style="font-size:0.7rem; color:var(--text-muted);">[활동 ${activeDays}일]</span>
-            </div>
-            <div style="text-align:right;">
-              <span style="color:${totalSurplusNet >= 0 ? 'var(--success)' : 'var(--danger)'}; font-weight:bold;">
-                ${totalSurplusNet >= 0 ? '+' : ''}${totalSurplusNet.toLocaleString()}원
-              </span>
-            </div>
+          <div style="display:flex; justify-content:space-between; font-weight:800;">
+            <span>${idx + 1}주차 (${wDates[0].slice(5)}~) <span style="font-size:0.75rem; color:var(--text-muted);">[${activeDays}일 활동]</span></span>
+            <span style="color:${tSurplus >= 0 ? 'var(--success)' : 'var(--danger)'};">${tSurplus >= 0 ? '+' : ''}${tSurplus.toLocaleString()}원</span>
           </div>
-          <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-muted); margin-top:3px;">
-            <span>수입: ${totalInc.toLocaleString()}원 | 지출: ${totalExp.toLocaleString()}원</span>
-            <span>달성 ${surplusDays}일 / 미달 ${deficitDays}일</span>
+          <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
+            <span>총수입: ${tInc.toLocaleString()}원 | 지출: ${tExp.toLocaleString()}원</span>
+            <span>순수익: ${(tInc - tExp).toLocaleString()}원</span>
           </div>
         `;
         container.appendChild(row);
@@ -520,154 +555,139 @@
     });
 
     if (container.children.length === 0) {
-      container.innerHTML = '<div style="font-size:0.75rem; color:var(--text-muted); text-align:center; padding:8px;">기록된 주간 데이터가 없습니다.</div>';
+      container.innerHTML = '<div style="font-size:0.85rem; color:var(--text-muted); text-align:center; padding:12px;">기록된 주간 데이터가 없습니다.</div>';
     }
   }
 
-  // 월말 및 반기 공통 분석 엔진
-  function generateAggregatedReport(dateFilterFn, containerId, periodName) {
-    let tIncome = 0, tExpense = 0, tSurplus = 0, recordedDays = 0, metDays = 0;
+  // 결산 및 내장 막대그래프 시각화 모듈
+  function renderAggregatedView(filterFn, containerId, title) {
+    let tInc = 0, tExp = 0, tSurplus = 0, recordedDays = 0, metDays = 0;
     let catMap = { '식비': 0, '간식비': 0, '쇼핑': 0, '기타': 0 };
-    let otherMap = {};
 
-    Object.keys(db).forEach(dateStr => {
-      if (dateFilterFn(dateStr)) {
+    Object.keys(db).forEach(dStr => {
+      if (filterFn(dStr)) {
         recordedDays++;
-        const rec = db[dateStr];
-        const expenses = rec.expenses || [];
-        const exp = expenses.reduce((s, it) => {
+        const rec = db[dStr];
+        const exp = (rec.expenses || []).reduce((s, it) => {
           catMap[it.category] = (catMap[it.category] || 0) + it.amount;
-          if (it.category === '기타' && it.detail) {
-            otherMap[it.detail] = (otherMap[it.detail] || 0) + it.amount;
-          }
           return s + it.amount;
         }, 0);
-
-        const net = rec.income - exp;
-        const diff = net - DAILY_TARGET;
-
-        tIncome += rec.income;
-        tExpense += exp;
+        tInc += rec.income;
+        tExp += exp;
+        const diff = (rec.income - exp) - DAILY_TARGET;
         tSurplus += diff;
         if (diff >= 0) metDays++;
       }
     });
 
-    const container = document.getElementById(containerId);
+    const c = document.getElementById(containerId);
     if (recordedDays === 0) {
-      container.innerHTML = `<div style="font-size:0.75rem; color:var(--text-muted); text-align:center; padding:8px;">${periodName} 기록 데이터가 없습니다.</div>`;
+      c.innerHTML = `<div style="font-size:0.85rem; color:var(--text-muted); text-align:center; padding:14px;">${title} 기록 데이터가 없습니다.</div>`;
       return;
     }
 
-    const netIncome = tIncome - tExpense;
+    const tNet = tInc - tExp;
     const metRate = Math.round((metDays / recordedDays) * 100);
+    const targetGoalTotal = DAILY_TARGET * recordedDays;
+    const progressRate = Math.min(Math.round((tNet / targetGoalTotal) * 100), 100);
 
-    // 기타 지출 상위 정렬
-    const sortedOthers = Object.entries(otherMap).sort((a, b) => b[1] - a[1]).slice(0, 4);
-    let otherHtml = '';
-    if (sortedOthers.length > 0) {
-      otherHtml = `
-        <div class="other-detail-box">
-          <span style="font-weight:bold; color:var(--primary); display:block; margin-bottom:4px;">'기타' 주요 지출처 Top</span>
-          ${sortedOthers.map(([name, val]) => `
-            <div class="other-detail-item"><span>• ${name}</span><b>${val.toLocaleString()}원</b></div>
-          `).join('')}
+    c.innerHTML = `
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;">
+        <div style="background:#070d1e; padding:12px; border-radius:10px; border:1px solid var(--border); text-align:center;">
+          <span style="font-size:0.75rem; color:var(--text-muted);">총수입</span>
+          <div style="font-size:1.15rem; font-weight:900; color:var(--primary);">${tInc.toLocaleString()}원</div>
         </div>
-      `;
-    }
-
-    container.innerHTML = `
-      <div class="stat-box">
-        <div class="stat-box-card">
-          <span>기간 총수입</span>
-          <b>${tIncome.toLocaleString()}원</b>
-        </div>
-        <div class="stat-box-card">
-          <span>기간 총변동지출</span>
-          <b>${tExpense.toLocaleString()}원</b>
-        </div>
-        <div class="stat-box-card">
-          <span>순수익 (수입-지출)</span>
-          <b>${netIncome.toLocaleString()}원</b>
-        </div>
-        <div class="stat-box-card">
-          <span>목표 달성률</span>
-          <b style="color:var(--primary);">${metRate}% (${metDays}/${recordedDays}일)</b>
+        <div style="background:#070d1e; padding:12px; border-radius:10px; border:1px solid var(--border); text-align:center;">
+          <span style="font-size:0.75rem; color:var(--text-muted);">총변동지출</span>
+          <div style="font-size:1.15rem; font-weight:900; color:var(--warning);">${tExp.toLocaleString()}원</div>
         </div>
       </div>
 
-      <div style="margin-top:8px; background:#0f172a; padding:10px; border-radius:6px; border:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+      <div style="background:#070d1e; padding:14px; border-radius:10px; border:1px solid var(--border); margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
         <div>
-          <span style="font-size:0.7rem; color:var(--text-muted);">고정비 충당 후 순잉여금</span>
+          <span style="font-size:0.8rem; color:var(--text-muted);">고정비 충당 후 순잉여금</span>
+          <div style="font-size:1.4rem; font-weight:900; color:${tSurplus >= 0 ? 'var(--success)' : 'var(--danger)'};">
+            ${tSurplus >= 0 ? '+' : ''}${tSurplus.toLocaleString()}원
+          </div>
         </div>
         <div style="text-align:right;">
-          <b style="font-size:1.1rem; color:${tSurplus >= 0 ? 'var(--success)' : 'var(--danger)'};">
-            ${tSurplus >= 0 ? '+' : ''}${tSurplus.toLocaleString()}원
-          </b>
+          <span style="font-size:0.8rem; color:var(--text-muted);">방어선 달성률</span>
+          <div style="font-size:1.2rem; font-weight:800; color:var(--target-neon);">${metRate}% (${metDays}/${recordedDays}일)</div>
         </div>
       </div>
 
-      <div class="cat-stat-bar">
-        <span style="font-weight:bold; color:var(--text); display:block; margin-bottom:4px;">카테고리별 지출 점유율</span>
-        <div class="cat-stat-item"><span>식비</span><span>${catMap['식비'].toLocaleString()}원 (${tExpense > 0 ? Math.round(catMap['식비']/tExpense*100) : 0}%)</span></div>
-        <div class="cat-stat-item"><span>간식비</span><span>${catMap['간식비'].toLocaleString()}원 (${tExpense > 0 ? Math.round(catMap['간식비']/tExpense*100) : 0}%)</span></div>
-        <div class="cat-stat-item"><span>쇼핑</span><span>${catMap['쇼핑'].toLocaleString()}원 (${tExpense > 0 ? Math.round(catMap['쇼핑']/tExpense*100) : 0}%)</span></div>
-        <div class="cat-stat-item"><span>기타</span><span>${catMap['기타'].toLocaleString()}원 (${tExpense > 0 ? Math.round(catMap['기타']/tExpense*100) : 0}%)</span></div>
+      <!-- 직관적 막대그래프 -->
+      <div class="chart-container">
+        <div style="font-size:0.85rem; font-weight:800; margin-bottom:10px; color:#fff;">📊 방어선 대비 순수익 달성률</div>
+        <div class="chart-bar-wrap">
+          <div class="chart-bar-label">
+            <span>목표 누적 방어선 (${targetGoalTotal.toLocaleString()}원)</span>
+            <span style="color:var(--target-neon);">${progressRate}%</span>
+          </div>
+          <div class="chart-bar-bg">
+            <div class="chart-bar-fill" style="width:${progressRate}%; background:linear-gradient(90deg, #38bdf8, #facc15);"></div>
+          </div>
+        </div>
+
+        <div style="font-size:0.85rem; font-weight:800; margin:14px 0 8px 0; color:#fff;">지출 카테고리 비중</div>
+        ${['식비','간식비','쇼핑','기타'].map(cat => {
+          const amt = catMap[cat];
+          const pct = tExp > 0 ? Math.round((amt / tExp) * 100) : 0;
+          return `
+            <div style="margin-bottom:6px;">
+              <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
+                <span>${cat} (${amt.toLocaleString()}원)</span>
+                <span>${pct}%</span>
+              </div>
+              <div class="chart-bar-bg" style="height:8px;">
+                <div class="chart-bar-fill" style="width:${pct}%; background:#38bdf8;"></div>
+              </div>
+            </div>
+          `;
+        }).join('')}
       </div>
-      ${otherHtml}
     `;
   }
 
   function renderMonthStats() {
-    const selYear = Number(document.getElementById('month-year-select').value);
-    const selMonth = Number(document.getElementById('month-select').value);
-    generateAggregatedReport(
-      (dStr) => {
-        const [y, m] = dStr.split('-').map(Number);
-        return y === selYear && m === selMonth;
-      },
-      'month-stats-container',
-      `${selMonth}월`
-    );
+    const y = Number(document.getElementById('month-year-select').value);
+    const m = Number(document.getElementById('month-select').value);
+    renderAggregatedView(dStr => {
+      const [dy, dm] = dStr.split('-').map(Number);
+      return dy === y && dm === m;
+    }, 'month-stats-container', `${m}월`);
   }
 
   function renderHalfStats() {
-    const selYear = Number(document.getElementById('half-year-select').value);
-    const selHalf = Number(document.getElementById('half-select').value);
-    const startM = selHalf === 1 ? 1 : 7;
-    const endM = selHalf === 1 ? 6 : 12;
-
-    generateAggregatedReport(
-      (dStr) => {
-        const [y, m] = dStr.split('-').map(Number);
-        return y === selYear && m >= startM && m <= endM;
-      },
-      'half-stats-container',
-      `${selHalf === 1 ? '상반기' : '하반기'}`
-    );
+    const y = Number(document.getElementById('half-year-select').value);
+    const h = Number(document.getElementById('half-select').value);
+    const sm = h === 1 ? 1 : 7;
+    const em = h === 1 ? 6 : 12;
+    renderAggregatedView(dStr => {
+      const [dy, dm] = dStr.split('-').map(Number);
+      return dy === y && dm >= sm && dm <= em;
+    }, 'half-stats-container', `${h === 1 ? '상반기' : '하반기'}`);
   }
 
   function exportData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", `budget_backup_${getKSTDateString(new Date())}.json`);
-    dlAnchor.click();
+    const a = document.createElement('a');
+    a.href = dataStr;
+    a.download = `budget_backup_${getKSTDateString(new Date())}.json`;
+    a.click();
   }
 
-  function importData(event) {
-    const file = event.target.files[0];
+  function importData(e) {
+    const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function(evt) {
       try {
-        db = JSON.parse(e.target.result);
-        localStorage.setItem('delivery_budget_v4', JSON.stringify(db));
+        db = JSON.parse(evt.target.result);
+        localStorage.setItem('delivery_budget_v5', JSON.stringify(db));
         init();
         alert('데이터 복원이 정상 완료되었습니다.');
-      } catch (err) {
-        alert('올바르지 않은 백업 파일 형식입니다.');
-      }
+      } catch (err) { alert('올바르지 않은 백업 파일 형식입니다.'); }
     };
     reader.readAsText(file);
   }
