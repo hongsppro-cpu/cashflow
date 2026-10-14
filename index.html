@@ -214,7 +214,7 @@
 
   <div class="card">
     <div class="tab-nav">
-      <button type="button" class="tab-btn active" id="tab-btn-week" onclick="switchStatsTab('week')">주간</button>
+      <button type="button" class="tab-btn active" id="tab-btn-week" onclick="switchStatsTab('week')">주간 (수~화)</button>
       <button type="button" class="tab-btn" id="tab-btn-month" onclick="switchStatsTab('month')">월말 결산</button>
       <button type="button" class="tab-btn" id="tab-btn-half" onclick="switchStatsTab('half')">반기 결산</button>
     </div>
@@ -856,21 +856,27 @@
     });
   }
 
+  // Show complete Wednesday–Tuesday cycles overlapping the selected month.
+  function getSettlementWeeks(year, month) {
+    const first = new Date(year, month, 1);
+    const last = new Date(year, month + 1, 0);
+    const start = new Date(year, month, 1 - ((first.getDay() + 4) % 7));
+    const weeks = [];
+    while (start <= last) {
+      const dates = [];
+      for (let offset = 0; offset < 7; offset++) {
+        dates.push(getKSTDateString(new Date(start.getFullYear(), start.getMonth(), start.getDate() + offset)));
+      }
+      weeks.push(dates);
+      start.setDate(start.getDate() + 7);
+    }
+    return weeks;
+  }
+
   function renderWeeklyStats() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    const lastDate = new Date(year, month + 1, 0).getDate();
-    const weeks = [];
-    let currentWeek = [];
-
-    for (let d = 1; d <= lastDate; d++) {
-      const dObj = new Date(year, month, d);
-      currentWeek.push(getKSTDateString(dObj));
-      if (dObj.getDay() === 0 || d === lastDate) {
-        weeks.push([...currentWeek]);
-        currentWeek = [];
-      }
-    }
+    const weeks = getSettlementWeeks(year, month);
 
     const container = document.getElementById('weekly-stats-container');
     if (!container) return;
@@ -893,7 +899,7 @@
         row.style.cssText = 'padding:10px 0; border-bottom:1px solid #1f2f50; font-size:0.9rem;';
         row.innerHTML = `
           <div style="display:flex; justify-content:space-between; font-weight:800;">
-            <span>${idx + 1}주차 (${wDates[0].slice(5)}~) <span style="font-size:0.75rem; color:var(--text-muted);">[${activeDays}일 활동]</span></span>
+            <span>${wDates[0].slice(5)}(수) ~ ${wDates[6].slice(5)}(화) <span style="font-size:0.75rem; color:var(--text-muted);">[${activeDays}일 활동]</span></span>
             <span style="color:${tSurplus >= 0 ? 'var(--success)' : 'var(--danger)'};">${tSurplus >= 0 ? '+' : ''}${tSurplus.toLocaleString()}원</span>
           </div>
           <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted); margin-top:4px;">
