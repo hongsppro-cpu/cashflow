@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>배달 현금흐름 방어선 매니저</title>
+  <title>자산관리 매니저</title>
 
   <style>
     :root {
@@ -105,16 +105,26 @@
     /* 고정비 모달 */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 16px; }
     .modal-card { width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto; background: var(--card-bg); border: 2px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  button:disabled { opacity:0.45; cursor:default; } input:disabled,select:disabled { opacity:0.7; }
   </style>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="자산관리">
 </head>
 <body>
 
 <div id="toast"></div>
 
 <div class="container">
+<div class="card" id="install-card" style="font-size:0.85rem;">
+  <div class="card-title">휴대폰에 앱 설치</div>
+  <button type="button" class="btn-main" id="install-app" hidden>앱 설치</button>
+  <p id="install-help">안드로이드: Chrome 메뉴 → 홈 화면에 추가 / 앱 설치<br>아이폰: Safari 공유 → 홈 화면에 추가</p>
+  <p id="offline-status" style="margin-top:8px;color:var(--text-muted);"></p>
+</div>
   
   <div class="header">
-    <h1>현금흐름 방어선 매니저</h1>
+    <h1>자산관리 매니저</h1>
     <button type="button" class="btn-fixed-popup" onclick="openFixedModal()">⚙️ 고정비 관리</button>
   </div>
 
@@ -139,7 +149,7 @@
 
     <div style="margin-top:12px;">
       <label>하루 총 배달 수입 (원)</label>
-      <input type="number" id="input-income" placeholder="0" step="1000" oninput="updateCalculationPreview()">
+      <input type="text" inputmode="numeric" id="input-income" placeholder="0" oninput="formatMoneyInput(this); updateCalculationPreview()">
     </div>
 
     <div style="margin-top:14px; border-top:1px dashed var(--border); padding-top:12px;">
@@ -149,13 +159,14 @@
           <option value="식비">식비</option>
           <option value="간식비">간식비</option>
           <option value="쇼핑">쇼핑</option>
+          <option value="주유비">주유비</option>
           <option value="기타">기타 (직접입력)</option>
         </select>
         <input type="text" id="input-detail" placeholder="상세 내용">
       </div>
       <div style="display:flex; gap:8px; margin-top:8px;">
-        <input type="number" id="input-expense-val" placeholder="지출액 (원)" step="500">
-        <button type="button" style="width:85px; height:50px; background:#263554; color:#fff; border:none; border-radius:8px; font-weight:800; font-size:0.95rem; cursor:pointer;" onclick="addExpenseItem()">추가</button>
+        <input type="text" inputmode="numeric" oninput="formatMoneyInput(this); updateCalculationPreview()" id="input-expense-val" placeholder="지출액 (원)" step="500">
+        <button type="button" style="width:85px; height:50px; background:#263554; color:#fff; border:none; border-radius:8px; font-weight:800; font-size:0.95rem; cursor:pointer;" id="btn-add-expense" onclick="addExpenseItem()">추가</button>
       </div>
 
       <div class="expense-list" id="expense-tag-container"></div>
@@ -184,7 +195,7 @@
       </div>
     </div>
 
-    <button type="button" class="btn-main" id="btn-save" onclick="saveDayRecord()">정산 최종 저장</button>
+    <div id="draft-status" role="status" style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><button type="button" class="btn-main" id="btn-save" onclick="saveDayRecord()">최종 저장</button><button type="button" class="btn-main" id="btn-edit" onclick="beginRecordEdit()" style="background:#263554;color:#fff;">수정</button></div>
     <button type="button" class="btn-danger" id="btn-delete" style="display:none;" onclick="deleteDayRecord()">해당 날짜 기록 삭제</button>
   </div>
 
@@ -255,7 +266,7 @@
 <div class="modal-overlay" id="fixed-modal" onclick="closeFixedModal(event)">
   <div class="modal-card" onclick="event.stopPropagation()">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h2 style="font-size:1.15rem; font-weight:800; color:var(--primary);">월 고정비 관리 & 방어선 수정</h2>
+      <h2 style="font-size:1.15rem; font-weight:800; color:var(--primary);">월 고정비 관리</h2>
       <button type="button" onclick="closeFixedModal(null)" style="background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer;">✕</button>
     </div>
     
@@ -267,7 +278,7 @@
       <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700; margin-bottom:6px;">+ 새 고정비 항목 추가</div>
       <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:6px;">
         <input type="text" id="new-fixed-name" placeholder="항목명 (예: 알뜰폰)" style="height:44px; font-size:0.95rem;">
-        <input type="number" id="new-fixed-amount" placeholder="월 금액 (원)" step="1000" style="height:44px; font-size:0.95rem;">
+        <input type="text" inputmode="numeric" oninput="formatMoneyInput(this)" id="new-fixed-amount" placeholder="월 금액 (원)" step="1000" style="height:44px; font-size:0.95rem;">
       </div>
       <button type="button" class="btn-main" style="height:44px; margin-top:6px; font-size:0.95rem;" onclick="addFixedCostItem()">고정비 항목 추가</button>
     </div>
@@ -290,19 +301,36 @@
 </div>
 
 <script>
+
+  function parseMoney(value) {
+    return Number(String(value).replace(/,/g, ''));
+  }
+
+  function formatMoneyValue(value) {
+    const digits = String(value).replace(/[^0-9]/g, '');
+    if (!digits) return '';
+    return digits.replace(/^0+(?=\d)/, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  function formatMoneyInput(input) {
+    const raw = input.value;
+    const caret = input.selectionStart == null ? raw.length : input.selectionStart;
+    const digitsRight = raw.slice(caret).replace(/[^0-9]/g, '').length;
+    input.value = formatMoneyValue(raw);
+    let position = input.value.length;
+    let remaining = digitsRight;
+    while (position > 0 && remaining > 0) {
+      position--;
+      if (/[0-9]/.test(input.value[position])) remaining--;
+    }
+    input.setSelectionRange(position, position);
+  }
+
   const MASTER_STORAGE_KEY = 'delivery_flow_master_db';
   const FIXED_STORAGE_KEY = 'delivery_fixed_expenses_master_db';
 
   // 기본 고정비 데이터 세트
-  const DEFAULT_FIXED_EXPENSES = [
-    { id: 1, name: '주식 모으기 (일 5만/20일)', amount: 1000000 },
-    { id: 2, name: '신용회복위원회 분할상환', amount: 635974 },
-    { id: 3, name: '가족 지원금', amount: 600000 },
-    { id: 4, name: '기본 주유비 (일 8천원 고정)', amount: 240000 },
-    { id: 5, name: '핸드폰 요금', amount: 141420 },
-    { id: 6, name: '주택연금', amount: 100000 },
-    { id: 7, name: '삼성화재 실비 / 핸드폰 보험', amount: 43359 }
-  ];
+  const DEFAULT_FIXED_EXPENSES = [];
 
   // 고정비 로더
   function loadFixedExpenses() {
@@ -310,7 +338,7 @@
       const saved = localStorage.getItem(FIXED_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed)) return parsed;
       }
     } catch (e) {
       console.error(e);
@@ -415,25 +443,78 @@
   function renderFixedExpensesList() {
     const container = document.getElementById('fixed-expenses-list-container');
     if (!container) return;
-    container.innerHTML = '';
-
-    if (fixedExpenses.length === 0) {
-      container.innerHTML = '<div style="font-size:0.85rem; color:var(--text-muted); text-align:center; padding:12px;">등록된 고정비 항목이 없습니다.</div>';
+    container.replaceChildren();
+    if (!fixedExpenses.length) {
+      container.textContent = '등록된 고정비 항목이 없습니다.';
       return;
     }
-
     fixedExpenses.forEach(item => {
       const row = document.createElement('div');
-      row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #1f2f50; font-size:0.9rem;';
-      row.innerHTML = `
-        <div style="flex:1; padding-right:8px;">
-          <span style="font-weight:600; color:#fff;">${item.name}</span>
-          <b style="color:var(--primary); margin-left:6px;">${Number(item.amount).toLocaleString()}원</b>
-        </div>
-        <button type="button" onclick="deleteFixedCostItem(${item.id})" style="background:rgba(239,68,68,0.15); border:1px solid var(--danger); color:var(--danger); border-radius:6px; padding:4px 8px; font-size:0.75rem; font-weight:700; cursor:pointer;">삭제</button>
-      `;
-      container.appendChild(row);
+      row.style.cssText = 'padding:10px 0;border-bottom:1px solid #1f2f50;';
+      const display = document.createElement('div');
+      display.style.cssText = 'display:flex;gap:8px;align-items:center;justify-content:space-between;';
+      const label = document.createElement('div');
+      label.style.cssText = 'flex:1;min-width:0;font-size:0.9rem;';
+      const name = document.createElement('span');
+      name.textContent = item.name;
+      const amount = document.createElement('b');
+      amount.style.cssText = 'display:block;color:var(--primary);margin-top:4px;';
+      amount.textContent = Number(item.amount).toLocaleString() + '원';
+      label.append(name, amount);
+      const actions = document.createElement('div');
+      actions.style.cssText = 'display:flex;gap:6px;flex-shrink:0;';
+      function button(text, color, handler) {
+        const b = document.createElement('button');
+        b.type = 'button'; b.textContent = text;
+        b.style.cssText = 'background:transparent;border:1px solid '+color+';color:'+color+';border-radius:6px;padding:8px;font-weight:700;cursor:pointer;';
+        b.onclick = handler;
+        return b;
+      }
+      const editor = document.createElement('div');
+      editor.style.cssText = 'display:none;margin-top:10px;';
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text'; nameInput.value = item.name;
+      nameInput.setAttribute('aria-label', '고정비 항목명 수정');
+      const amountInput = document.createElement('input');
+      amountInput.type = 'text'; amountInput.inputMode = 'numeric'; amountInput.value = formatMoneyValue(item.amount);
+      amountInput.oninput = () => formatMoneyInput(amountInput);
+      amountInput.min = '1'; amountInput.step = '1';
+      amountInput.setAttribute('aria-label', '월 고정비 금액 수정');
+      amountInput.style.marginTop = '6px';
+      const editActions = document.createElement('div');
+      editActions.style.cssText = 'display:flex;gap:8px;margin-top:8px;';
+      editActions.append(
+        button('저장', 'var(--primary)', () => {
+          if (updateFixedCostItem(item.id, nameInput.value, amountInput.value)) editor.style.display = 'none';
+        }),
+        button('취소', 'var(--text-muted)', () => {
+          nameInput.value = item.name; amountInput.value = formatMoneyValue(item.amount);
+          editor.style.display = 'none';
+        })
+      );
+      editor.append(nameInput, amountInput, editActions);
+      actions.append(
+        button('수정', 'var(--primary)', () => { editor.style.display = 'block'; nameInput.focus(); }),
+        button('삭제', 'var(--danger)', () => deleteFixedCostItem(item.id))
+      );
+      display.append(label, actions);
+      row.append(display, editor); container.appendChild(row);
     });
+  }
+
+  function updateFixedCostItem(id, name, amount) {
+    const item = fixedExpenses.find(item => item.id === id);
+    const trimmedName = name.trim();
+    const value = parseMoney(amount);
+    if (!item) return false;
+    if (!trimmedName || !Number.isSafeInteger(value) || value <= 0) {
+      showToast('⚠️ 항목명과 1원 이상의 정수 금액을 입력해 주세요.', false);
+      return false;
+    }
+    item.name = trimmedName; item.amount = value;
+    saveFixedExpenses();
+    recomputeAllSystem(true);
+    return true;
   }
 
   // 고정비 항목 추가
@@ -441,7 +522,7 @@
     const nameInput = document.getElementById('new-fixed-name');
     const amtInput = document.getElementById('new-fixed-amount');
     const name = nameInput.value.trim();
-    const amt = Number(amtInput.value) || 0;
+    const amt = parseMoney(amtInput.value) || 0;
 
     if (!name) {
       showToast('⚠️ 고정비 항목명을 입력해 주세요.', false);
@@ -516,33 +597,79 @@
     if (val === '기타') dInput.focus();
   }
 
+
+  const DRAFT_STORAGE_KEY = 'delivery_flow_drafts_v1';
+  const LAST_DATE_KEY = 'delivery_flow_last_date';
+  function loadDrafts() {
+    try { const value = JSON.parse(localStorage.getItem(DRAFT_STORAGE_KEY) || '{}'); return value && typeof value === 'object' && !Array.isArray(value) ? value : {}; }
+    catch (e) { return {}; }
+  }
+  let drafts = loadDrafts();
+  let recordLocked = false;
+  function persistDrafts() { localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(drafts)); }
+  function saveDraft() {
+    if (recordLocked) return;
+    const date = document.getElementById('input-date').value;
+    if (!date) return;
+    drafts[date] = {
+      income: parseMoney(document.getElementById('input-income').value) || 0,
+      expenses: JSON.parse(JSON.stringify(currentExpenses)),
+      category: document.getElementById('select-category').value,
+      detail: document.getElementById('input-detail').value,
+      pendingAmount: document.getElementById('input-expense-val').value
+    };
+    try {
+      persistDrafts();
+      localStorage.setItem(LAST_DATE_KEY, date);
+      document.getElementById('draft-status').textContent = '임시저장 완료 · 최종 저장 전까지 수정할 수 있습니다.';
+    } catch (e) {
+      document.getElementById('draft-status').textContent = '임시저장 실패 · 저장 공간을 확인하고 백업해 주세요.';
+    }
+    document.getElementById('btn-delete').style.display = 'block';
+  }
+  function updateRecordControls() {
+    ['input-income','select-category','input-detail','input-expense-val','btn-add-expense'].forEach(id => {
+      document.getElementById(id).disabled = recordLocked;
+    });
+    document.getElementById('btn-save').disabled = recordLocked;
+    document.getElementById('btn-edit').disabled = !recordLocked;
+    document.querySelectorAll('#expense-tag-container button').forEach(button => button.disabled = recordLocked);
+  }
+  function beginRecordEdit() {
+    recordLocked = false;
+    document.getElementById('input-status-title').innerText = '정산 수정';
+    document.getElementById('edit-badge').style.display = 'inline-block';
+    updateRecordControls();
+    saveDraft();
+  }
   function onDateChanged(dateStr) {
     if (!dateStr) return;
-    const record = db[dateStr];
-    const isEdit = !!record;
-
-    document.getElementById('input-status-title').innerText = isEdit ? '정산 수정' : '일일 정산 등록';
-    document.getElementById('edit-badge').style.display = isEdit ? 'inline-block' : 'none';
-    document.getElementById('btn-save').innerText = isEdit ? '수정 완료 (덮어쓰기)' : '정산 최종 저장';
-    document.getElementById('btn-delete').style.display = isEdit ? 'block' : 'none';
-
-    if (isEdit) {
-      document.getElementById('input-income').value = record.income || '';
-      currentExpenses = Array.isArray(record.expenses) ? JSON.parse(JSON.stringify(record.expenses)) : [];
-    } else {
-      document.getElementById('input-income').value = '';
-      currentExpenses = [];
-    }
-
+    document.getElementById('input-date').value = dateStr;
+    localStorage.setItem(LAST_DATE_KEY, dateStr);
+    const draft = drafts[dateStr];
+    const record = draft || db[dateStr];
+    recordLocked = !!db[dateStr] && !draft;
+    document.getElementById('input-status-title').innerText = recordLocked ? '최종 저장된 정산' : draft ? '임시저장된 정산' : '일일 정산 등록';
+    document.getElementById('edit-badge').style.display = draft && db[dateStr] ? 'inline-block' : 'none';
+    document.getElementById('btn-save').innerText = '최종 저장';
+    document.getElementById('btn-delete').style.display = record ? 'block' : 'none';
+    document.getElementById('draft-status').textContent = recordLocked ? '최종 저장 완료 · 변경하려면 수정을 눌러 주세요.' : draft ? '임시저장 내용을 복원했습니다.' : '입력한 내용은 자동으로 임시저장됩니다.';
+    document.getElementById('input-income').value = record && record.income ? formatMoneyValue(record.income) : '';
+    currentExpenses = record && Array.isArray(record.expenses) ? JSON.parse(JSON.stringify(record.expenses)) : [];
+    document.getElementById('select-category').value = draft?.category || '식비';
+    document.getElementById('input-detail').value = draft?.detail || '';
+    document.getElementById('input-expense-val').value = draft?.pendingAmount || '';
     renderExpenseTags();
     updateCalculationPreview();
     highlightSelectedCell(dateStr);
+    updateRecordControls();
   }
 
   function addExpenseItem() {
+    if (recordLocked) return;
     const cat = document.getElementById('select-category').value;
     const detail = document.getElementById('input-detail').value.trim();
-    const amt = Number(document.getElementById('input-expense-val').value) || 0;
+    const amt = parseMoney(document.getElementById('input-expense-val').value) || 0;
 
     if (amt <= 0) {
       showToast('⚠️ 지출 금액을 입력해 주세요.', false);
@@ -558,12 +685,15 @@
     document.getElementById('input-detail').value = '';
     renderExpenseTags();
     updateCalculationPreview();
+    saveDraft();
   }
 
   function removeExpenseItem(idx) {
+    if (recordLocked) return;
     currentExpenses.splice(idx, 1);
     renderExpenseTags();
     updateCalculationPreview();
+    saveDraft();
   }
 
   function renderExpenseTags() {
@@ -583,8 +713,8 @@
   }
 
   function updateCalculationPreview() {
-    const inc = Number(document.getElementById('input-income').value) || 0;
-    const pendingExpense = Number(document.getElementById('input-expense-val').value) || 0;
+    const inc = parseMoney(document.getElementById('input-income').value) || 0;
+    const pendingExpense = parseMoney(document.getElementById('input-expense-val').value) || 0;
     const exp = currentExpenses.reduce((s, it) => s + it.amount, 0) + pendingExpense;
     const net = inc - exp;
     const diff = net - DAILY_TARGET;
@@ -619,48 +749,43 @@
     } else { warnBox.style.display = 'none'; }
   }
 
+
   function saveDayRecord() {
+    if (recordLocked) return;
     const dateStr = document.getElementById('input-date').value;
-    if (!dateStr) {
-      showToast('⚠️ 기준 일자를 선택해 주세요.', false);
-      return;
-    }
-
-    const pendingAmt = Number(document.getElementById('input-expense-val').value) || 0;
+    if (!dateStr) return;
+    const pendingAmt = parseMoney(document.getElementById('input-expense-val').value) || 0;
     if (pendingAmt > 0) {
-      const cat = document.getElementById('select-category').value;
-      const detail = document.getElementById('input-detail').value.trim();
-      currentExpenses.push({ category: cat, detail: detail, amount: pendingAmt });
-      document.getElementById('input-expense-val').value = '';
-      document.getElementById('input-detail').value = '';
-      renderExpenseTags();
+      if (document.getElementById('select-category').value === '기타' && !document.getElementById('input-detail').value.trim()) {
+        showToast('기타 항목의 지출처를 입력해 주세요.', false); return;
+      }
+      addExpenseItem();
     }
-
-    const income = Number(document.getElementById('input-income').value) || 0;
-    db[dateStr] = { income, expenses: [...currentExpenses] };
-    localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(db));
-
-    renderCalendar();
-    renderWeeklyStats();
-    renderMonthStats();
-    renderHalfStats();
+    const record = {
+      income: parseMoney(document.getElementById('input-income').value) || 0,
+      expenses: JSON.parse(JSON.stringify(currentExpenses))
+    };
+    const nextDb = { ...db, [dateStr]: record };
+    try { localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(nextDb)); }
+    catch (e) { showToast('저장에 실패했습니다. 저장 공간을 확인해 주세요.', false); return; }
+    db = nextDb;
+    delete drafts[dateStr];
+    persistDrafts();
+    renderCalendar(); renderWeeklyStats(); renderMonthStats(); renderHalfStats();
     onDateChanged(dateStr);
-    showToast(`✅ ${dateStr} 정산이 저장되었습니다!`, true);
+    showToast('정산이 최종 저장되었습니다!', true);
   }
 
   function deleteDayRecord() {
     const dateStr = document.getElementById('input-date').value;
-    if (!dateStr || !db[dateStr]) return;
-
-    delete db[dateStr];
+    if (!dateStr || (!db[dateStr] && !drafts[dateStr])) return;
+    if (!confirm('해당 날짜의 정산과 임시저장 내용을 삭제하시겠습니까?')) return;
+    delete db[dateStr]; delete drafts[dateStr];
     localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(db));
-
-    renderCalendar();
-    renderWeeklyStats();
-    renderMonthStats();
-    renderHalfStats();
+    persistDrafts();
+    renderCalendar(); renderWeeklyStats(); renderMonthStats(); renderHalfStats();
     onDateChanged(dateStr);
-    showToast(`🗑️ ${dateStr} 기록이 삭제되었습니다.`, false);
+    showToast('해당 날짜 기록을 삭제했습니다.', false);
   }
 
   function renderCalendar() {
@@ -787,7 +912,7 @@
 
   function renderAggregatedView(filterFn, containerId, title) {
     let tInc = 0, tExp = 0, tSurplus = 0, recordedDays = 0, metDays = 0;
-    let catMap = { '식비': 0, '간식비': 0, '쇼핑': 0, '기타': 0 };
+    let catMap = { '식비': 0, '간식비': 0, '쇼핑': 0, '주유비': 0, '기타': 0 };
 
     Object.keys(db).forEach(dStr => {
       if (filterFn(dStr)) {
@@ -855,7 +980,7 @@
         </div>
 
         <div style="font-size:0.85rem; font-weight:800; margin:14px 0 8px 0; color:#fff;">지출 카테고리 비중</div>
-        ${['식비','간식비','쇼핑','기타'].map(cat => {
+        ${['식비','간식비','쇼핑','주유비','기타'].map(cat => {
           const amt = catMap[cat];
           const pct = tExp > 0 ? Math.round((amt / tExp) * 100) : 0;
           return `
@@ -898,6 +1023,7 @@
   function exportData() {
     const payload = {
       db: db,
+      drafts: drafts,
       fixedExpenses: fixedExpenses,
       version: 'master_v2',
       exportDate: getKSTDateString(new Date())
@@ -920,6 +1046,8 @@
         if (parsed && typeof parsed === 'object') {
           if (parsed.db && typeof parsed.db === 'object') {
             db = parsed.db;
+            drafts = parsed.drafts && typeof parsed.drafts === 'object' && !Array.isArray(parsed.drafts) ? parsed.drafts : {};
+            persistDrafts();
             if (Array.isArray(parsed.fixedExpenses) && parsed.fixedExpenses.length > 0) {
               fixedExpenses = parsed.fixedExpenses;
               saveFixedExpenses();
@@ -929,6 +1057,7 @@
           }
           localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(db));
           recomputeAllSystem(false);
+          onDateChanged(document.getElementById('input-date').value);
           showToast('✅ 데이터 및 고정비 복원 완료!', true);
         }
       } catch (err) {
@@ -939,18 +1068,43 @@
   }
 
   function initApp() {
-    const todayStr = getKSTDateString(new Date());
+    const todayStr = localStorage.getItem(LAST_DATE_KEY) || getKSTDateString(new Date());
     const dateInput = document.getElementById('input-date');
     if (dateInput) dateInput.value = todayStr;
     onDateChanged(todayStr);
     recomputeAllSystem(false);
   }
 
+  document.addEventListener('input', event => {
+    if (['input-income','input-detail','input-expense-val'].includes(event.target.id)) saveDraft();
+  });
+  document.addEventListener('change', event => {
+    if (event.target.id === 'select-category') saveDraft();
+  });
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
   } else {
     initApp();
   }
+</script>
+<script>
+let installPrompt = null;
+const installButton = document.getElementById('install-app');
+if (window.matchMedia('(display-mode: standalone)').matches || navigator.standalone) document.getElementById('install-card').hidden = true;
+window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; installButton.hidden = false; });
+installButton.addEventListener('click', async () => {
+  if (!installPrompt) return;
+  await installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null; installButton.hidden = true;
+});
+window.addEventListener('appinstalled', () => { document.getElementById('install-card').hidden = true; });
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  navigator.serviceWorker.register('./sw.js').then(() => navigator.serviceWorker.ready).then(() => {
+    document.getElementById('offline-status').textContent = '오프라인 사용 준비 완료';
+  }).catch(() => { document.getElementById('offline-status').textContent = '오프라인 준비가 완료되지 않았습니다. 인터넷 연결 후 다시 열어 주세요.'; });
+}
 </script>
 </body>
 </html>
