@@ -123,11 +123,13 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 @media(max-width:380px){body{padding:16px 10px}.card{padding:17px}.hero-card{padding:21px}.hero-card>strong{font-size:2.05rem}.hero-tag{display:none}.header h1{font-size:1.2rem}.btn-fixed-popup{padding:9px;font-size:.7rem}.metric strong{font-size:.95rem}.target-val{font-size:1.25rem}.target-banner{padding:15px}.pill{font-size:.59rem;padding:3px 7px}.week-card summary strong{font-size:.79rem}}
 @media(min-width:1000px){body{padding-top:40px}.container{max-width:680px}.card{padding:28px}.hero-card{padding:32px}.day-cell{min-height:96px}}
 
+
+@media(min-width:1100px){.container{max-width:1140px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}.container>.card,.container>.header,.container>.hero-card,.container>.target-banner{margin-bottom:0}.header,.hero-card,.target-banner,#backup-module,#install-card{grid-column:1 / -1}#daily-module,#calendar-module{grid-column:1}#investment-module,#stats-module{grid-column:2}.hero-card{padding:28px 34px}.hero-card>strong{font-size:2.75rem}.hero-bottom{max-width:620px}.target-banner{padding:18px 24px}.header{margin-bottom:8px!important}}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="자산관리">
-<meta name="app-version" content="2026.10.20-v3">
+<meta name="app-version" content="2026.10.20-v3.1">
 </head>
 <body>
 
@@ -155,7 +157,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     <div class="target-val" id="banner-daily-target">0원</div>
   </div>
 
-  <div class="card">
+  <div class="card" id="daily-module">
     <div class="card-title">
       <span id="input-status-title">일일 정산 등록</span>
       <span id="edit-badge" style="display:none; font-size:0.75rem; background:#38bdf8; color:#070d1e; padding:2px 8px; border-radius:4px; font-weight:800;">수정 모드</span>
@@ -228,7 +230,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
  <details class="investment-settings"><summary>시작 원금 · 일 투자금 설정</summary><label for="invest-opening">체크 기록을 시작하기 전 투자원금 (원)</label><input type="text" inputmode="numeric" id="invest-opening" oninput="formatMoneyInput(this)"><label for="invest-daily">하루 투자 체크 금액 (원)</label><input type="text" inputmode="numeric" id="invest-daily" oninput="formatMoneyInput(this)"><button class="compact-primary" onclick="saveInvestmentSettings()">투자 설정 저장</button><p class="muted small">기존 체크의 납입 금액은 유지됩니다. 평가금액·투자 손익은 포함하지 않습니다.</p></details>
  <p class="muted small">날짜는 위의 기준 일자와 연결됩니다. 투자 체크는 원금에만 반영하며 소득·지출에서 다시 차감하지 않습니다.</p>
 </section>
-  <div class="card">
+  <div class="card" id="calendar-module">
     <div class="cal-header">
       <button type="button" onclick="changeMonth(-1)" style="background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;padding:0 10px;">◀</button>
       <span id="cal-month-title">2026년 10월</span>
@@ -241,7 +243,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     <div class="cal-grid" id="cal-cells"></div><div class="calendar-legend"><span><i class="due-dot"></i>고정비 출금 예정</span><span><i class="friday-dot"></i>금요일 정산</span><span><i class="invest-dot"></i>투자 완료</span></div><div id="calendar-agenda" class="calendar-agenda"></div>
   </div>
 
-  <div class="card">
+  <div class="card" id="stats-module">
     <div class="tab-nav">
       <button type="button" class="tab-btn active" id="tab-btn-week" onclick="switchStatsTab('week')">주간 (수~화)</button>
       <button type="button" class="tab-btn" id="tab-btn-month" onclick="switchStatsTab('month')">월말 결산</button>
@@ -281,7 +283,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     </div>
   </div>
 
-  <div class="card" style="font-size:0.85rem;">
+  <div class="card" id="backup-module" style="font-size:0.85rem;">
     <div class="card-title">내 기록 백업 · 복원</div>
     <div style="display:flex; gap:8px;">
       <button type="button" style="flex:1; height:44px; background:#1e293b; color:#fff; border:1px solid var(--border); border-radius:8px; font-weight:700;" onclick="exportData()">데이터 백업 (JSON)</button>
