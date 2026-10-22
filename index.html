@@ -192,15 +192,18 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
       .hero-settlement-entry select#hero-settlement-period {
         font-size:.95rem !important; height:48px; padding-left:8px; padding-right:8px;
       }
-      .monthly-summary-grid { grid-template-columns:minmax(0,1fr); gap:10px; margin-bottom:16px; }
-      .monthly-summary-card { padding:14px 16px; border-radius:15px; }
-      .monthly-summary-label { font-size:clamp(.95rem,4vw,1.05rem); }
-      .monthly-summary-value { font-size:clamp(1.4rem,6vw,1.75rem); }
+      .monthly-summary-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-bottom:16px; }
+      .monthly-summary-card { padding:10px 11px; border-radius:12px; }
+      .monthly-summary-label { font-size:clamp(.72rem,3vw,.86rem); line-height:1.3; }
+      .monthly-summary-value { margin-top:5px; font-size:clamp(.94rem,4vw,1.15rem); line-height:1.15; }
     }
     @media(max-width:360px) {
       .hero-card { padding:18px 13px; }
       .hero-settlement-entry select#hero-settlement-period { font-size:.9rem !important; }
-      .monthly-summary-card { padding:13px 14px; }
+      .monthly-summary-grid { gap:6px; }
+      .monthly-summary-card { padding:8px 9px; border-radius:10px; }
+      .monthly-summary-label { font-size:.68rem; }
+      .monthly-summary-value { font-size:.92rem; }
     }
 
 </style>
