@@ -153,10 +153,6 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     .hero-settlement-entry select { margin: 7px 0 12px; }
     .hero-settlement-entry .compact-primary { background: #ffffff; color: #7a2738; }
     .hero-settlement-entry .text-danger { color: #ffffff; }
-    .hero-settlement-entry #hero-deduction-status {
-      font-size: 0.975rem !important; font-weight: 400; line-height: 1.45; opacity: .8;
-    }
-
     /* 월 누적 요약: 소득은 강조하고 지출 지표는 별도 카드로 분리 */
     .hero-card { width:100%; min-width:0; box-sizing:border-box; }
     .hero-card .hero-label { overflow-wrap:anywhere; word-break:keep-all; line-height:1.35; }
@@ -559,7 +555,7 @@ function renderWeeklyStats(){renderWeeklyStatsBase();renderHeroSettlementEntry()
 function renderHeroSettlementEntry(){
   let host=$('hero-settlement-entry');
   if(!host){
-    $('hero-status').insertAdjacentHTML('afterend',`<div id="hero-settlement-entry" class="hero-settlement-entry"><label for="hero-settlement-period">공제 입력 주간 선택</label><select id="hero-settlement-period" onchange="renderHeroSettlementEntry()"></select><p id="hero-settlement-range" class="small"></p><label for="hero-deduction-input">실제 주간 공제액 (원)</label><div class="input-action"><input type="text" inputmode="numeric" id="hero-deduction-input" placeholder="0" oninput="handleHeroSettlementInput(this)"><button type="button" class="compact-primary" onclick="saveHeroSettlement()">정산 저장</button></div><p id="hero-deduction-status" class="small" aria-live="polite"></p><button type="button" class="text-danger" id="hero-clear-deduction" onclick="clearSettlement(document.getElementById('hero-settlement-period').value)" hidden>저장된 공제 입력 취소</button></div>`);
+    $('hero-status').insertAdjacentHTML('afterend',`<div id="hero-settlement-entry" class="hero-settlement-entry"><label for="hero-settlement-period">공제 입력 주간 선택</label><select id="hero-settlement-period" onchange="renderHeroSettlementEntry()"></select><label for="hero-deduction-input">실제 주간 공제액 (원)</label><div class="input-action"><input type="text" inputmode="numeric" id="hero-deduction-input" placeholder="0" oninput="handleHeroSettlementInput(this)"><button type="button" class="compact-primary" onclick="saveHeroSettlement()">정산 저장</button></div><p id="hero-deduction-status" class="small" aria-live="polite"></p><button type="button" class="text-danger" id="hero-clear-deduction" onclick="clearSettlement(document.getElementById('hero-settlement-period').value)" hidden>저장된 공제 입력 취소</button></div>`);
     host=$('hero-settlement-entry');
   }
   const select=$('hero-settlement-period');
@@ -569,9 +565,8 @@ function renderHeroSettlementEntry(){
   const defaultStart=weekStart($('input-date').value||getKSTDateString());
   select.value=weeks.some(dates=>dates[0]===previous)?previous:defaultStart;
   const start=select.value,dates=weeks.find(row=>row[0]===start),entry=settlements[start],pending=readStore('delivery_settlement_drafts_v3',{});
-  $('hero-settlement-range').textContent=`${dates[0]} ~ ${dates[6]} 정산 · ${fridayOf(start)} 금요일`;
   $('hero-deduction-input').value=Object.hasOwn(pending,start)?pending[start]:(entry?formatMoneyValue(entry.deduction):'');
-  $('hero-deduction-status').textContent=Object.hasOwn(pending,start)?'임시저장된 공제액이 있어요. 확인 후 정산 저장을 눌러주세요.':entry?`저장된 실제 공제액 ${money(entry.deduction)}`:'실제 공제액을 입력하면 해당 주간의 공제 후 소득에 반영됩니다.';
+  $('hero-deduction-status').textContent=Object.hasOwn(pending,start)?'임시저장된 공제액이 있어요. 확인 후 정산 저장을 눌러주세요.':entry?`저장된 실제 공제액 ${money(entry.deduction)}`:'';
   $('hero-clear-deduction').hidden=!entry;
 }
 function handleHeroSettlementInput(input){const start=$('hero-settlement-period').value;formatMoneyInput(input);saveSettlementDraft(start,input.value);$('hero-deduction-status').textContent='임시저장됨 · 정산 저장을 눌러 금액을 확정해주세요.';}
