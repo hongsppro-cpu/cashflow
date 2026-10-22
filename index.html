@@ -169,15 +169,15 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     }
     .monthly-summary-card {
       min-width:0; overflow:hidden; box-sizing:border-box; padding:17px 18px;
-      border:1px solid #cbd5e1; border-radius:18px; background:#f8fafc;
-      color:#1e293b; box-shadow:0 5px 16px rgba(15,23,42,.09);
+      border:1px solid #326451; border-radius:18px; background:#18322e;
+      color:#e4f3ed; box-shadow:0 5px 16px rgba(15,23,42,.15);
     }
     .monthly-summary-label {
-      display:block; color:#475569; font-size:clamp(.92rem,2.8vw,1.05rem);
+      display:block; color:#c3dbd3; font-size:clamp(.92rem,2.8vw,1.05rem);
       font-weight:750; line-height:1.35; overflow-wrap:anywhere; word-break:keep-all;
     }
     .monthly-summary-value {
-      display:block; max-width:100%; margin-top:8px; color:#0f172a;
+      display:block; max-width:100%; margin-top:8px; color:#85e5bb;
       font-size:clamp(1.3rem,4.8vw,1.8rem); font-weight:850; line-height:1.2;
       font-variant-numeric:tabular-nums; overflow-wrap:anywhere; word-break:break-word;
     }
@@ -210,7 +210,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="자산관리">
-<meta name="app-version" content="2026.10.20-v3.1">
+<meta name="app-version" content="2026.10.22-v3.2">
 </head>
 <body>
 
@@ -553,26 +553,25 @@ function renderWeeklyStatsBase() {
     container.appendChild(section);
   }
 }
-function saveSettlementDraft(start,value){try{const d=readStore('delivery_settlement_drafts_v3',{});d[start]=value;persist('delivery_settlement_drafts_v3',d);if($('hero-settlement-period')?.value===start)$('hero-deduction-status').textContent='공제액 임시저장 · 정산 저장으로 확정';}catch{showToast('공제액 임시저장에 실패했습니다.',false);}}
+function saveSettlementDraft(start,value){try{const d=readStore('delivery_settlement_drafts_v3',{});d[start]=value;persist('delivery_settlement_drafts_v3',d);}catch{showToast('공제액 임시저장에 실패했습니다.',false);}}
 function renderWeeklyStats(){renderWeeklyStatsBase();renderHeroSettlementEntry();}
 function renderHeroSettlementEntry(){
   let host=$('hero-settlement-entry');
   if(!host){
-    $('hero-status').insertAdjacentHTML('afterend',`<div id="hero-settlement-entry" class="hero-settlement-entry"><label for="hero-settlement-period">공제 입력 주간 선택</label><select id="hero-settlement-period" onchange="renderHeroSettlementEntry()"></select><label for="hero-deduction-input">실제 주간 공제액 (원)</label><div class="input-action"><input type="text" inputmode="numeric" id="hero-deduction-input" placeholder="0" oninput="handleHeroSettlementInput(this)"><button type="button" class="compact-primary" onclick="saveHeroSettlement()">정산 저장</button></div><p id="hero-deduction-status" class="small" aria-live="polite"></p><button type="button" class="text-danger" id="hero-clear-deduction" onclick="clearSettlement(document.getElementById('hero-settlement-period').value)" hidden>저장된 공제 입력 취소</button></div>`);
+    $('hero-status').insertAdjacentHTML('afterend',`<div id="hero-settlement-entry" class="hero-settlement-entry"><label for="hero-settlement-period">공제 입력 주간 선택</label><select id="hero-settlement-period" onchange="renderHeroSettlementEntry()"></select><label for="hero-deduction-input">실제 주간 공제액 (원)</label><div class="input-action"><input type="text" inputmode="numeric" id="hero-deduction-input" placeholder="0" oninput="handleHeroSettlementInput(this)"><button type="button" class="compact-primary" onclick="saveHeroSettlement()">정산 저장</button></div><button type="button" class="text-danger" id="hero-clear-deduction" onclick="clearSettlement(document.getElementById('hero-settlement-period').value)" hidden>저장된 공제 입력 취소</button></div>`);
     host=$('hero-settlement-entry');
   }
   const select=$('hero-settlement-period');
   const weeks=getSettlementWeeks(currentDate.getFullYear(),currentDate.getMonth());
   const previous=select.value;
-  select.innerHTML=weeks.map(dates=>{const start=dates[0],end=dates[6],friday=fridayOf(start);return `<option value="${start}">${start.slice(5).replace('-','/')} 수 — ${end.slice(5).replace('-','/')} 화 · ${friday.slice(5).replace('-','/')} 금</option>`;}).join('');
+  select.innerHTML=weeks.map((dates,index)=>`<option value="${dates[0]}">${index+1}주차</option>`).join('');
   const defaultStart=weekStart($('input-date').value||getKSTDateString());
   select.value=weeks.some(dates=>dates[0]===previous)?previous:defaultStart;
   const start=select.value,dates=weeks.find(row=>row[0]===start),entry=settlements[start],pending=readStore('delivery_settlement_drafts_v3',{});
   $('hero-deduction-input').value=Object.hasOwn(pending,start)?pending[start]:(entry?formatMoneyValue(entry.deduction):'');
-  $('hero-deduction-status').textContent=Object.hasOwn(pending,start)?'임시저장된 공제액이 있어요. 확인 후 정산 저장을 눌러주세요.':entry?`저장된 실제 공제액 ${money(entry.deduction)}`:'';
   $('hero-clear-deduction').hidden=!entry;
 }
-function handleHeroSettlementInput(input){const start=$('hero-settlement-period').value;formatMoneyInput(input);saveSettlementDraft(start,input.value);$('hero-deduction-status').textContent='임시저장됨 · 정산 저장을 눌러 금액을 확정해주세요.';}
+function handleHeroSettlementInput(input){const start=$('hero-settlement-period').value;formatMoneyInput(input);saveSettlementDraft(start,input.value);}
 function saveHeroSettlement(){saveSettlement($('hero-settlement-period').value);}
 function saveSettlement(start) {
   const input=$('hero-settlement-period')?.value===start?$('hero-deduction-input'):null;const raw=input?.value.trim()||'';const value=parseMoney(raw);
