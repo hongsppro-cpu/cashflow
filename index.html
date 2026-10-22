@@ -23,13 +23,13 @@
       --warning: #fb923c;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); padding: 12px; font-size: 16px; line-height: 1.4; }
+    body { background: var(--bg); color: var(--text); padding: 12px; font-size: 24px; line-height: 1.4; }
     .container { max-width: 480px; margin: 0 auto; padding-bottom: 70px; }
 
     /* 화면 상단 토스트 알림 */
     #toast {
       position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
-      background: var(--success); color: #070d1e; font-weight: 800; font-size: 0.9rem;
+      background: var(--success); color: #070d1e; font-weight: 800; font-size: 1.35rem;
       padding: 10px 20px; border-radius: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s ease; text-align: center;
       max-width: 90%;
@@ -37,12 +37,12 @@
 
     /* 헤더 */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-    .header h1 { font-size: 1.25rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
-    .btn-fixed-popup { background: #1e293b; border: 1.5px solid var(--primary); color: var(--primary); font-size: 0.85rem; font-weight: 700; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
+    .header h1 { font-size: 1.875rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .btn-fixed-popup { background: #1e293b; border: 1.5px solid var(--primary); color: var(--primary); font-size: 1.275rem; font-weight: 700; padding: 8px 14px; border-radius: 8px; cursor: pointer; }
 
     /* 대시보드 카드 */
     .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
-    .card-title { font-size: 0.95rem; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .card-title { font-size: 1.4249999999999998rem; color: var(--text-muted); font-weight: 700; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
     /* 목표 방어선 배너 */
     .target-banner {
@@ -50,55 +50,55 @@
       border: 2px solid var(--target-neon); border-radius: 14px; padding: 16px; margin-bottom: 14px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    .target-label { font-size: 0.9rem; color: var(--target-neon); font-weight: 700; }
-    .target-val { font-size: 1.85rem; font-weight: 900; color: var(--target-neon); text-shadow: 0 0 10px rgba(250, 204, 21, 0.4); }
+    .target-label { font-size: 1.35rem; color: var(--target-neon); font-weight: 700; }
+    .target-val { font-size: 2.7750000000000004rem; font-weight: 900; color: var(--target-neon); text-shadow: 0 0 10px rgba(250, 204, 21, 0.4); }
 
     /* 입력 컨트롤 */
-    label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px; }
+    label { font-size: 1.275rem; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 6px; }
     input[type="number"], input[type="text"], input[type="date"], select {
       width: 100%; height: 50px; background: #070d1e; border: 1.5px solid var(--border); border-radius: 8px;
-      color: #fff; padding: 0 14px; font-size: 1.1rem; font-weight: 700; outline: none; transition: border-color 0.2s;
+      color: #fff; padding: 0 14px; font-size: 1.6500000000000001rem; font-weight: 700; outline: none; transition: border-color 0.2s;
     }
     input:focus, select:focus { border-color: var(--primary); }
 
-    .btn-main { width: 100%; height: 52px; background: var(--primary); color: #070d1e; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 10px; }
-    .btn-danger { width: 100%; height: 44px; background: transparent; color: var(--danger); border: 1.5px solid var(--danger); border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 8px; }
+    .btn-main { width: 100%; height: 52px; background: var(--primary); color: #070d1e; border: none; border-radius: 10px; font-size: 1.6500000000000001rem; font-weight: 800; cursor: pointer; margin-top: 10px; }
+    .btn-danger { width: 100%; height: 44px; background: transparent; color: var(--danger); border: 1.5px solid var(--danger); border-radius: 10px; font-size: 1.4249999999999998rem; font-weight: 700; cursor: pointer; margin-top: 8px; }
 
     /* 4분할 결과 보드 */
     .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
     .result-box { background: #070d1e; border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
-    .result-box .label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
-    .result-box .val { font-size: 1.15rem; font-weight: 800; color: #fff; }
+    .result-box .label { font-size: 1.2000000000000002rem; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+    .result-box .val { font-size: 1.7249999999999999rem; font-weight: 800; color: #fff; }
 
     /* 과소비 경고 */
-    .alert-box { margin-top: 10px; padding: 12px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; background: rgba(251, 146, 60, 0.15); border: 1.5px solid var(--warning); color: var(--warning); display: none; }
+    .alert-box { margin-top: 10px; padding: 12px; border-radius: 8px; font-size: 1.275rem; font-weight: 700; background: rgba(251, 146, 60, 0.15); border: 1.5px solid var(--warning); color: var(--warning); display: none; }
 
     /* 지출 태그 */
     .expense-list { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-    .expense-tag { display: flex; justify-content: space-between; align-items: center; background: #070d1e; border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; font-size: 0.95rem; }
-    .expense-tag button { background: none; border: none; color: var(--danger); font-size: 1.2rem; font-weight: bold; cursor: pointer; padding: 0 6px; }
+    .expense-tag { display: flex; justify-content: space-between; align-items: center; background: #070d1e; border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px; font-size: 1.4249999999999998rem; }
+    .expense-tag button { background: none; border: none; color: var(--danger); font-size: 1.7999999999999998rem; font-weight: bold; cursor: pointer; padding: 0 6px; }
 
     /* 캘린더 */
-    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: 800; font-size: 1.1rem; }
+    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-weight: 800; font-size: 1.6500000000000001rem; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-    .day-name { font-size: 0.8rem; color: var(--text-muted); font-weight: 700; padding: 4px 0; }
+    .day-name { font-size: 1.2000000000000002rem; color: var(--text-muted); font-weight: 700; padding: 4px 0; }
     .day-cell { min-height: 60px; background: #070d1e; border: 1.5px solid var(--border); border-radius: 8px; padding: 4px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
     .day-cell.selected { border-color: var(--target-neon); background: #132442; }
-    .day-num { font-size: 0.85rem; font-weight: 700; text-align: left; }
-    .cell-badge { font-size: 0.65rem; border-radius: 4px; padding: 2px; font-weight: 800; }
+    .day-num { font-size: 1.275rem; font-weight: 700; text-align: left; }
+    .cell-badge { font-size: 0.9750000000000001rem; border-radius: 4px; padding: 2px; font-weight: 800; }
     .badge-surplus { background: rgba(34, 197, 94, 0.25); color: var(--success); }
     .badge-met { background: rgba(56, 189, 248, 0.25); color: var(--primary); }
     .badge-deficit { background: rgba(248, 113, 113, 0.25); color: var(--danger); }
 
     /* 결산 탭 */
     .tab-nav { display: flex; gap: 6px; margin-bottom: 12px; }
-    .tab-btn { flex: 1; height: 44px; background: #070d1e; border: 1px solid var(--border); border-radius: 8px; color: var(--text-muted); font-size: 0.9rem; font-weight: 800; cursor: pointer; }
+    .tab-btn { flex: 1; height: 44px; background: #070d1e; border: 1px solid var(--border); border-radius: 8px; color: var(--text-muted); font-size: 1.35rem; font-weight: 800; cursor: pointer; }
     .tab-btn.active { background: var(--border); color: #fff; border-color: var(--primary); }
 
     /* 결산 차트 */
     .chart-container { margin-top: 14px; background: #070d1e; border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
     .chart-bar-wrap { margin-bottom: 10px; }
-    .chart-bar-label { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px; }
+    .chart-bar-label { display: flex; justify-content: space-between; font-size: 1.2000000000000002rem; font-weight: 700; margin-bottom: 4px; }
     .chart-bar-bg { height: 16px; background: #1a2744; border-radius: 8px; overflow: hidden; position: relative; }
     .chart-bar-fill { height: 100%; border-radius: 8px; transition: width 0.4s ease; }
 
@@ -109,22 +109,50 @@
   
 /* Clear hierarchy, restrained accents, and touch-sized controls. */
 :root{--bg:#09111d;--card-bg:#101d2d;--border:#243348;--text:#edf4fc;--text-muted:#a0b1c6;--primary:#78b9ff;--success:#85e5bb;--danger:#ff9e9e;--warning:#ffca85;--target-neon:#c9d7ff}
-body{background:radial-gradient(ellipse at 20% 0%,#142541 0,transparent 45%),var(--bg);padding:24px 16px;font-size:15px;line-height:1.6;letter-spacing:-.2px}
-.container{max-width:620px;padding-bottom:40px}.header{margin:8px 0 24px;border:0;align-items:center;gap:10px}.header h1{font-size:1.35rem;letter-spacing:-1px}.brand-kicker{display:block;font-size:.64rem;letter-spacing:2.2px;color:var(--text-muted);margin-bottom:4px}.version-dot{display:inline-block;width:7px;height:7px;background:var(--success);border-radius:50%;margin:0 0 4px 7px}.btn-fixed-popup{font-size:.78rem;padding:10px 12px;background:#17273b;border:1px solid var(--border);color:var(--text);white-space:nowrap}
-.card{border-radius:22px;padding:22px;margin-bottom:20px;box-shadow:0 12px 40px #00000013;background:linear-gradient(145deg,#122135,#0e1929);border-color:#25354a}.card-title{font-size:1.02rem;color:var(--text);margin-bottom:18px}.hero-card{background:linear-gradient(130deg,#263f68,#1c3852 60%,#163c43);border:1px solid #446786;border-radius:26px;padding:26px;margin-bottom:20px;overflow:hidden}.hero-top{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#d5e5f9;font-size:.86rem}.hero-tag{font-size:.57rem;letter-spacing:1.3px;color:#aac3db}.hero-label{display:block;margin-top:25px;color:#b7cce3;font-size:.82rem}.hero-card>strong{display:block;font-size:2.5rem;font-weight:850;letter-spacing:-1.8px;color:#f2fbff;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.hero-card>p{font-size:.74rem;color:#b8d1e5}.hero-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px solid #7e9abb40;padding-top:20px;margin-top:22px}.hero-bottom span{display:block;font-size:.7rem;color:#bed1e6}.hero-bottom b{display:block;font-size:1.2rem;margin-top:3px;overflow-wrap:anywhere}.hero-footnote{margin-top:13px;font-size:.65rem!important;opacity:.8}
-.target-banner{padding:17px 20px;border:1px solid #445371;background:linear-gradient(100deg,#1c2941,#152238);border-radius:18px;gap:12px}.target-label{font-size:.85rem}.target-val{font-size:1.55rem;text-shadow:none;white-space:nowrap}#fixed-split{font-size:.66rem;color:var(--text-muted)}
-input[type=text],input[type=number],input[type=date],select{background:#0a1524;border:1px solid #30435b;border-radius:12px;height:52px;font-size:1.1rem;font-variant-numeric:tabular-nums;font-weight:650;padding:0 13px;min-width:0;color-scheme:dark}input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px #78b9ff15}label{color:#aebed1;font-size:.79rem;margin:8px 0 7px}.btn-main{border-radius:13px;background:#94caff;height:50px;font-size:1rem;letter-spacing:-.3px}.btn-main:hover,.compact-primary:hover{filter:brightness(1.07)}.btn-danger{border-color:#ff9e9e40;background:#ff9e9e05;border-radius:12px;font-size:.8rem}.result-grid{gap:9px;margin-top:18px}.result-box{border-radius:14px;padding:16px 10px;background:#0b1727}.result-box .label{font-size:.7rem}.result-box .val{font-size:1.08rem;overflow-wrap:anywhere}#draft-status{margin:16px 0 2px!important;font-size:.72rem!important}.expense-tag{border-color:#26394e;border-radius:12px;background:#0b1727;font-size:.82rem}.expense-tag span{flex:1;min-width:0;overflow-wrap:anywhere}.expense-tag b{display:block;color:#ffd2a3;font-size:.92rem;margin-top:3px}.expense-tag button{min-width:40px;min-height:40px;font-size:1rem}
-h2{font-size:1.15rem;letter-spacing:-.5px}h3{font-size:.98rem}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 15px}.eyebrow{display:block;font-size:.59rem;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:5px}.pill{display:inline-block;flex-shrink:0;font-size:.64rem;color:#bdd0e7;border:1px solid #3c4a60;border-radius:20px;padding:4px 9px;line-height:1.6}.pill.done,.pill.invest{color:var(--success);background:#85e5bb0a;border-color:#85e5bb40}.muted{color:var(--text-muted)}.small{font-size:.73rem;margin:10px 0;line-height:1.65}.positive{color:var(--success)}.negative{color:var(--danger)!important}.empty-state{text-align:center;padding:24px 10px;color:var(--text-muted);font-size:.8rem}.input-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.input-grid select{font-size:.82rem;padding:0 7px}.compact-primary{border:0;background:#9dceff;color:#102033;font-weight:800;border-radius:11px;min-height:46px;padding:10px 14px;cursor:pointer;font-size:.8rem;white-space:nowrap}.input-action{display:flex;gap:8px}.input-action input{flex:1;width:0}.input-action button{flex-shrink:0}.text-danger,.text-button,.link-button{border:0;background:transparent;cursor:pointer;min-height:40px;padding:7px 2px;font-size:.75rem;color:var(--text-muted)}.text-danger{color:var(--danger)}.link-button{color:var(--primary)}
-.principal{padding:10px 0 20px}.principal span{font-size:.8rem;color:var(--text-muted);display:block}.principal>strong{display:block;font-size:2.3rem;line-height:1.4;color:var(--success);letter-spacing:-1px;overflow-wrap:anywhere}.principal-split{display:flex;justify-content:space-between;gap:10px;font-size:.71rem;color:var(--text-muted);padding-bottom:18px;border-bottom:1px solid var(--border)}.principal-split b{display:block;color:var(--text);font-size:.95rem}.investment-check{padding:18px 0}.investment-check h3{font-size:1.14rem;margin:4px 0 14px}.yes-no{display:grid;grid-template-columns:1fr 1fr;gap:10px}.yes-no button{padding:15px 10px;border:1px solid #345066;border-radius:14px;background:#0a1828;color:var(--text-muted);font-size:1.15rem;font-weight:800;cursor:pointer}.yes-no button small{font-size:.7rem;display:block;margin-top:3px;font-weight:500}.yes-no #invest-yes.selected{border-color:var(--success);background:#85e5bb12;color:var(--success)}.yes-no #invest-no.selected{border-color:var(--warning);background:#ffca8510;color:var(--warning)}.investment-settings{padding:16px 0 0;border-top:1px solid var(--border)}.investment-settings summary{cursor:pointer;font-size:.8rem;color:#c3d4e9}.investment-settings label{margin-top:16px}.investment-settings button{margin-top:12px}
-.cal-header{font-size:1rem;margin-bottom:20px}.day-name{font-size:.68rem}.cal-grid{gap:4px}.day-cell{position:relative;min-width:0;min-height:88px;border:1px solid #22354c;border-radius:11px;padding:6px 4px;background:#0a1524;color:var(--text);align-items:stretch;font-family:inherit}.day-cell.selected{border-color:#95caff;background:#19314c;box-shadow:0 0 0 1px #95caff40}.day-cell.today .day-num{color:var(--primary)}.day-num{font-size:.77rem}.cal-result{font-size:.58rem;white-space:nowrap;text-align:left;font-variant-numeric:tabular-nums}.day-markers{display:flex;gap:3px;height:8px;align-items:center;margin-top:4px}.due-dot,.friday-dot,.invest-dot{display:inline-block;width:5px;height:5px;border-radius:50%;flex-shrink:0}.due-dot{background:var(--warning)}.friday-dot{background:var(--primary)}.invest-dot{background:var(--success)}.due-count{font-size:.55rem;color:var(--warning);text-align:left;white-space:nowrap}.calendar-legend{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;font-size:.63rem;color:var(--text-muted)}.calendar-legend i{margin-right:4px}.calendar-agenda{border-top:1px solid var(--border);padding-top:17px}.calendar-agenda .section-heading{font-size:.8rem;margin:0 0 10px}.agenda-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #1c2e43;font-size:.8rem}.agenda-row span{overflow-wrap:anywhere}.agenda-row b{white-space:nowrap}.agenda-row small{display:block;font-size:.65rem}
-.tab-nav{padding:5px;border-radius:14px;background:#0a1423;gap:4px}.tab-btn{height:42px;border:0;background:transparent;font-size:.78rem;border-radius:10px}.tab-btn.active{background:#29435f;color:#e7f4ff;box-shadow:0 2px 8px #0003}.week-card{margin-top:14px;border:1px solid #2a3d54;border-radius:16px;background:#0b1828;overflow:hidden}.week-card>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:17px 14px;cursor:pointer;list-style:none}.week-card>summary::-webkit-details-marker{display:none}.week-card summary strong{display:block;font-size:.89rem}.week-card summary .eyebrow{font-size:.55rem}.week-body{padding:0 14px 18px;border-top:1px solid var(--border)}.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 10px}.metric{border:1px solid #243b52;border-radius:12px;background:#101f31;padding:14px 11px;min-width:0}.metric>span{font-size:.65rem;color:var(--text-muted);display:block}.metric strong{display:block;font-size:1.04rem;letter-spacing:-.5px;margin-top:6px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.metric.blue strong{color:var(--primary)}.metric.mint strong{color:var(--success)}.metric.orange strong{color:var(--warning)}.balance-band{padding:19px 15px;background:#18322e;border:1px solid #326451;border-radius:14px;margin-top:14px}.balance-band>span{font-size:.74rem;color:#c3dbd3;display:block}.balance-band strong{font-size:1.6rem;display:block;color:var(--success);letter-spacing:-.8px;overflow-wrap:anywhere}.balance-band small{font-size:.63rem;color:#abc1bc}.awareness{padding:18px 0 4px}.awareness>div:first-child{display:flex;align-items:baseline;gap:10px}.awareness strong{font-size:1.7rem;color:var(--warning);font-variant-numeric:tabular-nums}.awareness span{font-size:.7rem;color:var(--text-muted)}.awareness p{font-size:.72rem;color:var(--text-muted);margin:8px 0}.track{height:7px;background:#23364a;border-radius:10px;overflow:hidden;margin-top:7px}.track>div{height:100%;border-radius:inherit}.goal-line{display:grid;grid-template-columns:1fr auto;gap:8px;font-size:.68rem;border-top:1px solid var(--border);padding-top:15px;margin-top:12px}.goal-line span{color:var(--text-muted)}.goal-line b{font-size:.75rem}.settlement-box{border:1px solid #4b4961;background:#25233866;padding:16px 13px;border-radius:14px;margin:22px 0}.settlement-box .section-heading{font-size:.85rem;margin-bottom:10px}.settlement-box label{font-size:.72rem}.settlement-box input{font-size:1rem}.subheading{margin:22px 0 13px}.spend-focus{border-left:3px solid var(--warning);background:#ffca850a;border-radius:0 13px 13px 0;padding:14px}.spend-focus>span{font-size:.65rem;color:var(--text-muted);display:block}.spend-focus>strong{font-size:1.15rem;display:block;color:#ffe0b6;margin-top:4px}.spend-focus p{font-size:.8rem;color:#e3edf8;margin-top:4px}.spend-focus b{font-size:.7rem;display:block;color:var(--text-muted);font-weight:500}.bar-row{margin:18px 0}.bar-row>div:first-child{display:flex;justify-content:space-between;gap:10px;font-size:.73rem}.bar-row b{color:var(--text-muted);font-weight:500;margin-left:3px;font-size:.67rem}.bar-row .track{height:9px}
-.modal-card{max-width:540px;border:1px solid #45617d;background:#0f1e30;padding:22px;border-radius:22px}.fixed-row{border-bottom:1px solid var(--border);padding:17px 0}.fixed-row-main{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.88rem}.fixed-row-main strong{display:block;margin:7px 0;overflow-wrap:anywhere}.fixed-row-main b{white-space:nowrap;color:var(--primary)}.fixed-actions{display:flex;gap:17px;justify-content:flex-end}.fixed-actions>button{background:transparent;border:0;color:var(--primary);font-size:.74rem;min-height:36px;cursor:pointer}.fixed-actions .text-danger{color:var(--danger)}.fixed-editor{padding:14px;background:#091728;border-radius:14px;margin-top:10px}.fixed-editor button{width:100%;margin-top:7px}
-button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-offset:3px}button,input,select,summary{touch-action:manipulation}[hidden]{display:none!important}#install-card{background:transparent;border:1px dashed var(--border);box-shadow:none;font-size:.75rem!important}#install-card .card-title{font-size:.85rem}#toast{font-size:.8rem;top:max(16px,env(safe-area-inset-top));max-width:90%;border:1px solid #ffffff30}body{padding-bottom:max(16px,env(safe-area-inset-bottom))}.alert-box{font-size:.75rem;border-width:1px}
-@media(max-width:380px){body{padding:16px 10px}.card{padding:17px}.hero-card{padding:21px}.hero-card>strong{font-size:2.05rem}.hero-tag{display:none}.header h1{font-size:1.2rem}.btn-fixed-popup{padding:9px;font-size:.7rem}.metric strong{font-size:.95rem}.target-val{font-size:1.25rem}.target-banner{padding:15px}.pill{font-size:.59rem;padding:3px 7px}.week-card summary strong{font-size:.79rem}}
+body{background:radial-gradient(ellipse at 20% 0%,#142541 0,transparent 45%),var(--bg);padding:24px 16px;font-size:22.5px;line-height:1.6;letter-spacing:-.2px}
+.container{max-width:620px;padding-bottom:40px}.header{margin:8px 0 24px;border:0;align-items:center;gap:10px}.header h1{font-size:2.0250000000000004rem;letter-spacing:-1px}.brand-kicker{display:block;font-size:0.96rem;letter-spacing:2.2px;color:var(--text-muted);margin-bottom:4px}.version-dot{display:inline-block;width:7px;height:7px;background:var(--success);border-radius:50%;margin:0 0 4px 7px}.btn-fixed-popup{font-size:1.17rem;padding:10px 12px;background:#17273b;border:1px solid var(--border);color:var(--text);white-space:nowrap}
+.card{border-radius:22px;padding:22px;margin-bottom:20px;box-shadow:0 12px 40px #00000013;background:linear-gradient(145deg,#122135,#0e1929);border-color:#25354a}.card-title{font-size:1.53rem;color:var(--text);margin-bottom:18px}.hero-card{background:linear-gradient(130deg,#263f68,#1c3852 60%,#163c43);border:1px solid #446786;border-radius:26px;padding:26px;margin-bottom:20px;overflow:hidden}.hero-top{display:flex;justify-content:space-between;gap:8px;align-items:center;color:#d5e5f9;font-size:1.29rem}.hero-tag{font-size:0.855rem;letter-spacing:1.3px;color:#aac3db}.hero-label{display:block;margin-top:25px;color:#b7cce3;font-size:1.23rem}.hero-card>strong{display:block;font-size:2.5rem;font-weight:850;letter-spacing:-1.8px;color:#f2fbff;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.hero-card>p{font-size:.74rem;color:#b8d1e5}.hero-bottom{display:grid;grid-template-columns:1fr 1fr;gap:16px;border-top:1px solid #7e9abb40;padding-top:20px;margin-top:22px}.hero-bottom span{display:block;font-size:1.0499999999999998rem;color:#bed1e6}.hero-bottom b{display:block;font-size:1.7999999999999998rem;margin-top:3px;overflow-wrap:anywhere}.hero-footnote{margin-top:13px;font-size:0.9750000000000001rem!important;opacity:.8}
+.target-banner{padding:17px 20px;border:1px solid #445371;background:linear-gradient(100deg,#1c2941,#152238);border-radius:18px;gap:12px}.target-label{font-size:1.275rem}.target-val{font-size:2.325rem;text-shadow:none;white-space:nowrap}#fixed-split{font-size:0.99rem;color:var(--text-muted)}
+input[type=text],input[type=number],input[type=date],select{background:#0a1524;border:1px solid #30435b;border-radius:12px;height:52px;font-size:1.6500000000000001rem;font-variant-numeric:tabular-nums;font-weight:650;padding:0 13px;min-width:0;color-scheme:dark}input:focus,select:focus{border-color:var(--primary);box-shadow:0 0 0 3px #78b9ff15}label{color:#aebed1;font-size:1.185rem;margin:8px 0 7px}.btn-main{border-radius:13px;background:#94caff;height:50px;font-size:1.5rem;letter-spacing:-.3px}.btn-main:hover,.compact-primary:hover{filter:brightness(1.07)}.btn-danger{border-color:#ff9e9e40;background:#ff9e9e05;border-radius:12px;font-size:1.2000000000000002rem}.result-grid{gap:9px;margin-top:18px}.result-box{border-radius:14px;padding:16px 10px;background:#0b1727}.result-box .label{font-size:1.0499999999999998rem}.result-box .val{font-size:1.62rem;overflow-wrap:anywhere}#draft-status{margin:16px 0 2px!important;font-size:1.08rem!important}.expense-tag{border-color:#26394e;border-radius:12px;background:#0b1727;font-size:1.23rem}.expense-tag span{flex:1;min-width:0;overflow-wrap:anywhere}.expense-tag b{display:block;color:#ffd2a3;font-size:1.3800000000000001rem;margin-top:3px}.expense-tag button{min-width:40px;min-height:40px;font-size:1.5rem}
+h2{font-size:1.7249999999999999rem;letter-spacing:-.5px}h3{font-size:1.47rem}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 15px}.eyebrow{display:block;font-size:0.885rem;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:5px}.pill{display:inline-block;flex-shrink:0;font-size:0.96rem;color:#bdd0e7;border:1px solid #3c4a60;border-radius:20px;padding:4px 9px;line-height:1.6}.pill.done,.pill.invest{color:var(--success);background:#85e5bb0a;border-color:#85e5bb40}.muted{color:var(--text-muted)}.small{font-size:1.095rem;margin:10px 0;line-height:1.65}.positive{color:var(--success)}.negative{color:var(--danger)!important}.empty-state{text-align:center;padding:24px 10px;color:var(--text-muted);font-size:1.2000000000000002rem}.input-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}.input-grid select{font-size:1.23rem;padding:0 7px}.compact-primary{border:0;background:#9dceff;color:#102033;font-weight:800;border-radius:11px;min-height:46px;padding:10px 14px;cursor:pointer;font-size:1.2000000000000002rem;white-space:nowrap}.input-action{display:flex;gap:8px}.input-action input{flex:1;width:0}.input-action button{flex-shrink:0}.text-danger,.text-button,.link-button{border:0;background:transparent;cursor:pointer;min-height:40px;padding:7px 2px;font-size:1.125rem;color:var(--text-muted)}.text-danger{color:var(--danger)}.link-button{color:var(--primary)}
+.principal{padding:10px 0 20px}.principal span{font-size:1.2000000000000002rem;color:var(--text-muted);display:block}.principal>strong{display:block;font-size:3.4499999999999997rem;line-height:1.4;color:var(--success);letter-spacing:-1px;overflow-wrap:anywhere}.principal-split{display:flex;justify-content:space-between;gap:10px;font-size:1.065rem;color:var(--text-muted);padding-bottom:18px;border-bottom:1px solid var(--border)}.principal-split b{display:block;color:var(--text);font-size:1.4249999999999998rem}.investment-check{padding:18px 0}.investment-check h3{font-size:1.71rem;margin:4px 0 14px}.yes-no{display:grid;grid-template-columns:1fr 1fr;gap:10px}.yes-no button{padding:15px 10px;border:1px solid #345066;border-radius:14px;background:#0a1828;color:var(--text-muted);font-size:1.7249999999999999rem;font-weight:800;cursor:pointer}.yes-no button small{font-size:1.0499999999999998rem;display:block;margin-top:3px;font-weight:500}.yes-no #invest-yes.selected{border-color:var(--success);background:#85e5bb12;color:var(--success)}.yes-no #invest-no.selected{border-color:var(--warning);background:#ffca8510;color:var(--warning)}.investment-settings{padding:16px 0 0;border-top:1px solid var(--border)}.investment-settings summary{cursor:pointer;font-size:1.2000000000000002rem;color:#c3d4e9}.investment-settings label{margin-top:16px}.investment-settings button{margin-top:12px}
+.cal-header{font-size:1.5rem;margin-bottom:20px}.day-name{font-size:1.02rem}.cal-grid{gap:4px}.day-cell{position:relative;min-width:0;min-height:88px;border:1px solid #22354c;border-radius:11px;padding:6px 4px;background:#0a1524;color:var(--text);align-items:stretch;font-family:inherit}.day-cell.selected{border-color:#95caff;background:#19314c;box-shadow:0 0 0 1px #95caff40}.day-cell.today .day-num{color:var(--primary)}.day-num{font-size:1.155rem}.cal-result{font-size:0.8699999999999999rem;white-space:nowrap;text-align:left;font-variant-numeric:tabular-nums}.day-markers{display:flex;gap:3px;height:8px;align-items:center;margin-top:4px}.due-dot,.friday-dot,.invest-dot{display:inline-block;width:5px;height:5px;border-radius:50%;flex-shrink:0}.due-dot{background:var(--warning)}.friday-dot{background:var(--primary)}.invest-dot{background:var(--success)}.due-count{font-size:0.8250000000000001rem;color:var(--warning);text-align:left;white-space:nowrap}.calendar-legend{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0;font-size:0.9450000000000001rem;color:var(--text-muted)}.calendar-legend i{margin-right:4px}.calendar-agenda{border-top:1px solid var(--border);padding-top:17px}.calendar-agenda .section-heading{font-size:1.2000000000000002rem;margin:0 0 10px}.agenda-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #1c2e43;font-size:1.2000000000000002rem}.agenda-row span{overflow-wrap:anywhere}.agenda-row b{white-space:nowrap}.agenda-row small{display:block;font-size:0.9750000000000001rem}
+.tab-nav{padding:5px;border-radius:14px;background:#0a1423;gap:4px}.tab-btn{height:42px;border:0;background:transparent;font-size:1.17rem;border-radius:10px}.tab-btn.active{background:#29435f;color:#e7f4ff;box-shadow:0 2px 8px #0003}.week-card{margin-top:14px;border:1px solid #2a3d54;border-radius:16px;background:#0b1828;overflow:hidden}.week-card>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:17px 14px;cursor:pointer;list-style:none}.week-card>summary::-webkit-details-marker{display:none}.week-card summary strong{display:block;font-size:1.335rem}.week-card summary .eyebrow{font-size:0.8250000000000001rem}.week-body{padding:0 14px 18px;border-top:1px solid var(--border)}.metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 10px}.metric{border:1px solid #243b52;border-radius:12px;background:#101f31;padding:14px 11px;min-width:0}.metric>span{font-size:0.9750000000000001rem;color:var(--text-muted);display:block}.metric strong{display:block;font-size:1.56rem;letter-spacing:-.5px;margin-top:6px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}.metric.blue strong{color:var(--primary)}.metric.mint strong{color:var(--success)}.metric.orange strong{color:var(--warning)}.balance-band{padding:19px 15px;background:#18322e;border:1px solid #326451;border-radius:14px;margin-top:14px}.balance-band>span{font-size:1.1099999999999999rem;color:#c3dbd3;display:block}.balance-band strong{font-size:2.4000000000000004rem;display:block;color:var(--success);letter-spacing:-.8px;overflow-wrap:anywhere}.balance-band small{font-size:0.9450000000000001rem;color:#abc1bc}.awareness{padding:18px 0 4px}.awareness>div:first-child{display:flex;align-items:baseline;gap:10px}.awareness strong{font-size:2.55rem;color:var(--warning);font-variant-numeric:tabular-nums}.awareness span{font-size:1.0499999999999998rem;color:var(--text-muted)}.awareness p{font-size:1.08rem;color:var(--text-muted);margin:8px 0}.track{height:7px;background:#23364a;border-radius:10px;overflow:hidden;margin-top:7px}.track>div{height:100%;border-radius:inherit}.goal-line{display:grid;grid-template-columns:1fr auto;gap:8px;font-size:1.02rem;border-top:1px solid var(--border);padding-top:15px;margin-top:12px}.goal-line span{color:var(--text-muted)}.goal-line b{font-size:1.125rem}.settlement-box{border:1px solid #4b4961;background:#25233866;padding:16px 13px;border-radius:14px;margin:22px 0}.settlement-box .section-heading{font-size:1.275rem;margin-bottom:10px}.settlement-box label{font-size:1.08rem}.settlement-box input{font-size:1.5rem}.subheading{margin:22px 0 13px}.spend-focus{border-left:3px solid var(--warning);background:#ffca850a;border-radius:0 13px 13px 0;padding:14px}.spend-focus>span{font-size:0.9750000000000001rem;color:var(--text-muted);display:block}.spend-focus>strong{font-size:1.7249999999999999rem;display:block;color:#ffe0b6;margin-top:4px}.spend-focus p{font-size:1.2000000000000002rem;color:#e3edf8;margin-top:4px}.spend-focus b{font-size:1.0499999999999998rem;display:block;color:var(--text-muted);font-weight:500}.bar-row{margin:18px 0}.bar-row>div:first-child{display:flex;justify-content:space-between;gap:10px;font-size:1.095rem}.bar-row b{color:var(--text-muted);font-weight:500;margin-left:3px;font-size:1.0050000000000001rem}.bar-row .track{height:9px}
+.modal-card{max-width:540px;border:1px solid #45617d;background:#0f1e30;padding:22px;border-radius:22px}.fixed-row{border-bottom:1px solid var(--border);padding:17px 0}.fixed-row-main{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:1.32rem}.fixed-row-main strong{display:block;margin:7px 0;overflow-wrap:anywhere}.fixed-row-main b{white-space:nowrap;color:var(--primary)}.fixed-actions{display:flex;gap:17px;justify-content:flex-end}.fixed-actions>button{background:transparent;border:0;color:var(--primary);font-size:1.1099999999999999rem;min-height:36px;cursor:pointer}.fixed-actions .text-danger{color:var(--danger)}.fixed-editor{padding:14px;background:#091728;border-radius:14px;margin-top:10px}.fixed-editor button{width:100%;margin-top:7px}
+button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-offset:3px}button,input,select,summary{touch-action:manipulation}[hidden]{display:none!important}#install-card{background:transparent;border:1px dashed var(--border);box-shadow:none;font-size:1.125rem!important}#install-card .card-title{font-size:1.275rem}#toast{font-size:1.2000000000000002rem;top:max(16px,env(safe-area-inset-top));max-width:90%;border:1px solid #ffffff30}body{padding-bottom:max(16px,env(safe-area-inset-bottom))}.alert-box{font-size:1.125rem;border-width:1px}
+@media(max-width:380px){body{padding:16px 10px}.card{padding:17px}.hero-card{padding:21px}.hero-card>strong{font-size:2.05rem}.hero-tag{display:none}.header h1{font-size:1.7999999999999998rem}.btn-fixed-popup{padding:9px;font-size:1.0499999999999998rem}.metric strong{font-size:1.4249999999999998rem}.target-val{font-size:1.875rem}.target-banner{padding:15px}.pill{font-size:0.885rem;padding:3px 7px}.week-card summary strong{font-size:1.185rem}}
 @media(min-width:1000px){body{padding-top:40px}.container{max-width:680px}.card{padding:28px}.hero-card{padding:32px}.day-cell{min-height:96px}}
 
 
 @media(min-width:1100px){.container{max-width:1140px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}.container>.card,.container>.header,.container>.hero-card,.container>.target-banner{margin-bottom:0}.header,.hero-card,.target-banner,#backup-module,#install-card{grid-column:1 / -1}#daily-module,#calendar-module{grid-column:1}#investment-module,#stats-module{grid-column:2}.hero-card{padding:28px 34px}.hero-card>strong{font-size:2.75rem}.hero-bottom{max-width:620px}.target-banner{padding:18px 24px}.header{margin-bottom:8px!important}}
+
+    /* 사용자 화면: 카드 밖 바탕만 밝게 표시 */
+    body { background: #ffffff !important; color: #334155; }
+    .card, .modal-card { color: var(--text); }
+    .header h1 { color: #0f172a; }
+    .brand-kicker { color: #64748b; }
+    #install-card { color: #334155; border-color: #cbd5e1; }
+    #install-card .card-title, #install-card p, #install-card span { color: #334155 !important; }
+    .hero-card {
+      background: linear-gradient(130deg, #7a2738 0%, #5e2636 60%, #44232e 100%);
+      border-color: #b76370;
+      box-shadow: 0 14px 38px rgba(120, 25, 48, 0.28);
+      color: #ffffff;
+    }
+    .hero-card .hero-top { color: #ffffff; font-size: 1.29rem; }
+    .hero-card .hero-tag { color: #ffffff; font-size: 0.855rem; }
+    .hero-card .hero-label { color: #ffffff; font-size: 1.23rem; }
+    .hero-card > strong { color: #ffffff; font-size: clamp(3.075rem, 6vw, 4.125rem); }
+    .hero-card > p { color: #ffffff; font-size: 1.11rem; }
+    .hero-card .hero-bottom span { color: #ffffff; font-size: 1.05rem; }
+    .hero-card .hero-bottom b { color: #ffffff; font-size: 1.8rem; }
+    .hero-card .hero-footnote { color: #ffffff; font-size: 0.975rem !important; }
+    .hero-settlement-entry { margin-top: 22px; padding-top: 18px; border-top: 1px solid #ffffff50; }
+    .hero-settlement-entry label, .hero-settlement-entry p { color: #ffffff; font-size: 1.4625rem; }
+    .hero-settlement-entry select, .hero-settlement-entry input { background: #ffffff; color: #1e293b; color-scheme: light; border: 1px solid #f1c8ce; }
+    .hero-settlement-entry select { margin: 7px 0 12px; }
+    .hero-settlement-entry .compact-primary { background: #ffffff; color: #7a2738; }
+    .hero-settlement-entry .text-danger { color: #ffffff; }
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -152,7 +180,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
   <div class="target-banner">
     <div>
       <div class="target-label">하루에 확보할 목표금</div>
-      <div style="font-size:0.8rem; color:#cbd5e1;">월 목표 <span id="banner-total-fixed">0원</span><br><span id="fixed-split"></span></div>
+      <div style="font-size:1.2000000000000002rem; color:#cbd5e1;">월 목표 <span id="banner-total-fixed">0원</span><br><span id="fixed-split"></span></div>
     </div>
     <div class="target-val" id="banner-daily-target">0원</div>
   </div>
@@ -160,7 +188,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
   <div class="card" id="daily-module">
     <div class="card-title">
       <span id="input-status-title">일일 정산 등록</span>
-      <span id="edit-badge" style="display:none; font-size:0.75rem; background:#38bdf8; color:#070d1e; padding:2px 8px; border-radius:4px; font-weight:800;">수정 모드</span>
+      <span id="edit-badge" style="display:none; font-size:1.125rem; background:#38bdf8; color:#070d1e; padding:2px 8px; border-radius:4px; font-weight:800;">수정 모드</span>
     </div>
 
     <div>
@@ -189,7 +217,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
       </div>
       <div style="display:flex; gap:8px; margin-top:8px;">
         <input type="text" inputmode="numeric" oninput="formatMoneyInput(this); updateCalculationPreview()" id="input-expense-val" placeholder="지출액 (원)" step="500">
-        <button type="button" style="width:85px; height:50px; background:#263554; color:#fff; border:none; border-radius:8px; font-weight:800; font-size:0.95rem; cursor:pointer;" id="btn-add-expense" onclick="addExpenseItem()">추가</button>
+        <button type="button" style="width:85px; height:50px; background:#263554; color:#fff; border:none; border-radius:8px; font-weight:800; font-size:1.4249999999999998rem; cursor:pointer;" id="btn-add-expense" onclick="addExpenseItem()">추가</button>
       </div>
 
       <div class="expense-list" id="expense-tag-container"></div>
@@ -218,7 +246,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
       </div>
     </div>
 
-    <div id="draft-status" role="status" style="margin-top:12px;font-size:0.8rem;color:var(--text-muted);"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><button type="button" class="btn-main" id="btn-save" onclick="saveDayRecord()">최종 저장</button><button type="button" class="btn-main" id="btn-edit" onclick="beginRecordEdit()" style="background:#263554;color:#fff;">수정</button></div>
+    <div id="draft-status" role="status" style="margin-top:12px;font-size:1.2000000000000002rem;color:var(--text-muted);"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><button type="button" class="btn-main" id="btn-save" onclick="saveDayRecord()">최종 저장</button><button type="button" class="btn-main" id="btn-edit" onclick="beginRecordEdit()" style="background:#263554;color:#fff;">수정</button></div>
     <button type="button" class="btn-danger" id="btn-delete" style="display:none;" onclick="deleteDayRecord()">해당 날짜 기록 삭제</button>
   </div>
 
@@ -232,9 +260,9 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 </section>
   <div class="card" id="calendar-module">
     <div class="cal-header">
-      <button type="button" onclick="changeMonth(-1)" style="background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;padding:0 10px;">◀</button>
+      <button type="button" onclick="changeMonth(-1)" style="background:none;border:none;color:#fff;font-size:1.9500000000000002rem;cursor:pointer;padding:0 10px;">◀</button>
       <span id="cal-month-title">2026년 10월</span>
-      <button type="button" onclick="changeMonth(1)" style="background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;padding:0 10px;">▶</button>
+      <button type="button" onclick="changeMonth(1)" style="background:none;border:none;color:#fff;font-size:1.9500000000000002rem;cursor:pointer;padding:0 10px;">▶</button>
     </div>
     <div class="cal-grid">
       <div class="day-name">일</div><div class="day-name">월</div><div class="day-name">화</div>
@@ -283,7 +311,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     </div>
   </div>
 
-  <div class="card" id="backup-module" style="font-size:0.85rem;">
+  <div class="card" id="backup-module" style="font-size:1.275rem;">
     <div class="card-title">내 기록 백업 · 복원</div>
     <div style="display:flex; gap:8px;">
       <button type="button" style="flex:1; height:44px; background:#1e293b; color:#fff; border:1px solid var(--border); border-radius:8px; font-weight:700;" onclick="exportData()">데이터 백업 (JSON)</button>
@@ -291,7 +319,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
       <button type="button" style="flex:1; height:44px; background:#1e293b; color:#fff; border:1px solid var(--border); border-radius:8px; font-weight:700;" onclick="document.getElementById('file-import').click()">데이터 복원</button>
     </div>
   </div>
-<div class="card" id="install-card" style="font-size:0.85rem;">
+<div class="card" id="install-card" style="font-size:1.275rem;">
   <div class="card-title">휴대폰에 앱 설치</div>
   <button type="button" class="btn-main" id="install-app" hidden>앱 설치</button>
   <p id="install-help">안드로이드: Chrome 메뉴 → 홈 화면에 추가 / 앱 설치<br>아이폰: Safari 공유 → 홈 화면에 추가</p>
@@ -303,8 +331,8 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 <div class="modal-overlay" id="fixed-modal" onclick="closeFixedModal(event)">
   <div class="modal-card" onclick="event.stopPropagation()">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h2 style="font-size:1.15rem; font-weight:800; color:var(--primary);">월 고정비 관리</h2>
-      <button type="button" onclick="closeFixedModal(null)" style="background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer;">✕</button>
+      <h2 style="font-size:1.7249999999999999rem; font-weight:800; color:var(--primary);">월 고정비 관리</h2>
+      <button type="button" onclick="closeFixedModal(null)" style="background:none; border:none; color:#fff; font-size:2.0999999999999996rem; cursor:pointer;">✕</button>
     </div>
     
     <!-- 현재 등록된 고정비 목록 (삭제 가능) -->
@@ -312,29 +340,29 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 
     <!-- 신규 고정비 항목 추가 폼 -->
     <div style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
-      <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700; margin-bottom:6px;">+ 새 고정비 항목 추가</div>
+      <div style="font-size:1.2000000000000002rem; color:var(--text-muted); font-weight:700; margin-bottom:6px;">+ 새 고정비 항목 추가</div>
       <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:6px;">
-        <input type="text" id="new-fixed-name" placeholder="항목명 (예: 알뜰폰)" style="height:44px; font-size:0.95rem;">
-        <input type="text" inputmode="numeric" oninput="formatMoneyInput(this)" id="new-fixed-amount" placeholder="월 금액 (원)" step="1000" style="height:44px; font-size:0.95rem;">
+        <input type="text" id="new-fixed-name" placeholder="항목명 (예: 알뜰폰)" style="height:44px; font-size:1.4249999999999998rem;">
+        <input type="text" inputmode="numeric" oninput="formatMoneyInput(this)" id="new-fixed-amount" placeholder="월 금액 (원)" step="1000" style="height:44px; font-size:1.4249999999999998rem;">
       </div>
 <div class="input-grid" id="new-fixed-options" style="margin-top:10px;"></div><p class="muted small">출금일이 없는 달은 말일에 표시합니다. 투자 목표는 생활 고정비와 구분해 선택해 주세요.</p>
-      <button type="button" class="btn-main" style="height:44px; margin-top:6px; font-size:0.95rem;" onclick="addFixedCostItem()">고정비 항목 추가</button>
+      <button type="button" class="btn-main" style="height:44px; margin-top:6px; font-size:1.4249999999999998rem;" onclick="addFixedCostItem()">고정비 항목 추가</button>
     </div>
 
 
     <!-- 실시간 합계 및 1일 방어선 -->
-    <div style="margin-top:12px; padding-top:10px; border-top:2px solid var(--border); display:flex; justify-content:space-between; font-size:1.05rem; font-weight:900;">
+    <div style="margin-top:12px; padding-top:10px; border-top:2px solid var(--border); display:flex; justify-content:space-between; font-size:1.5750000000000002rem; font-weight:900;">
       <span>월 고정비 + 투자 목표 합계</span>
       <span style="color:var(--target-neon);" id="modal-fixed-total">0원</span>
     </div>
-    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; color:var(--text-muted); margin-top:4px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; font-size:1.275rem; color:var(--text-muted); margin-top:4px;">
       <span>30일 기준 하루 목표금</span>
-      <b style="color:var(--target-neon); font-size:1.15rem;" id="modal-daily-target">0원</b>
+      <b style="color:var(--target-neon); font-size:1.7249999999999999rem;" id="modal-daily-target">0원</b>
     </div>
 
     <p class="muted small" id="modal-fixed-split"></p>
     <div style="display:flex; gap:8px; margin-top:14px;">
-      <button type="button" style="flex:1; height:42px; background:#1e293b; color:var(--text-muted); border:1px solid var(--border); border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer;" onclick="resetFixedExpensesToDefault()">목록 비우기</button>
+      <button type="button" style="flex:1; height:42px; background:#1e293b; color:var(--text-muted); border:1px solid var(--border); border-radius:8px; font-size:1.275rem; font-weight:700; cursor:pointer;" onclick="resetFixedExpensesToDefault()">목록 비우기</button>
       <button type="button" class="btn-main" style="flex:1; height:42px; margin-top:0;" onclick="closeFixedModal(null)">적용 및 닫기</button>
     </div>
   </div>
@@ -431,7 +459,7 @@ function aggregate(filter) {
   for(const [date,rec] of Object.entries(db))if(filter(date)) {
     const p=incomeParts(rec);data.delivery+=p.delivery;data.extra+=p.extra;data.gross+=p.gross;data.deduction+=allocation[date]||0;data.days++;
     if(p.delivery>0&&!Object.hasOwn(settlements,weekStart(date)))data.pending.add(weekStart(date));
-    for(const expense of rec.expenses||[]){const v=Number(expense.amount)||0;data.expense+=v;data.categories[expense.category]=(data.categories[expense.category]||0)+v;}
+    for(const expense of rec.expenses||[]){const v=Number(expense.amount)||0;data.expense+=v;const category=String(expense.category||'미분류').trim()||'미분류';const detail=String(expense.detail||'').trim();const label=detail?`${category} · ${detail}`:category;data.categories[label]=(data.categories[label]||0)+v;}
   }
   data.net=data.gross-data.deduction;data.remaining=data.net-data.expense;data.goal=getDailyTarget()*data.days;data.surplus=data.remaining-data.goal;
   return data;
@@ -453,7 +481,7 @@ function overviewMarkup(data) {
   <div class="awareness"><div><strong>${rate===null?'—':rate.toFixed(1)+'%'}</strong><span>소득 대비 변동지출${provisional?' · 잠정':''}</span></div><div class="track"><div style="width:${rate===null?0:Math.min(rate,100)}%;background:${rate>50?'var(--warning)':'var(--primary)'}"></div></div><p>${rate===null?'소득을 입력하면 지출률을 계산합니다.':rate>100?'수입보다 지출이 많아요. 가장 큰 항목부터 확인해 보세요.':`소득 10만원당 약 ${money(Math.round(rate*1000))}을 쓰고 있어요.`}</p></div>
   <div class="goal-line"><span>기록일 ${data.days}일 기준 고정비·투자 목표</span><b>${money(data.goal)}</b><span>목표 충당 후 여유${provisional?' · 잠정':''}</span><b class="${data.surplus<0?'negative':'positive'}">${money(data.surplus)}</b></div>`;
 }
-function renderWeeklyStats() {
+function renderWeeklyStatsBase() {
   const openWeeks=new Set([...document.querySelectorAll('.week-card[open]')].map(el=>el.dataset.start));
   const weeks=getSettlementWeeks(currentDate.getFullYear(),currentDate.getMonth());
   const container=$('weekly-stats-container');container.innerHTML='<p class="muted small">수요일~화요일 수입 · 다음 금요일 공제 정산<br>달을 넘는 주도 7일을 온전히 집계합니다.</p>';
@@ -461,14 +489,34 @@ function renderWeeklyStats() {
     const start=dates[0],end=dates[6],friday=fridayOf(start),data=aggregate(d=>d>=start&&d<=end),entry=settlements[start];
     const section=document.createElement('details');section.className='week-card';section.dataset.start=start;
     const selected=$('input-date').value; section.open=openWeeks.has(start)||(selected>=start&&selected<=end);
-    section.innerHTML=`<summary><div><span class="eyebrow">플랫폼 정산 주기</span><strong>${start.slice(5).replace('-','/')} 수 — ${end.slice(5).replace('-','/')} 화</strong></div><span class="pill ${entry?'done':''}">${entry?'공제 입력 완료':'공제 미입력'}</span></summary><div class="week-body">${overviewMarkup(data)}<div class="settlement-box"><div class="section-heading"><strong>금요일 공제 정산</strong><span class="pill">${friday.slice(5).replace('-','/')} 금</span></div><p class="muted small">${start} ~ ${end} 배달수입의 원천징수·산재·고용보험 등 실제 공제 합계. 추가수입에는 공제하지 않습니다.</p><label for="deduction-${start}">실제 주간 공제액 (원)</label><div class="input-action"><input type="text" inputmode="numeric" id="deduction-${start}" value="${entry?formatMoneyValue(entry.deduction):''}" placeholder="0" oninput="formatMoneyInput(this); saveSettlementDraft('${start}',this.value)"><button class="compact-primary" onclick="saveSettlement('${start}')">${entry?'수정 저장':'정산 저장'}</button></div><p class="muted small" id="deduction-status-${start}">0원도 입력 후 저장해야 확정됩니다.</p>${entry?`<button class="text-danger" onclick="clearSettlement('${start}')">공제 입력 취소</button>`:''}</div><h3 class="subheading">지출 습관 리포트</h3>${spendingChart(data)}</div>`;
+    section.innerHTML=`<summary><div><span class="eyebrow">플랫폼 정산 주기</span><strong>${start.slice(5).replace('-','/')} 수 — ${end.slice(5).replace('-','/')} 화</strong></div><span class="pill ${entry?'done':''}">${entry?'공제 입력 완료':'공제 미입력'}</span></summary><div class="week-body">${overviewMarkup(data)}<h3 class="subheading">지출 습관 리포트</h3>${spendingChart(data)}</div>`;
     container.appendChild(section);
-    const pending=readStore('delivery_settlement_drafts_v3',{});if(Object.hasOwn(pending,start)){$('deduction-'+start).value=pending[start];$('deduction-status-'+start).textContent='입력 중인 공제액을 복원했습니다. 정산 저장으로 확정해 주세요.';}
   }
 }
-function saveSettlementDraft(start,value){try{const d=readStore('delivery_settlement_drafts_v3',{});d[start]=value;persist('delivery_settlement_drafts_v3',d);$('deduction-status-'+start).textContent='공제액 임시저장 · 정산 저장으로 확정';}catch{showToast('공제액 임시저장에 실패했습니다.',false);}}
+function saveSettlementDraft(start,value){try{const d=readStore('delivery_settlement_drafts_v3',{});d[start]=value;persist('delivery_settlement_drafts_v3',d);if($('hero-settlement-period')?.value===start)$('hero-deduction-status').textContent='공제액 임시저장 · 정산 저장으로 확정';}catch{showToast('공제액 임시저장에 실패했습니다.',false);}}
+function renderWeeklyStats(){renderWeeklyStatsBase();renderHeroSettlementEntry();}
+function renderHeroSettlementEntry(){
+  let host=$('hero-settlement-entry');
+  if(!host){
+    $('hero-status').insertAdjacentHTML('afterend',`<div id="hero-settlement-entry" class="hero-settlement-entry"><label for="hero-settlement-period">공제 입력 주간 선택</label><select id="hero-settlement-period" onchange="renderHeroSettlementEntry()"></select><p id="hero-settlement-range" class="small"></p><label for="hero-deduction-input">실제 주간 공제액 (원)</label><div class="input-action"><input type="text" inputmode="numeric" id="hero-deduction-input" placeholder="0" oninput="handleHeroSettlementInput(this)"><button type="button" class="compact-primary" onclick="saveHeroSettlement()">정산 저장</button></div><p id="hero-deduction-status" class="small" aria-live="polite"></p><button type="button" class="text-danger" id="hero-clear-deduction" onclick="clearSettlement(document.getElementById('hero-settlement-period').value)" hidden>저장된 공제 입력 취소</button></div>`);
+    host=$('hero-settlement-entry');
+  }
+  const select=$('hero-settlement-period');
+  const weeks=getSettlementWeeks(currentDate.getFullYear(),currentDate.getMonth());
+  const previous=select.value;
+  select.innerHTML=weeks.map(dates=>{const start=dates[0],end=dates[6],friday=fridayOf(start);return `<option value="${start}">${start.slice(5).replace('-','/')} 수 — ${end.slice(5).replace('-','/')} 화 · ${friday.slice(5).replace('-','/')} 금</option>`;}).join('');
+  const defaultStart=weekStart($('input-date').value||getKSTDateString());
+  select.value=weeks.some(dates=>dates[0]===previous)?previous:defaultStart;
+  const start=select.value,dates=weeks.find(row=>row[0]===start),entry=settlements[start],pending=readStore('delivery_settlement_drafts_v3',{});
+  $('hero-settlement-range').textContent=`${dates[0]} ~ ${dates[6]} 정산 · ${fridayOf(start)} 금요일`;
+  $('hero-deduction-input').value=Object.hasOwn(pending,start)?pending[start]:(entry?formatMoneyValue(entry.deduction):'');
+  $('hero-deduction-status').textContent=Object.hasOwn(pending,start)?'임시저장된 공제액이 있어요. 확인 후 정산 저장을 눌러주세요.':entry?`저장된 실제 공제액 ${money(entry.deduction)}`:'실제 공제액을 입력하면 해당 주간의 공제 후 소득에 반영됩니다.';
+  $('hero-clear-deduction').hidden=!entry;
+}
+function handleHeroSettlementInput(input){const start=$('hero-settlement-period').value;formatMoneyInput(input);saveSettlementDraft(start,input.value);$('hero-deduction-status').textContent='임시저장됨 · 정산 저장을 눌러 금액을 확정해주세요.';}
+function saveHeroSettlement(){saveSettlement($('hero-settlement-period').value);}
 function saveSettlement(start) {
-  const raw=$('deduction-'+start).value.trim();const value=parseMoney(raw);
+  const input=$('hero-settlement-period')?.value===start?$('hero-deduction-input'):null;const raw=input?.value.trim()||'';const value=parseMoney(raw);
   const data=aggregate(d=>weekStart(d)===start);
   if(!raw||!amountOK(value)||value>data.delivery){showToast('공제액은 해당 주 배달수입 이내의 0원 이상 정수로 입력해 주세요.',false);return;}
   const next={...settlements,[start]:{deduction:value,settlementDate:fridayOf(start),updatedAt:new Date().toISOString()}};
@@ -617,7 +665,7 @@ function renderCalendar(){
 }
 function changeMonth(delta){currentDate=new Date(currentDate.getFullYear(),currentDate.getMonth()+delta,1);renderCalendar();renderWeeklyStats();}
 function highlightSelectedCell(){renderCalendar();}
-function goToSettlement(start){currentDate=dateOf(start);renderWeeklyStats();switchStatsTab('week');const input=$('deduction-'+start);if(input){input.closest('details').open=true;input.scrollIntoView({behavior:'smooth',block:'center'});}renderCalendar();}
+function goToSettlement(start){currentDate=dateOf(start);renderWeeklyStats();switchStatsTab('week');const select=$('hero-settlement-period');if(select){select.value=start;renderHeroSettlementEntry();$('hero-settlement-entry').scrollIntoView({behavior:'smooth',block:'center'});}renderCalendar();}
 function renderAll(){
   $('banner-total-fixed').textContent=money(getMonthlyFixedTotal());$('banner-daily-target').textContent=money(getDailyTarget());$('modal-fixed-total').textContent=money(getMonthlyFixedTotal());$('modal-daily-target').textContent=money(getDailyTarget());
   const invest=fixedExpenses.filter(isInvestment).reduce((s,i)=>s+i.amount,0);$('fixed-split').textContent=`생활 고정비 ${money(getMonthlyFixedTotal()-invest)} · 투자 목표 ${money(invest)}`;
