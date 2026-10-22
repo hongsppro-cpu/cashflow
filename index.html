@@ -564,7 +564,7 @@ function renderHeroSettlementEntry(){
   const select=$('hero-settlement-period');
   const weeks=getSettlementWeeks(currentDate.getFullYear(),currentDate.getMonth());
   const previous=select.value;
-  select.innerHTML=weeks.map((dates,index)=>`<option value="${dates[0]}">${index+1}주차</option>`).join('');
+  select.innerHTML=weeks.map(dates=>{const start=dates[0],end=dates[6],friday=fridayOf(start);return `<option value="${start}">${start.slice(5).replace('-','/')} 수 — ${end.slice(5).replace('-','/')} 화 · ${friday.slice(5).replace('-','/')} 금</option>`;}).join('');
   const defaultStart=weekStart($('input-date').value||getKSTDateString());
   select.value=weeks.some(dates=>dates[0]===previous)?previous:defaultStart;
   const start=select.value,dates=weeks.find(row=>row[0]===start),entry=settlements[start],pending=readStore('delivery_settlement_drafts_v3',{});
