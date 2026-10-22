@@ -153,6 +153,57 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     .hero-settlement-entry select { margin: 7px 0 12px; }
     .hero-settlement-entry .compact-primary { background: #ffffff; color: #7a2738; }
     .hero-settlement-entry .text-danger { color: #ffffff; }
+
+    /* 월 누적 요약: 소득은 강조하고 지출 지표는 별도 카드로 분리 */
+    .hero-card { width:100%; min-width:0; box-sizing:border-box; }
+    .hero-card .hero-label { overflow-wrap:anywhere; word-break:keep-all; line-height:1.35; }
+    .hero-card > strong { max-width:100%; line-height:1.15; }
+    .hero-settlement-entry, .hero-settlement-entry * { min-width:0; box-sizing:border-box; }
+    .hero-settlement-entry label, .hero-settlement-entry p { overflow-wrap:anywhere; word-break:keep-all; }
+    .hero-settlement-entry select#hero-settlement-period {
+      width:100%; max-width:100%; min-width:0; font-size:1rem !important;
+      padding-left:10px; padding-right:10px; text-overflow:ellipsis;
+    }
+    .monthly-summary-grid {
+      display:grid; grid-column:1 / -1; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px;
+      width:100%; min-width:0; margin:0 0 20px; box-sizing:border-box;
+    }
+    .monthly-summary-card {
+      min-width:0; overflow:hidden; box-sizing:border-box; padding:17px 18px;
+      border:1px solid #cbd5e1; border-radius:18px; background:#f8fafc;
+      color:#1e293b; box-shadow:0 5px 16px rgba(15,23,42,.09);
+    }
+    .monthly-summary-label {
+      display:block; color:#475569; font-size:clamp(.92rem,2.8vw,1.05rem);
+      font-weight:750; line-height:1.35; overflow-wrap:anywhere; word-break:keep-all;
+    }
+    .monthly-summary-value {
+      display:block; max-width:100%; margin-top:8px; color:#0f172a;
+      font-size:clamp(1.3rem,4.8vw,1.8rem); font-weight:850; line-height:1.2;
+      font-variant-numeric:tabular-nums; overflow-wrap:anywhere; word-break:break-word;
+    }
+    @media(max-width:480px) {
+      .hero-card { padding:20px 16px; border-radius:20px; }
+      .hero-card .hero-label { font-size:clamp(1rem,4.5vw,1.18rem); }
+      .hero-card > strong { font-size:clamp(2rem,9vw,3rem); letter-spacing:-.04em; }
+      .hero-card .hero-top { gap:6px; flex-wrap:wrap; }
+      .hero-settlement-entry label, .hero-settlement-entry p {
+        font-size:clamp(.92rem,3.8vw,1rem); line-height:1.4;
+      }
+      .hero-settlement-entry select#hero-settlement-period {
+        font-size:.95rem !important; height:48px; padding-left:8px; padding-right:8px;
+      }
+      .monthly-summary-grid { grid-template-columns:minmax(0,1fr); gap:10px; margin-bottom:16px; }
+      .monthly-summary-card { padding:14px 16px; border-radius:15px; }
+      .monthly-summary-label { font-size:clamp(.95rem,4vw,1.05rem); }
+      .monthly-summary-value { font-size:clamp(1.4rem,6vw,1.75rem); }
+    }
+    @media(max-width:360px) {
+      .hero-card { padding:18px 13px; }
+      .hero-settlement-entry select#hero-settlement-period { font-size:.9rem !important; }
+      .monthly-summary-card { padding:13px 14px; }
+    }
+
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -171,12 +222,19 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     <button type="button" class="btn-fixed-popup" onclick="openFixedModal()">⚙️ 고정비 관리</button>
   </div>
 
-<section class="hero-card" aria-label="이번 달 요약">
- <div class="hero-top"><span id="hero-month">이번 달의 현금 흐름</span><span class="hero-tag">MONEY OVERVIEW</span></div>
- <span class="hero-label">공제 후 소득</span><strong id="hero-net">0원</strong><p id="hero-status">공제 반영 기준</p>
- <div class="hero-bottom"><div><span>이번 달 변동지출</span><b id="hero-expense">0원</b></div><div><span>지출 후 남은 돈 · 잠정 포함</span><b id="hero-left">0원</b></div></div>
- <p class="hero-footnote">최종 저장한 기록 기준 · 고정비와 투자 실제 출금 전</p>
+<section class="hero-card" aria-label="월 누적 공제 후 소득">
+ <div class="hero-top"><span id="hero-month">이번 달 누적 합계</span><span class="hero-tag">MONTH TO DATE</span></div>
+ <span class="hero-label">월 누적 공제 후 소득</span><strong id="hero-net">0원</strong><p id="hero-status">공제 반영 기준</p>
+ <p class="hero-footnote">이번 달 수입에서 반영된 공제를 뺀 누적 금액 · 미정산 주간은 잠정 포함</p>
 </section>
+<div class="monthly-summary-grid" aria-label="이번 달 지출 요약">
+ <article class="monthly-summary-card">
+  <span class="monthly-summary-label">이번 달 변동지출</span><strong class="monthly-summary-value" id="hero-expense">0원</strong>
+ </article>
+ <article class="monthly-summary-card">
+  <span class="monthly-summary-label">지출 후 남은 돈 · 잠정 포함</span><strong class="monthly-summary-value" id="hero-left">0원</strong>
+ </article>
+</div>
   <div class="target-banner">
     <div>
       <div class="target-label">하루에 확보할 목표금</div>
@@ -671,7 +729,7 @@ function renderAll(){
   const invest=fixedExpenses.filter(isInvestment).reduce((s,i)=>s+i.amount,0);$('fixed-split').textContent=`생활 고정비 ${money(getMonthlyFixedTotal()-invest)} · 투자 목표 ${money(invest)}`;
   $('modal-fixed-split').textContent=$('fixed-split').textContent;
   const today=getKSTDateString(),month=today.slice(0,7),data=aggregate(d=>d.startsWith(month));
-  $('hero-month').textContent=`${Number(month.slice(5))}월의 현금 흐름`;$('hero-net').textContent=money(data.net);$('hero-status').textContent=data.pending.size?`공제 미입력 ${data.pending.size}주 · 잠정 금액`:'공제 반영 기준';$('hero-expense').textContent=money(data.expense);$('hero-left').textContent=money(data.remaining);
+  $('hero-month').textContent=`${Number(month.slice(5))}월 누적 합계`;$('hero-net').textContent=money(data.net);$('hero-status').textContent=data.pending.size?`미정산 공제 ${data.pending.size}주 · 잠정 포함`:'공제 반영 기준';$('hero-expense').textContent=money(data.expense);$('hero-left').textContent=money(data.remaining);
   renderFixedExpensesList();updateCalculationPreview();renderInvestment();renderCalendar();renderWeeklyStats();renderMonthStats();renderHalfStats();
 }
 function recomputeAllSystem(notice=false){renderAll();if(notice)showToast('고정비와 통계를 갱신했습니다.');}
