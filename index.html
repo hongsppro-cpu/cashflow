@@ -221,12 +221,23 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
   
   <div class="header">
     <div><span class="brand-kicker">MY MONEY, MY PACE</span><h1>자산관리 매니저<span class="version-dot"></span></h1></div>
-    <button type="button" class="btn-fixed-popup" onclick="openFixedModal()">⚙️ 고정비 관리</button>
+    <button type="button" class="btn-fixed-popup" data-app-action="open-fixed">⚙️ 고정비 관리</button>
   </div>
 
 <section class="hero-card" aria-label="월 누적 공제 후 소득">
  <div class="hero-top"><span id="hero-month">이번 달 누적 합계</span><span class="hero-tag">MONTH TO DATE</span></div>
  <span class="hero-label">월 누적 공제 후 소득</span><strong id="hero-net">0원</strong><p id="hero-status">공제 반영 기준</p>
+ <div id="hero-settlement-entry" class="hero-settlement-entry">
+  <label for="hero-settlement-period">공제 입력 주간 선택</label>
+  <select id="hero-settlement-period" onchange="renderHeroSettlementEntry()"></select>
+  <label for="hero-deduction-input">실제 주간 공제액 (원)</label>
+  <div class="input-action">
+   <input type="text" inputmode="numeric" id="hero-deduction-input" placeholder="0" oninput="handleHeroSettlementInput(this)">
+   <button type="button" class="compact-primary" data-app-action="save-deduction">정산 저장</button>
+  </div>
+  <p id="hero-deduction-status" class="small" aria-live="polite"></p>
+  <button type="button" class="text-danger" id="hero-clear-deduction" data-app-action="clear-deduction" hidden>저장된 공제 입력 취소</button>
+ </div>
  <p class="hero-footnote">이번 달 수입에서 반영된 공제를 뺀 누적 금액 · 미정산 주간은 잠정 포함</p>
 </section>
 <div class="monthly-summary-grid" aria-label="이번 달 지출 요약">
@@ -333,10 +344,10 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 
   <div class="card" id="stats-module">
     <div class="tab-nav">
-      <button type="button" class="tab-btn active" id="tab-btn-week" onclick="switchStatsTab('week')">주간 (수~화)</button>
-      <button type="button" class="tab-btn" id="tab-btn-month" onclick="switchStatsTab('month')">월말 결산</button>
-      <button type="button" class="tab-btn" id="tab-btn-half" onclick="switchStatsTab('half')">반기 결산</button>
-      <button type="button" class="tab-btn" id="tab-btn-year" onclick="switchStatsTab('year')">연간 결산</button>
+      <button type="button" class="tab-btn active" id="tab-btn-week" data-stats-tab="week">주간 (수~화)</button>
+      <button type="button" class="tab-btn" id="tab-btn-month" data-stats-tab="month">월말 결산</button>
+      <button type="button" class="tab-btn" id="tab-btn-half" data-stats-tab="half">반기 결산</button>
+      <button type="button" class="tab-btn" id="tab-btn-year" data-stats-tab="year">연간 결산</button>
     </div>
 
     <div id="tab-week-content">
@@ -569,11 +580,8 @@ function renderWeeklyStatsBase() {
 function saveSettlementDraft(start,value){try{const d=readStore('delivery_settlement_drafts_v3',{});d[start]=value;persist('delivery_settlement_drafts_v3',d);}catch{showToast('공제액 임시저장에 실패했습니다.',false);}}
 function renderWeeklyStats(){renderWeeklyStatsBase();renderHeroSettlementEntry();}
 function renderHeroSettlementEntry(){
-  let host=$('hero-settlement-entry');
-  if(!host){
-    $('hero-status').insertAdjacentHTML('afterend',`<div id="hero-settlement-entry" class="hero-settlement-entry"><label for="hero-settlement-period">공제 입력 주간 선택</label><select id="hero-settlement-period" onchange="renderHeroSettlementEntry()"></select><label for="hero-deduction-input">실제 주간 공제액 (원)</label><div class="input-action"><input type="text" inputmode="numeric" id="hero-deduction-input" placeholder="0" oninput="handleHeroSettlementInput(this)"><button type="button" class="compact-primary" onclick="saveHeroSettlement()">정산 저장</button></div><button type="button" class="text-danger" id="hero-clear-deduction" onclick="clearSettlement(document.getElementById('hero-settlement-period').value)" hidden>저장된 공제 입력 취소</button></div>`);
-    host=$('hero-settlement-entry');
-  }
+  const host=$('hero-settlement-entry');
+  if(!host)throw new Error('공제 입력 영역을 찾을 수 없습니다.');
   const select=$('hero-settlement-period');
   const weeks=getSettlementWeeks(currentDate.getFullYear(),currentDate.getMonth());
   const previous=select.value;
@@ -776,6 +784,19 @@ function initApp(){
 }
 document.addEventListener('input',e=>{if(['input-income','input-extra','input-detail','input-expense-val'].includes(e.target.id)){saveDraft();}});
 document.addEventListener('change',e=>{if(e.target.id==='select-category')saveDraft();});
+document.addEventListener('click',e=>{
+  const action=e.target.closest('[data-app-action]');
+  if(action){
+    try{
+      if(action.dataset.appAction==='open-fixed')openFixedModal();
+      else if(action.dataset.appAction==='save-deduction')saveHeroSettlement();
+      else if(action.dataset.appAction==='clear-deduction')clearSettlement($('hero-settlement-period').value);
+    }catch(error){console.error('화면 조작 오류:',error);showToast('화면을 처리하지 못했습니다. 새로고침 후 다시 시도해 주세요.',false);}
+    return;
+  }
+  const tab=e.target.closest('[data-stats-tab]');
+  if(tab){try{switchStatsTab(tab.dataset.statsTab);}catch(error){console.error('결산 탭 오류:',error);showToast('결산 화면을 열지 못했습니다.',false);}}
+});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFixedModal();});
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initApp);else initApp();
 
