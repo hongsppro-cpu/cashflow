@@ -278,6 +278,36 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     .settlement-period-costs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
     .settlement-period-costs .metric{min-width:0}
     .settlement-extra-income{color:#2c9b69!important}
+      .container{box-sizing:border-box;width:100%;max-width:620px}
+    .container>*{box-sizing:border-box;max-width:100%;min-width:0}
+    .attendance-card,.hero-card,.card,.target-banner,.monthly-summary-grid{box-sizing:border-box;width:100%;max-width:100%;min-width:0}
+    .attendance-card *,.hero-card *,.card *,.target-banner *{min-width:0}
+    .header{align-items:flex-start}
+    .header>div{flex:1 1 170px;min-width:0}
+    .header h1{font-size:clamp(1.55rem,7vw,2.025rem);overflow-wrap:anywhere}
+    .btn-fixed-popup{max-width:100%;min-width:0;white-space:normal;overflow-wrap:anywhere}
+    .hero-top,.section-heading,.attendance-heading,.cal-header{flex-wrap:wrap}
+    .hero-settlement-entry .input-action{min-width:0;flex-wrap:wrap}
+    .hero-settlement-entry .input-action input{flex:1 1 150px;min-width:0}
+    .hero-settlement-entry .input-action .compact-primary{flex:0 1 auto;min-width:88px;max-width:100%;white-space:normal}
+    .attendance-results{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .attendance-results>div{min-width:0}
+    .monthly-summary-grid,.settlement-summary-grid,.settlement-period-costs{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .target-banner>div{min-width:0;overflow-wrap:anywhere}
+    .cal-grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+    .day-cell{min-width:0;overflow:hidden}
+    .expense-tag,.metric,.result-box{min-width:0;overflow-wrap:anywhere}
+    @media(max-width:380px){
+      body{padding-left:10px;padding-right:10px}
+      .header{gap:8px}
+      .header>div{flex-basis:150px}
+      .btn-fixed-popup{padding:8px;font-size:.95rem}
+      .card{padding:16px}
+      .attendance-card{padding:16px}
+      .hero-card{padding:18px 13px}
+      .tab-btn{font-size:.95rem}
+      .hero-settlement-entry .input-action .compact-primary{min-width:78px;padding:8px}
+    }
   </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -908,8 +938,12 @@ function renderAttendance(){
   $('attendance-clock').textContent=formatDuration(workMs,true);
   $('attendance-work-time').textContent=formatDuration(workMs);
   $('attendance-break-time').textContent=formatDuration(breakMs);
-  const record=db[today]||drafts[today]||{},gross=incomeParts(record).gross;
-  $('attendance-hourly-rate').textContent=workMs>0?money(gross*3600000/workMs):'—';
+  let gross=incomeParts(db[today]||drafts[today]||{}).gross;
+  if($('input-date')?.value===today){
+    const deliveryText=$('input-income').value.trim(),extraText=$('input-extra').value.trim();
+    if(deliveryText||extraText)gross=(parseMoney(deliveryText)||0)+(parseMoney(extraText)||0);
+  }
+  $('attendance-hourly-rate').textContent=workMs>0&&gross>0?money(gross*3600000/workMs):workMs>0?'수입 입력 후 표시':'—';
   $('attendance-state').textContent=active?(active.pausedAt?'휴식 중':'근무 중')+' · '+new Date(active.startAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):day.sessions.length?'오늘 근무 종료 · 다시 출근을 기록할 수 있어요.':'출근 기록 대기';
   $('attendance-state').classList.toggle('is-working',!!active&&!active.pausedAt);
   $('attendance-state').classList.toggle('is-paused',!!active&&!!active.pausedAt);
