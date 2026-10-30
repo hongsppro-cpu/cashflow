@@ -244,6 +244,40 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     .expense-compact-track{height:7px;margin-top:5px;border-radius:8px;background:#e2e8f0;overflow:hidden}
     .expense-compact-track>span{display:block;height:100%;border-radius:inherit;background:#48a879}
     @media(max-width:360px){.spend-summary{padding:11px}.expense-compact-head{font-size:.84rem}.expense-compact-value small{font-size:.73rem}}
+      html,body{width:100%;max-width:100%;overflow-x:hidden}
+    .container{width:100%;min-width:0}
+    .container>*{min-width:0;max-width:100%}
+    .header{flex-wrap:wrap}
+    .header>div{flex:1 1 180px;min-width:0}
+    .header h1{overflow-wrap:anywhere;word-break:keep-all}
+    .btn-fixed-popup{flex:0 1 auto;max-width:100%;white-space:normal}
+    .attendance-heading,.hero-top,.section-heading,.cal-header{min-width:0}
+    .attendance-date{white-space:normal;text-align:right;overflow-wrap:anywhere}
+    .attendance-card,.card,.hero-card,.target-banner,.monthly-summary-card{min-width:0;max-width:100%}
+    .target-banner{flex-wrap:wrap}
+    .target-val{max-width:100%;white-space:normal;overflow-wrap:anywhere;font-size:clamp(1.55rem,7vw,2.3rem)}
+    .tab-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+    .tab-btn{min-width:0;white-space:normal;overflow-wrap:anywhere;height:auto;min-height:42px;padding:5px}
+    #tab-month-content>div:first-child,#tab-half-content>div:first-child{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px!important}
+    #tab-month-content>div:first-child select,#tab-half-content>div:first-child select{width:100%!important;min-width:0}
+    .cal-header span{min-width:0;text-align:center;overflow-wrap:anywhere}
+    .cal-header button{flex-shrink:0}
+    .cal-result,.due-count{white-space:normal;overflow-wrap:anywhere}
+    .secondary-module{margin:12px 0;border:1px solid #cbd5e1;border-radius:16px;background:#f8fafc;overflow:hidden}
+    .secondary-module>summary{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:54px;padding:13px 16px;color:#1e293b;font-weight:800;cursor:pointer;list-style:none}
+    .secondary-module>summary::-webkit-details-marker{display:none}
+    .secondary-module>summary::after{content:'＋';color:#475569;font-size:1.2rem}
+    .secondary-module[open]>summary::after{content:'−'}
+    .secondary-module>summary small{display:block;color:#64748b;font-size:.78rem;font-weight:500;text-align:right}
+    .secondary-module>.card{margin:0;border-radius:0;border:0;border-top:1px solid #dbe3ec}
+    .settlement-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
+    .settlement-summary-grid .metric{min-width:0}
+    .settlement-final{margin-top:12px}
+    .settlement-final strong{font-size:clamp(1.65rem,7vw,2.3rem)}
+    .settlement-formula{display:block;margin-top:8px;color:#abc1bc;font-size:.82rem;line-height:1.45;overflow-wrap:anywhere}
+    .settlement-period-costs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+    .settlement-period-costs .metric{min-width:0}
+    .settlement-extra-income{color:#2c9b69!important}
   </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -377,28 +411,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     <button type="button" class="btn-danger" id="btn-delete" style="display:none;" onclick="deleteDayRecord()">해당 날짜 기록 삭제</button>
   </div>
 
-<section class="card investment-card" id="investment-module">
- <div class="section-heading"><div><span class="eyebrow">BUILD YOUR PRINCIPAL</span><h2>매일 쌓는 투자원금</h2></div><span class="pill invest">실제 납입 기준</span></div>
- <div class="principal"><span>누적 투자원금</span><strong id="invest-total">0원</strong></div>
- <div class="principal-split"><span>시작 원금 <b id="invest-opening-display">0원</b></span><span>체크한 납입액 <b id="invest-added">0원</b></span></div>
- <div class="investment-check"><span id="invest-date" class="muted small"></span><h3 id="invest-question">90,000원 투자했나요?</h3><div class="yes-no"><button type="button" id="invest-yes" onclick="markInvestment('yes')" aria-pressed="false">Yes <small>투자했어요</small></button><button type="button" id="invest-no" onclick="markInvestment('no')" aria-pressed="false">No <small>아직 안 했어요</small></button></div><p id="invest-check-status" role="status" class="muted small"></p><button class="text-button" onclick="clearInvestmentDay()">이 날짜 체크 초기화</button></div>
- <details class="investment-settings"><summary>시작 원금 · 일 투자금 설정</summary><label for="invest-opening">체크 기록을 시작하기 전 투자원금 (원)</label><input type="text" inputmode="numeric" id="invest-opening" oninput="formatMoneyInput(this)"><label for="invest-daily">하루 투자 체크 금액 (원)</label><input type="text" inputmode="numeric" id="invest-daily" oninput="formatMoneyInput(this)"><button class="compact-primary" onclick="saveInvestmentSettings()">투자 설정 저장</button><p class="muted small">기존 체크의 납입 금액은 유지됩니다. 평가금액·투자 손익은 포함하지 않습니다.</p></details>
- <p class="muted small">날짜는 위의 기준 일자와 연결됩니다. 투자 체크는 원금에만 반영하며 소득·지출에서 다시 차감하지 않습니다.</p>
-</section>
-  <div class="card" id="calendar-module">
-    <div class="cal-header">
-      <button type="button" onclick="changeMonth(-1)" style="background:none;border:none;color:#fff;font-size:1.9500000000000002rem;cursor:pointer;padding:0 10px;">◀</button>
-      <span id="cal-month-title">2026년 10월</span>
-      <button type="button" onclick="changeMonth(1)" style="background:none;border:none;color:#fff;font-size:1.9500000000000002rem;cursor:pointer;padding:0 10px;">▶</button>
-    </div>
-    <div class="cal-grid">
-      <div class="day-name">일</div><div class="day-name">월</div><div class="day-name">화</div>
-      <div class="day-name">수</div><div class="day-name">목</div><div class="day-name">금</div><div class="day-name">토</div>
-    </div>
-    <div class="cal-grid" id="cal-cells"></div><div class="calendar-legend"><span><i class="due-dot"></i>고정비 출금 예정</span><span><i class="friday-dot"></i>금요일 정산</span><span><i class="invest-dot"></i>투자 완료</span></div><div id="calendar-agenda" class="calendar-agenda"></div>
-  </div>
-
-  <div class="card" id="stats-module">
+<div class="card" id="stats-module">
     <div class="tab-nav">
       <button type="button" class="tab-btn active" id="tab-btn-week" data-stats-tab="week">주간 (수~화)</button>
       <button type="button" class="tab-btn" id="tab-btn-month" data-stats-tab="month">월말 결산</button>
@@ -448,6 +461,36 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     </div>
   </div>
 
+<details class="secondary-module">
+  <summary><span>투자원금</span><small>누적 금액과 일별 체크</small></summary>
+  <section class="card investment-card" id="investment-module">
+ <div class="section-heading"><div><span class="eyebrow">BUILD YOUR PRINCIPAL</span><h2>매일 쌓는 투자원금</h2></div><span class="pill invest">실제 납입 기준</span></div>
+ <div class="principal"><span>누적 투자원금</span><strong id="invest-total">0원</strong></div>
+ <div class="principal-split"><span>시작 원금 <b id="invest-opening-display">0원</b></span><span>체크한 납입액 <b id="invest-added">0원</b></span></div>
+ <div class="investment-check"><span id="invest-date" class="muted small"></span><h3 id="invest-question">90,000원 투자했나요?</h3><div class="yes-no"><button type="button" id="invest-yes" onclick="markInvestment('yes')" aria-pressed="false">Yes <small>투자했어요</small></button><button type="button" id="invest-no" onclick="markInvestment('no')" aria-pressed="false">No <small>아직 안 했어요</small></button></div><p id="invest-check-status" role="status" class="muted small"></p><button class="text-button" onclick="clearInvestmentDay()">이 날짜 체크 초기화</button></div>
+ <details class="investment-settings"><summary>시작 원금 · 일 투자금 설정</summary><label for="invest-opening">체크 기록을 시작하기 전 투자원금 (원)</label><input type="text" inputmode="numeric" id="invest-opening" oninput="formatMoneyInput(this)"><label for="invest-daily">하루 투자 체크 금액 (원)</label><input type="text" inputmode="numeric" id="invest-daily" oninput="formatMoneyInput(this)"><button class="compact-primary" onclick="saveInvestmentSettings()">투자 설정 저장</button><p class="muted small">기존 체크의 납입 금액은 유지됩니다. 평가금액·투자 손익은 포함하지 않습니다.</p></details>
+ <p class="muted small">날짜는 위의 기준 일자와 연결됩니다. 투자 체크는 원금에만 반영하며 소득·지출에서 다시 차감하지 않습니다.</p>
+</section>
+</details>
+
+<details class="secondary-module">
+  <summary><span>달력·출금 일정</span><small>날짜별 수입과 고정비 예정 확인</small></summary>
+  <div class="card" id="calendar-module">
+    <div class="cal-header">
+      <button type="button" onclick="changeMonth(-1)" style="background:none;border:none;color:#fff;font-size:1.9500000000000002rem;cursor:pointer;padding:0 10px;">◀</button>
+      <span id="cal-month-title">2026년 10월</span>
+      <button type="button" onclick="changeMonth(1)" style="background:none;border:none;color:#fff;font-size:1.9500000000000002rem;cursor:pointer;padding:0 10px;">▶</button>
+    </div>
+    <div class="cal-grid">
+      <div class="day-name">일</div><div class="day-name">월</div><div class="day-name">화</div>
+      <div class="day-name">수</div><div class="day-name">목</div><div class="day-name">금</div><div class="day-name">토</div>
+    </div>
+    <div class="cal-grid" id="cal-cells"></div><div class="calendar-legend"><span><i class="due-dot"></i>고정비 출금 예정</span><span><i class="friday-dot"></i>금요일 정산</span><span><i class="invest-dot"></i>투자 완료</span></div><div id="calendar-agenda" class="calendar-agenda"></div>
+  </div>
+</details>
+
+<details class="secondary-module">
+  <summary><span>백업·복원</span><small>기록을 파일로 저장하거나 불러오기</small></summary>
   <div class="card" id="backup-module" style="font-size:1.275rem;">
     <div class="card-title">내 기록 백업 · 복원</div>
     <div style="display:flex; gap:8px;">
@@ -456,6 +499,8 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
       <button type="button" style="flex:1; height:44px; background:#1e293b; color:#fff; border:1px solid var(--border); border-radius:8px; font-weight:700;" onclick="document.getElementById('file-import').click()">데이터 복원</button>
     </div>
   </div>
+</details>
+
 <div class="card" id="install-card" style="font-size:1.275rem;">
   <div class="card-title">휴대폰에 앱 설치</div>
   <button type="button" class="btn-main" id="install-app" hidden>앱 설치</button>
@@ -617,6 +662,7 @@ function aggregate(filter) {
     if(p.delivery>0&&!Object.hasOwn(settlements,weekStart(date)))data.pending.add(weekStart(date));
     for(const expense of rec.expenses||[]){const v=Number(expense.amount)||0;data.expense+=v;data.expenseCount++;const label=expenseAnalysisCategory(expense);data.categories[label]=(data.categories[label]||0)+v;data.categoryCounts[label]=(data.categoryCounts[label]||0)+1;}
   }
+  data.investment=Object.entries(investment.days||{}).filter(([date,row])=>filter(date)&&row?.status==='yes').reduce((sum,[,row])=>sum+(Number(row.amount)||0),0);
   data.net=data.gross-data.deduction;data.remaining=data.net-data.expense;data.goal=getDailyTarget()*data.days;data.surplus=data.remaining-data.goal;
   return data;
 }
@@ -628,17 +674,22 @@ function spendingChart(data) {
   return `<div class="spend-summary"><span class="spend-summary-label">총 지출 · ${data.expenseCount}건</span><strong class="spend-summary-total">${money(data.expense)}</strong><div class="spend-summary-top"><span>가장 많이 쓴 항목</span><strong>${esc(top.name)} · ${money(top.value)} (${topPct.toFixed(1)}%)</strong></div></div>
     <div class="expense-compact-list" aria-label="분류별 지출 합계">${rows.map(({name,value,count})=>{const pct=value/data.expense*100;return `<div class="expense-compact-row"><div class="expense-compact-head"><span class="expense-compact-name">${esc(name)} · ${count}회</span><span class="expense-compact-value">${money(value)} <small>${pct.toFixed(1)}%</small></span></div><div class="expense-compact-track"><span style="width:${pct}%"></span></div></div>`;}).join('')}</div>`;
 }
-function fixedCostForPeriod(period){const monthly=getMonthlyFixedTotal();if(period==='week')return Math.round(monthly*12/52);if(period==='half')return monthly*6;if(period==='year')return monthly*12;return monthly;}
+function fixedCostForPeriod(period){const monthly=fixedExpenses.filter(item=>!isInvestment(item)).reduce((sum,item)=>sum+(Number(item.amount)||0),0);if(period==='week')return Math.round(monthly*12/52);if(period==='half')return monthly*6;if(period==='year')return monthly*12;return monthly;}
 function overviewMarkup(data,period='week') {
-  const rate=data.net>0?data.expense/data.net*100:null;
-  const provisional=data.pending.size>0;
-  const periodFixed=fixedCostForPeriod(period),afterFixed=data.net-data.expense-periodFixed;
-  const fixedBasis=period==='week'?'월 고정비·투자 목표 × 12 ÷ 52':period==='half'?'월 고정비·투자 목표 × 6':period==='year'?'월 고정비·투자 목표 × 12':'월 고정비·투자 목표 × 1';
-  return `<div class="metrics-grid">${metric('총소득 · 공제 전',data.gross,'blue')}${metric('실제 공제액',data.deduction)}${metric(provisional?'공제 후 소득 · 미확정 포함':'공제 후 소득',data.net,'mint')}${metric('변동지출',data.expense,'orange')}<div class="metric formula-metric"><span>고정비·투자 목표 차감 후 잔액</span><strong class="${afterFixed<0?'negative':'positive'}">${money(afterFixed)}</strong><small>총소득 ${money(data.gross)} − 실제 공제액 ${money(data.deduction)} − 변동지출 ${money(data.expense)} − 기간 고정비·투자 목표 ${money(periodFixed)}</small><small>고정비 환산: ${fixedBasis}</small></div></div>
-  <p class="muted small">배달 ${money(data.delivery)} + 추가수입 ${money(data.extra)}${provisional?` · 공제 미입력 ${data.pending.size}주`:''}</p>
-  <div class="balance-band"><span>변동지출 후 남은 돈${provisional?' · 잠정':''}</span><strong class="${data.remaining<0?'negative':''}">${money(data.remaining)}</strong><small>고정비·투자 실제 출금 전 금액</small></div>
-  <div class="awareness"><div><strong>${rate===null?'—':rate.toFixed(1)+'%'}</strong><span>소득 대비 변동지출${provisional?' · 잠정':''}</span></div><div class="track"><div style="width:${rate===null?0:Math.min(rate,100)}%;background:${rate>50?'var(--warning)':'var(--primary)'}"></div></div><p>${rate===null?'소득을 입력하면 지출률을 계산합니다.':rate>100?'수입보다 지출이 많아요. 가장 큰 항목부터 확인해 보세요.':`소득 10만원당 약 ${money(Math.round(rate*1000))}을 쓰고 있어요.`}</p></div>
-  <div class="goal-line"><span>기록일 ${data.days}일 기준 고정비·투자 목표</span><b>${money(data.goal)}</b><span>목표 충당 후 여유${provisional?' · 잠정':''}</span><b class="${data.surplus<0?'negative':'positive'}">${money(data.surplus)}</b></div>`;
+  const provisional=data.pending.size>0,periodFixed=fixedCostForPeriod(period);
+  const afterFixed=data.gross-data.deduction-data.expense-(data.investment||0)-periodFixed;
+  return `<div class="settlement-summary-grid">
+    ${metric(provisional?'총수입 · 잠정':'총수입',data.gross,'blue')}
+    ${metric('공제금액',data.deduction)}
+    ${metric('기타수입',data.extra,'settlement-extra-income')}
+    ${metric('총지출',data.expense,'orange')}
+  </div>
+  <p class="muted small">수입 구성: 배달 ${money(data.delivery)} + 기타수입 ${money(data.extra)}${provisional?` · 공제 미입력 ${data.pending.size}주`:''}</p>
+  <div class="settlement-period-costs">
+    ${metric('실제 투자금',data.investment||0,'mint')}
+    ${metric('기간 고정비',periodFixed)}
+  </div>
+  <div class="balance-band settlement-final"><span>공제·지출·투자금·고정비 제외 후 남은 금액${provisional?' · 잠정':''}</span><strong class="${afterFixed<0?'negative':'positive'}">${money(afterFixed)}</strong><small class="settlement-formula">총수입 ${money(data.gross)} − 공제 ${money(data.deduction)} − 총지출 ${money(data.expense)} − 실제 투자금 ${money(data.investment||0)} − 기간 고정비 ${money(periodFixed)}</small></div>`;
 }
 function renderWeeklyStatsBase() {
   const openWeeks=new Set([...document.querySelectorAll('.week-card[open]')].map(el=>el.dataset.start));
