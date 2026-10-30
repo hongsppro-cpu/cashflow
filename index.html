@@ -334,7 +334,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     <div><span>실근무시간</span><b id="attendance-work-time">00:00</b></div>
     <div><span>휴식시간</span><b id="attendance-break-time">00:00</b></div>
   </div>
-  <div class="attendance-rate"><span>오늘 입력 수입 기준 환산 시급</span><strong id="attendance-hourly-rate">—</strong><small>오늘 수입 ÷ 실근무시간</small></div>
+  <div class="attendance-rate"><span>당일 수입 기준 환산 시급</span><strong id="attendance-hourly-rate">—</strong><small>해당 날짜 수입 ÷ 해당 날짜 실근무시간</small></div>
   <div class="attendance-buttons">
     <button type="button" data-app-action="clock-in">출근</button>
     <button type="button" data-app-action="clock-out">퇴근</button>
@@ -929,6 +929,14 @@ function formatDuration(ms,seconds=false){
   const total=Math.max(0,Math.floor(ms/1000)),h=Math.floor(total/3600),m=Math.floor(total%3600/60),sec=total%60;
   return seconds?`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`:`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
 }
+function dailyAttendanceIncome(date){
+  // The attendance rate uses only the income recorded for the attendance date.
+  // If that date is selected in the form, use its current values, including an intentional zero.
+  if($('input-date')?.value===date){
+    return (parseMoney($('input-income').value)||0)+(parseMoney($('input-extra').value)||0);
+  }
+  return incomeParts(drafts[date]||db[date]||{}).gross;
+}
 function renderAttendance(){
   if(!$('attendance-clock'))return;
   const today=getKSTDateString(),day=attendanceDay(today),now=Date.now(),active=activeAttendanceSession(day);
@@ -938,12 +946,8 @@ function renderAttendance(){
   $('attendance-clock').textContent=formatDuration(workMs,true);
   $('attendance-work-time').textContent=formatDuration(workMs);
   $('attendance-break-time').textContent=formatDuration(breakMs);
-  let gross=incomeParts(db[today]||drafts[today]||{}).gross;
-  if($('input-date')?.value===today){
-    const deliveryText=$('input-income').value.trim(),extraText=$('input-extra').value.trim();
-    if(deliveryText||extraText)gross=(parseMoney(deliveryText)||0)+(parseMoney(extraText)||0);
-  }
-  $('attendance-hourly-rate').textContent=workMs>0&&gross>0?money(gross*3600000/workMs):workMs>0?'수입 입력 후 표시':'—';
+  const dailyGross=dailyAttendanceIncome(today);
+  $('attendance-hourly-rate').textContent=workMs>0&&dailyGross>0?money(dailyGross*3600000/workMs):workMs>0?'오늘 수입 입력 후 표시':'—';
   $('attendance-state').textContent=active?(active.pausedAt?'휴식 중':'근무 중')+' · '+new Date(active.startAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):day.sessions.length?'오늘 근무 종료 · 다시 출근을 기록할 수 있어요.':'출근 기록 대기';
   $('attendance-state').classList.toggle('is-working',!!active&&!active.pausedAt);
   $('attendance-state').classList.toggle('is-paused',!!active&&!!active.pausedAt);
