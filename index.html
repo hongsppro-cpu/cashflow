@@ -887,7 +887,10 @@ function initApp(){
   for(const id of ['month-year-select','half-year-select','year-select'])$(id).innerHTML=[...years].sort().map(y=>`<option value="${y}" ${y===new Date().getFullYear()?'selected':''}>${y}년</option>`).join('');
   $('month-select').value=new Date().getMonth()+1;$('half-select').value=new Date().getMonth()<6?'1':'2';$('year-select').value=String(new Date().getFullYear());
   const last=localStorage.getItem(LAST_DATE_KEY),date=validDate(last)?last:getKSTDateString();currentDate=dateOf(date);onDateChanged(date);renderAll();
-  window.setInterval(renderAttendance,1000);
+  window.setInterval(()=>{if(!document.hidden)renderAttendance();},1000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderAttendance();});
+  window.addEventListener('focus',renderAttendance);
+  window.addEventListener('pageshow',renderAttendance);
 }
 document.addEventListener('input',e=>{if(['input-income','input-extra','input-detail','input-expense-val'].includes(e.target.id)){saveDraft();}});
 document.addEventListener('change',e=>{if(e.target.id==='select-category')saveDraft();});
