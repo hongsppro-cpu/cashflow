@@ -221,13 +221,21 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     .attendance-rate{margin-top:10px;padding:12px;border-radius:13px;background:#e9f6ef}
     .attendance-rate strong{display:block;margin-top:2px;color:#166534;font-size:1.55rem;font-variant-numeric:tabular-nums}
     .attendance-rate small{display:block;color:#64748b;font-size:.75rem}
+    .attendance-undo-note{display:block;margin-top:7px;color:#64748b;font-size:.76rem;line-height:1.4}
     .attendance-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
     .attendance-buttons button{min-height:46px;border:0;border-radius:11px;background:#e2e8f0;color:#1e293b;font-size:1rem;font-weight:800;cursor:pointer}
-    .attendance-buttons button[data-app-action="clock-in"]{background:#dbeafe;color:#1d4ed8}
-    .attendance-buttons button[data-app-action="clock-out"]{background:#fee2e2;color:#b91c1c}
-    .attendance-buttons button[data-app-action="pause-work"]{background:#fef3c7;color:#92400e}
-    .attendance-buttons button[data-app-action="resume-work"]{background:#dcfce7;color:#166534}
-    .attendance-buttons button:disabled{opacity:.42;cursor:default}
+    .attendance-buttons button[data-app-action="clock-in"]{background:#1d4ed8;color:#fff;box-shadow:0 3px 8px #1d4ed833}
+    .attendance-buttons button[data-app-action="clock-out"]{background:#b91c1c;color:#fff;box-shadow:0 3px 8px #b91c1c33}
+    .attendance-buttons button[data-app-action="pause-work"]{background:#fde68a;color:#713f12;box-shadow:0 3px 8px #d9770633}
+    .attendance-buttons button[data-app-action="resume-work"]{background:#15803d;color:#fff;box-shadow:0 3px 8px #15803d33}
+    .attendance-buttons button:active:not(:disabled){transform:translateY(1px);filter:brightness(.92)}
+    .attendance-buttons button:disabled{opacity:.42;cursor:default;box-shadow:none}
+    .attendance-buttons .attendance-undo{grid-column:1/-1;min-height:42px;background:#e2e8f0;color:#334155;border:1px dashed #94a3b8;box-shadow:none}
+    .attendance-buttons .attendance-undo:disabled{background:#f1f5f9;color:#94a3b8;border-color:#cbd5e1}
+    .hero-month-expense{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:13px 0 2px;padding:12px 14px;border:1px solid #ffffff55;border-radius:13px;background:#ffffff18;color:#f8fafc}
+    .hero-month-expense span{font-size:1rem;color:#e4edf8}
+    .hero-month-expense strong{font-size:1.35rem;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;text-align:right}
+    @media(max-width:480px){.hero-month-expense{margin:10px 0 2px;padding:10px 12px}.hero-month-expense span{font-size:.9rem}.hero-month-expense strong{font-size:1.1rem}}
       #detail-input-wrap[hidden]{display:none!important}
     #detail-input-wrap{min-width:0}
     .spend-summary{display:grid;grid-template-columns:1fr auto;gap:8px 12px;padding:14px;border:1px solid #d6e4dc;border-radius:14px;background:#f1f8f4;color:#1e293b}
@@ -340,12 +348,15 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     <button type="button" data-app-action="clock-out">퇴근</button>
     <button type="button" data-app-action="pause-work">멈춤</button>
     <button type="button" data-app-action="resume-work">다시시작</button>
+    <button type="button" class="attendance-undo" data-app-action="undo-attendance" disabled>마지막 동작 취소</button>
   </div>
+  <small class="attendance-undo-note">타이머 버튼을 잘못 눌렀다면 마지막 동작을 한 번 취소할 수 있어요.</small>
 </section>
 
 <section class="hero-card" aria-label="월 누적 공제 후 소득">
  <div class="hero-top"><span id="hero-month">이번 달 누적 합계</span><span class="hero-tag">MONTH TO DATE</span></div>
  <span class="hero-label">월 누적 공제 후 소득</span><strong id="hero-net">0원</strong><p id="hero-status">공제 반영 기준</p>
+ <div class="hero-month-expense"><span>이번 달 변동지출</span><strong id="hero-expense">0원</strong></div>
  <div id="hero-settlement-entry" class="hero-settlement-entry">
   <label for="hero-settlement-period">공제 입력 주간 선택</label>
   <select id="hero-settlement-period" onchange="renderHeroSettlementEntry()"></select>
@@ -359,14 +370,6 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
  </div>
  <p class="hero-footnote">이번 달 수입에서 반영된 공제를 뺀 누적 금액 · 미정산 주간은 잠정 포함</p>
 </section>
-<div class="monthly-summary-grid" aria-label="이번 달 지출 요약">
- <article class="monthly-summary-card">
-  <span class="monthly-summary-label">이번 달 변동지출</span><strong class="monthly-summary-value" id="hero-expense">0원</strong>
- </article>
- <article class="monthly-summary-card">
-  <span class="monthly-summary-label">지출 후 남은 돈 · 잠정 포함</span><strong class="monthly-summary-value" id="hero-left">0원</strong>
- </article>
-</div>
   <div class="target-banner">
     <div>
       <div class="target-label">하루에 확보할 목표금</div>
@@ -588,6 +591,7 @@ const LAST_DATE_KEY = 'delivery_flow_last_date';
 const SETTLEMENT_KEY = 'delivery_settlements_v3';
 const INVESTMENT_KEY = 'delivery_investment_v3';
 const ATTENDANCE_KEY = 'delivery_attendance_v1';
+const ATTENDANCE_UNDO_KEY = 'delivery_attendance_undo_v1';
 const DEFAULT_FIXED_EXPENSES = [];
 const $ = id => document.getElementById(id);
 const money = value => Math.round(Number(value) || 0).toLocaleString('ko-KR') + '원';
@@ -636,6 +640,7 @@ let fixedExpenses=readStore(FIXED_STORAGE_KEY,clone(DEFAULT_FIXED_EXPENSES));
 let settlements=readStore(SETTLEMENT_KEY,{});
 let investment=readStore(INVESTMENT_KEY,{openingPrincipal:0,dailyAmount:90000,days:{}});
 let attendance=readStore(ATTENDANCE_KEY,{});
+let attendanceUndo=readStore(ATTENDANCE_UNDO_KEY,null);
 if(!Array.isArray(fixedExpenses))fixedExpenses=[];
 investment={openingPrincipal:0,dailyAmount:90000,days:{},...investment};
 let currentDate=new Date();
@@ -953,6 +958,8 @@ function renderAttendance(){
   $('attendance-state').classList.toggle('is-paused',!!active&&!!active.pausedAt);
   $('attendance-state').classList.toggle('is-done',!active&&day.sessions.length>0);
   const paused=!!(active&&active.pausedAt);
+  const undoButton=$('[data-app-action="undo-attendance"]');
+  if(undoButton){const canUndo=!!attendanceUndo&&attendanceUndo.date===today;undoButton.disabled=!canUndo;undoButton.title=canUndo?'마지막 타이머 동작을 취소합니다.':'취소할 타이머 동작이 없습니다.';}
   document.querySelector('[data-app-action="clock-in"]').disabled=!!active;
   document.querySelector('[data-app-action="clock-out"]').disabled=!active;
   document.querySelector('[data-app-action="pause-work"]').disabled=!active||paused;
@@ -960,6 +967,7 @@ function renderAttendance(){
 }
 function attendanceAction(action){
   const date=getKSTDateString(),next=clone(attendance||{}),day=next[date]&&Array.isArray(next[date].sessions)?next[date]:{sessions:[]},now=new Date(),stamp=now.toISOString();
+  const previous=Object.hasOwn(attendance||{},date)?clone(attendance[date]):null;
   let session=activeAttendanceSession(day);
   if(action==='clock-in'){
     if(session){showToast('현재 근무 기록을 먼저 퇴근 처리해 주세요.',false);return;}
@@ -975,8 +983,16 @@ function attendanceAction(action){
     session.endAt=stamp;
   }
   next[date]=day;
-  try{persist(ATTENDANCE_KEY,next);attendance=next;renderAttendance();showToast(action==='clock-in'?'출근 시간을 기록했습니다.':action==='clock-out'?'퇴근 시간을 기록하고 근무시간을 계산했습니다.':action==='pause'?'휴식 시작을 기록했습니다.':'근무를 다시 시작했습니다.');}
+  const undo={date,previous,action,createdAt:stamp};
+  try{writeBatch([[ATTENDANCE_KEY,next],[ATTENDANCE_UNDO_KEY,undo]]);attendance=next;attendanceUndo=undo;renderAttendance();showToast(action==='clock-in'?'출근 시간을 기록했습니다.':action==='clock-out'?'퇴근 시간을 기록하고 근무시간을 계산했습니다.':action==='pause'?'휴식 시작을 기록했습니다.':'근무를 다시 시작했습니다.');}
   catch{showToast('출퇴근 기록을 저장하지 못했습니다.',false);}
+}
+function undoAttendanceAction(){
+  if(!attendanceUndo||attendanceUndo.date!==getKSTDateString()){showToast('취소할 타이머 동작이 없습니다.',false);return;}
+  const undo=attendanceUndo,next=clone(attendance||{});
+  if(undo.previous)next[undo.date]=clone(undo.previous);else delete next[undo.date];
+  try{writeBatch([[ATTENDANCE_KEY,next],[ATTENDANCE_UNDO_KEY,null]]);attendance=next;attendanceUndo=null;renderAttendance();showToast('마지막 타이머 동작을 취소했습니다.');}
+  catch{showToast('동작을 취소하지 못했습니다. 저장 공간을 확인해 주세요.',false);}
 }
 function renderAll(){
   renderAttendance();
@@ -984,7 +1000,7 @@ function renderAll(){
   const invest=fixedExpenses.filter(isInvestment).reduce((s,i)=>s+i.amount,0);$('fixed-split').textContent=`생활 고정비 ${money(getMonthlyFixedTotal()-invest)} · 투자 목표 ${money(invest)}`;
   $('modal-fixed-split').textContent=$('fixed-split').textContent;
   const today=getKSTDateString(),month=today.slice(0,7),data=aggregate(d=>d.startsWith(month));
-  $('hero-month').textContent=`${Number(month.slice(5))}월 누적 합계`;$('hero-net').textContent=money(data.net);$('hero-status').textContent=data.pending.size?`미정산 공제 ${data.pending.size}주 · 잠정 포함`:'공제 반영 기준';$('hero-expense').textContent=money(data.expense);$('hero-left').textContent=money(data.remaining);
+  $('hero-month').textContent=`${Number(month.slice(5))}월 누적 합계`;$('hero-net').textContent=money(data.net);$('hero-status').textContent=data.pending.size?`미정산 공제 ${data.pending.size}주 · 잠정 포함`:'공제 반영 기준';$('hero-expense').textContent=money(data.expense);
   renderFixedExpensesList();updateCalculationPreview();renderInvestment();renderCalendar();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();
 }
 function recomputeAllSystem(notice=false){renderAll();if(notice)showToast('고정비와 통계를 갱신했습니다.');}
@@ -1003,10 +1019,10 @@ function validateBackup(parsed){
   return {records,fixed,settlement,inv,attendance:attendanceData,draft:parsed.drafts||{},settlementDrafts:isMap(parsed.settlementDrafts)?parsed.settlementDrafts:{}};
 }
 function restoreBackup(parsed){
-  const data=validateBackup(parsed);const entries=[[MASTER_STORAGE_KEY,data.records],[FIXED_STORAGE_KEY,data.fixed],[DRAFT_STORAGE_KEY,data.draft],[SETTLEMENT_KEY,data.settlement],[INVESTMENT_KEY,data.inv],[ATTENDANCE_KEY,data.attendance],['delivery_settlement_drafts_v3',data.settlementDrafts]];
+  const data=validateBackup(parsed);const entries=[[MASTER_STORAGE_KEY,data.records],[FIXED_STORAGE_KEY,data.fixed],[DRAFT_STORAGE_KEY,data.draft],[SETTLEMENT_KEY,data.settlement],[INVESTMENT_KEY,data.inv],[ATTENDANCE_KEY,data.attendance],[ATTENDANCE_UNDO_KEY,null],['delivery_settlement_drafts_v3',data.settlementDrafts]];
   const previous=entries.map(([key])=>[key,localStorage.getItem(key)]);
   try{for(const [key,value]of entries)persist(key,value);}catch(error){for(const [key,value]of previous)try{if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,value);}catch{}throw error;}
-  db=loadDatabase();fixedExpenses=data.fixed;drafts=data.draft;settlements=data.settlement;investment=clone(data.inv);attendance=clone(data.attendance);onDateChanged($('input-date').value);renderAll();
+  db=loadDatabase();fixedExpenses=data.fixed;drafts=data.draft;settlements=data.settlement;investment=clone(data.inv);attendance=clone(data.attendance);attendanceUndo=null;onDateChanged($('input-date').value);renderAll();
 }
 function importData(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);validateBackup(parsed);if(!confirm('백업 내용으로 현재 기록 전체를 교체할까요?'))return;restoreBackup(parsed);showToast('백업을 복원했습니다.');}catch{showToast('복원하지 못했습니다. 백업 형식과 저장 공간을 확인해 주세요.',false);}finally{event.target.value='';}};reader.readAsText(file);}
 function initApp(){
@@ -1033,6 +1049,7 @@ document.addEventListener('click',e=>{
       else if(action.dataset.appAction==='clock-out')attendanceAction('clock-out');
       else if(action.dataset.appAction==='pause-work')attendanceAction('pause');
       else if(action.dataset.appAction==='resume-work')attendanceAction('resume');
+      else if(action.dataset.appAction==='undo-attendance')undoAttendanceAction();
     }catch(error){console.error('화면 조작 오류:',error);showToast('화면을 처리하지 못했습니다. 새로고침 후 다시 시도해 주세요.',false);}
     return;
   }
