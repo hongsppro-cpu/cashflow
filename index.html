@@ -286,6 +286,20 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     .settlement-period-costs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
     .settlement-period-costs .metric{min-width:0}
     .settlement-extra-income{color:#2c9b69!important}
+    .hourly-panel{margin:16px 0;padding:14px;border:1px solid #dbe3ec;border-radius:14px;background:#f8fafc;color:#1e293b}
+    .hourly-panel>summary{display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;list-style:none;font-weight:800}
+    .hourly-panel>summary::-webkit-details-marker{display:none}
+    .hourly-panel>summary::after{content:'＋';color:#475569}
+    .hourly-panel[open]>summary::after{content:'−'}
+    .hourly-list{margin-top:12px}
+    .hourly-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-weight:800}
+    .hourly-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid #e2e8f0}
+    .hourly-row>div{min-width:0}
+    .hourly-row strong{display:block;color:#334155;font-size:.95rem}
+    .hourly-row small{display:block;margin-top:3px;color:#64748b;font-size:.78rem;line-height:1.4}
+    .hourly-row>b{flex-shrink:0;color:#14532d;font-size:1rem;font-variant-numeric:tabular-nums;text-align:right}
+    .hourly-note{font-size:.77rem;margin:10px 0 0}
+    @media(max-width:380px){.hourly-panel{padding:11px}.hourly-row{align-items:flex-start}.hourly-row>b{font-size:.9rem}.hourly-row small{font-size:.72rem}}
       .container{box-sizing:border-box;width:100%;max-width:620px}
     .container>*{box-sizing:border-box;max-width:100%;min-width:0}
     .attendance-card,.hero-card,.card,.target-banner,.monthly-summary-grid{box-sizing:border-box;width:100%;max-width:100%;min-width:0}
@@ -710,7 +724,18 @@ function spendingChart(data) {
     <div class="expense-compact-list" aria-label="분류별 지출 합계">${rows.map(({name,value,count})=>{const pct=value/data.expense*100;return `<div class="expense-compact-row"><div class="expense-compact-head"><span class="expense-compact-name">${esc(name)} · ${count}회</span><span class="expense-compact-value">${money(value)} <small>${pct.toFixed(1)}%</small></span></div><div class="expense-compact-track"><span style="width:${pct}%"></span></div></div>`;}).join('')}</div>`;
 }
 function fixedCostForPeriod(period){const monthly=fixedExpenses.filter(item=>!isInvestment(item)).reduce((sum,item)=>sum+(Number(item.amount)||0),0);if(period==='week')return Math.round(monthly*12/52);if(period==='half')return monthly*6;if(period==='year')return monthly*12;return monthly;}
-function overviewMarkup(data,period='week') {
+function dailyHourlyMarkup(filter,period='week'){
+  const dates=Object.keys(attendance||{}).filter(date=>filter(date)&&attendanceDay(date).sessions.length>0).sort();
+  const rows=dates.map(date=>{
+    const day=attendanceDay(date),workMs=day.sessions.reduce((sum,session)=>sum+sessionWorkMs(session),0),gross=dailyAttendanceIncome(date);
+    const rate=workMs>0&&gross>0?money(gross*3600000/workMs)+' /시간':'수입 또는 근무시간 확인';
+    const weekday=['일','월','화','수','목','금','토'][dateOf(date).getDay()];
+    return `<div class="hourly-row"><div><strong>${date.slice(5).replace('-','/')} (${weekday})</strong><small>당일 수입 ${money(gross)} · 실근무 ${formatDuration(workMs)}</small></div><b>${rate}</b></div>`;
+  }).join('');
+  const summary=`<div class="hourly-heading"><strong>날짜별 환산 시급</strong><span class="pill">${dates.length}일</span></div>${rows||'<p class="muted small">이 기간에 출퇴근 타이머 기록이 없습니다.</p>'}<p class="muted small hourly-note">당일 배달·기타 총수입 ÷ 타이머 실근무시간으로 계산합니다. 공제는 반영하지 않습니다.</p>`;
+  return period==='week'? `<section class="hourly-panel">${summary}</section>`:`<details class="hourly-panel"><summary><span>날짜별 환산 시급</span><span class="pill">${dates.length}일</span></summary><div class="hourly-list">${rows||'<p class="muted small">이 기간에 출퇴근 타이머 기록이 없습니다.</p>'}<p class="muted small hourly-note">당일 배달·기타 총수입 ÷ 타이머 실근무시간으로 계산합니다. 공제는 반영하지 않습니다.</p></div></details>`;
+}
+function overviewMarkup(data,period='week',filter=()=>true) {
   const provisional=data.pending.size>0,periodFixed=fixedCostForPeriod(period);
   const afterFixed=data.gross-data.deduction-data.expense-(data.investment||0)-periodFixed;
   return `<div class="settlement-summary-grid">
@@ -724,7 +749,7 @@ function overviewMarkup(data,period='week') {
     ${metric('실제 투자금',data.investment||0,'mint')}
     ${metric('기간 고정비',periodFixed)}
   </div>
-  <div class="balance-band settlement-final"><span>공제·지출·투자금·고정비 제외 후 남은 금액${provisional?' · 잠정':''}</span><strong class="${afterFixed<0?'negative':'positive'}">${money(afterFixed)}</strong><small class="settlement-formula">총수입 ${money(data.gross)} − 공제 ${money(data.deduction)} − 총지출 ${money(data.expense)} − 실제 투자금 ${money(data.investment||0)} − 기간 고정비 ${money(periodFixed)}</small></div>`;
+  <div class="balance-band settlement-final"><span>공제·지출·투자금·고정비 제외 후 남은 금액${provisional?' · 잠정':''}</span><strong class="${afterFixed<0?'negative':'positive'}">${money(afterFixed)}</strong><small class="settlement-formula">총수입 ${money(data.gross)} − 공제 ${money(data.deduction)} − 총지출 ${money(data.expense)} − 실제 투자금 ${money(data.investment||0)} − 기간 고정비 ${money(periodFixed)}</small></div>${dailyHourlyMarkup(filter,period)}`;
 }
 function renderWeeklyStatsBase() {
   const openWeeks=new Set([...document.querySelectorAll('.week-card[open]')].map(el=>el.dataset.start));
@@ -734,7 +759,7 @@ function renderWeeklyStatsBase() {
     const start=dates[0],end=dates[6],friday=fridayOf(start),data=aggregate(d=>d>=start&&d<=end),entry=settlements[start];
     const section=document.createElement('details');section.className='week-card';section.dataset.start=start;
     const selected=$('input-date').value; section.open=openWeeks.has(start)||(selected>=start&&selected<=end);
-    section.innerHTML=`<summary><div><span class="eyebrow">플랫폼 정산 주기</span><strong>${start.slice(5).replace('-','/')} 수 — ${end.slice(5).replace('-','/')} 화</strong></div><span class="pill ${entry?'done':''}">${entry?'공제 입력 완료':'공제 미입력'}</span></summary><div class="week-body">${overviewMarkup(data,'week')}<h3 class="subheading">지출 습관 리포트</h3>${spendingChart(data)}</div>`;
+    section.innerHTML=`<summary><div><span class="eyebrow">플랫폼 정산 주기</span><strong>${start.slice(5).replace('-','/')} 수 — ${end.slice(5).replace('-','/')} 화</strong></div><span class="pill ${entry?'done':''}">${entry?'공제 입력 완료':'공제 미입력'}</span></summary><div class="week-body">${overviewMarkup(data,'week',d=>d>=start&&d<=end)}<h3 class="subheading">지출 습관 리포트</h3>${spendingChart(data)}</div>`;
     container.appendChild(section);
   }
 }
@@ -771,12 +796,17 @@ function clearSettlement(start) {
 }
 function renderAggregatedView(filter,id,title,period) {
   const data=aggregate(filter);
-  $(id).innerHTML=`<div class="section-heading"><h3>${esc(title)} 흐름</h3><span class="pill">최종 저장 기준</span></div>${overviewMarkup(data,period)}<p class="muted small">공제액은 해당 주 배달수입 비중으로 날짜별 배분해 기간 경계에서 중복 차감되지 않도록 집계합니다.</p><h3 class="subheading">지출 습관 리포트</h3>${spendingChart(data)}`;
+  $(id).innerHTML=`<div class="section-heading"><h3>${esc(title)} 흐름</h3><span class="pill">최종 저장 기준</span></div>${overviewMarkup(data,period,filter)}<p class="muted small">공제액은 해당 주 배달수입 비중으로 날짜별 배분해 기간 경계에서 중복 차감되지 않도록 집계합니다.</p><h3 class="subheading">지출 습관 리포트</h3>${spendingChart(data)}`;
 }
 function renderMonthStats(){const y=Number($('month-year-select').value),m=Number($('month-select').value);renderAggregatedView(d=>d.startsWith(`${y}-${String(m).padStart(2,'0')}`),'month-stats-container',`${y}년 ${m}월`,'month');}
 function renderHalfStats(){const y=Number($('half-year-select').value),h=Number($('half-select').value);renderAggregatedView(d=>{const [dy,dm]=d.split('-').map(Number);return dy===y&&(h===1?dm<=6:dm>=7);},'half-stats-container',`${y}년 ${h===1?'상':'하'}반기`,'half');}
 function renderYearStats(){const y=Number($('year-select').value);renderAggregatedView(d=>d.startsWith(`${y}-`),'year-stats-container',`${y}년`,'year');}
 function switchStatsTab(type){activeStats=type;for(const t of ['week','month','half','year']){$('tab-btn-'+t).classList.toggle('active',t===type);$('tab-'+t+'-content').style.display=t===type?'block':'none';}}
+let hourlySettlementRefreshTimer=null;
+function refreshHourlySettlementViews(){
+  clearTimeout(hourlySettlementRefreshTimer);
+  hourlySettlementRefreshTimer=setTimeout(()=>{renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();},250);
+}
 function saveDraft(){
   if(recordLocked)return;const date=$('input-date').value;if(!date)return;
   const delivery=parseMoney($('input-income').value)||0,extra=parseMoney($('input-extra').value)||0;
@@ -984,14 +1014,14 @@ function attendanceAction(action){
   }
   next[date]=day;
   const undo={date,previous,action,createdAt:stamp};
-  try{writeBatch([[ATTENDANCE_KEY,next],[ATTENDANCE_UNDO_KEY,undo]]);attendance=next;attendanceUndo=undo;renderAttendance();showToast(action==='clock-in'?'출근 시간을 기록했습니다.':action==='clock-out'?'퇴근 시간을 기록하고 근무시간을 계산했습니다.':action==='pause'?'휴식 시작을 기록했습니다.':'근무를 다시 시작했습니다.');}
+  try{writeBatch([[ATTENDANCE_KEY,next],[ATTENDANCE_UNDO_KEY,undo]]);attendance=next;attendanceUndo=undo;renderAttendance();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();showToast(action==='clock-in'?'출근 시간을 기록했습니다.':action==='clock-out'?'퇴근 시간을 기록하고 근무시간을 계산했습니다.':action==='pause'?'휴식 시작을 기록했습니다.':'근무를 다시 시작했습니다.');}
   catch{showToast('출퇴근 기록을 저장하지 못했습니다.',false);}
 }
 function undoAttendanceAction(){
   if(!attendanceUndo||attendanceUndo.date!==getKSTDateString()){showToast('취소할 타이머 동작이 없습니다.',false);return;}
   const undo=attendanceUndo,next=clone(attendance||{});
   if(undo.previous)next[undo.date]=clone(undo.previous);else delete next[undo.date];
-  try{writeBatch([[ATTENDANCE_KEY,next],[ATTENDANCE_UNDO_KEY,null]]);attendance=next;attendanceUndo=null;renderAttendance();showToast('마지막 타이머 동작을 취소했습니다.');}
+  try{writeBatch([[ATTENDANCE_KEY,next],[ATTENDANCE_UNDO_KEY,null]]);attendance=next;attendanceUndo=null;renderAttendance();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();showToast('마지막 타이머 동작을 취소했습니다.');}
   catch{showToast('동작을 취소하지 못했습니다. 저장 공간을 확인해 주세요.',false);}
 }
 function renderAll(){
@@ -1036,7 +1066,7 @@ function initApp(){
   window.addEventListener('focus',renderAttendance);
   window.addEventListener('pageshow',renderAttendance);
 }
-document.addEventListener('input',e=>{if(['input-income','input-extra','input-detail','input-expense-val'].includes(e.target.id)){saveDraft();}});
+document.addEventListener('input',e=>{if(['input-income','input-extra','input-detail','input-expense-val'].includes(e.target.id)){saveDraft();if(['input-income','input-extra'].includes(e.target.id)){renderAttendance();refreshHourlySettlementViews();}}});
 document.addEventListener('change',e=>{if(e.target.id==='select-category')saveDraft();});
 document.addEventListener('click',e=>{
   const action=e.target.closest('[data-app-action]');
