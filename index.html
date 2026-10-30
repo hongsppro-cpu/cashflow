@@ -331,7 +331,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 
     <div style="margin-top:14px; border-top:1px dashed var(--border); padding-top:12px;">
       <label for="select-category">지출 항목 추가 (카테고리)</label>
-      <div style="display:grid; grid-template-columns: 1fr 1.3fr; gap:8px;">
+      <div style="display:grid; grid-template-columns: minmax(0,1fr); gap:8px;">
         <select id="select-category" onchange="onCategoryChanged(this.value)" aria-label="지출 분류">
           <option value="담배">담배</option>
           <option value="음료">음료</option>
@@ -351,7 +351,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     </div>
 
     <div class="alert-box" id="food-warning-box">
-      ⚠️ 식비·간식비 과소비: 수입의 <span id="food-warning-pct">0</span>% 지출 (권장 15% 이하)
+      ⚠️ 식비·간식비·커피·음료 과소비: 수입의 <span id="food-warning-pct">0</span>% 지출 (권장 15% 이하)
     </div>
 
     <div class="result-grid">
@@ -734,7 +734,7 @@ function updateCalculationPreview(){
   $('disp-income').textContent=money(gross);$('disp-expense').textContent=money(expenses);$('disp-net').textContent=money(remaining);
   $('disp-result').textContent=money(remaining-getDailyTarget());$('disp-result').style.color=remaining>=getDailyTarget()?'var(--success)':'var(--danger)';
   $('daily-income-note').textContent='일일 금액은 공제 전 기준 · 실제 공제는 주간 결산에서 금요일에 입력';
-  const food=currentExpenses.filter(i=>['식비','간식비'].includes(i.category)).reduce((s,i)=>s+i.amount,0);
+  const food=currentExpenses.filter(i=>['식비','간식비','커피','음료'].includes(expenseAnalysisCategory(i))).reduce((s,i)=>s+i.amount,0);
   $('food-warning-box').style.display=gross>0&&food/gross>0.15?'block':'none';$('food-warning-pct').textContent=gross?Math.round(food/gross*100):0;
 }
 function saveDayRecord(){
