@@ -958,7 +958,7 @@ function renderAttendance(){
   $('attendance-state').classList.toggle('is-paused',!!active&&!!active.pausedAt);
   $('attendance-state').classList.toggle('is-done',!active&&day.sessions.length>0);
   const paused=!!(active&&active.pausedAt);
-  const undoButton=$('[data-app-action="undo-attendance"]');
+  const undoButton=document.querySelector('[data-app-action="undo-attendance"]');
   if(undoButton){const canUndo=!!attendanceUndo&&attendanceUndo.date===today;undoButton.disabled=!canUndo;undoButton.title=canUndo?'마지막 타이머 동작을 취소합니다.':'취소할 타이머 동작이 없습니다.';}
   document.querySelector('[data-app-action="clock-in"]').disabled=!!active;
   document.querySelector('[data-app-action="clock-out"]').disabled=!active;
