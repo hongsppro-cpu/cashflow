@@ -562,7 +562,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
   <summary><span>고정지출</span><small>지출일에 체크해 해당 날짜 기록에 반영</small></summary>
   <section class="card" id="fixed-cost-card">
     <div class="section-heading"><div><span class="eyebrow">SCHEDULED EXPENSE</span><h2>고정지출 관리</h2></div><span id="fixed-payment-date" class="pill"></span></div>
-    <p class="muted small">위에서 선택한 날짜의 예정 고정지출입니다. 실제 납부한 항목을 체크하면 해당 날짜 지출로 기록됩니다.</p>
+    <p class="muted small">등록한 고정지출이 모두 표시됩니다. 실제 납부한 날짜를 위 근로소득 카드에서 선택한 뒤 체크하세요. 예정일보다 일찍 또는 늦게 납부해도 선택한 날짜의 지출로 기록됩니다.</p>
     <div id="fixed-payment-list"></div>
     <h3 class="subheading">등록된 고정지출</h3>
     <div id="fixed-expenses-list-container"></div>
@@ -898,12 +898,13 @@ function renderFixedExpensesList(){
 function renderFixedPaymentChecklist(){
   const host=$('fixed-payment-list');if(!host)return;
   const date=$('input-date')?.value||getKSTDateString();$('fixed-payment-date').textContent=date;
-  const due=duesFor(date).map(item=>({item,index:fixedExpenses.indexOf(item)})).filter(row=>!isInvestment(row.item));
-  if(!due.length){host.innerHTML='<div class="empty-state">선택한 날짜에 예정된 고정지출이 없습니다.</div>';return;}
-  const record=drafts[date]||db[date]||{},expenses=record.expenses||[];
-  host.innerHTML=due.map(({item,index})=>{
-    const key=fixedItemKey(item,index),checked=expenses.some(exp=>exp.fixedExpenseId===key);
-    return `<label class="fixed-payment-row"><input type="checkbox" ${checked?'checked':''} onchange="toggleFixedPayment(${index},this.checked)"><span><strong>${esc(item.name)}</strong><small>예정 ${money(item.amount)}</small></span><b>${checked?'지출 반영됨':'실제 납부 체크'}</b></label>`;
+  const items=fixedExpenses.map((item,index)=>({item,index})).filter(row=>!isInvestment(row.item));
+  if(!items.length){host.innerHTML='<div class="empty-state">아래에서 고정지출을 등록하면 이곳에 체크란이 표시됩니다.</div>';return;}
+  const record=drafts[date]||db[date]||{},expenses=record.expenses||[],scheduled=duesFor(date);
+  host.innerHTML=items.map(({item,index})=>{
+    const key=fixedItemKey(item,index),checked=expenses.some(exp=>exp.fixedExpenseId===key),dueToday=scheduled.includes(item);
+    const dueLabel=item.dueDay?'매월 '+item.dueDay+'일 예정':'지출일 미설정';
+    return `<label class="fixed-payment-row"><input type="checkbox" ${checked?'checked':''} aria-label="${esc(item.name)} 실제 납부 체크" onchange="toggleFixedPayment(${index},this.checked)"><span><strong>${esc(item.name)}</strong><small>${dueLabel}${dueToday?' · 오늘 예정':''} · ${money(item.amount)}</small></span><b>${checked?'당일 지출 반영됨':'실제 납부 체크'}</b></label>`;
   }).join('');
 }
 function toggleFixedPayment(index,checked){
