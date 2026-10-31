@@ -330,7 +330,31 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
       .tab-btn{font-size:.95rem}
       .hero-settlement-entry .input-action .compact-primary{min-width:78px;padding:8px}
     }
-  </style>
+  
+    .labor-result-grid{margin-top:12px}
+    .hero-settlement-entry{margin-top:14px;padding:14px;border:1px solid #30435b;border-radius:14px;background:#0b1727}
+    .hero-settlement-entry label{font-size:1rem;color:var(--text-muted)}
+    .hero-settlement-entry .small{font-size:.85rem}
+    .daily-save-actions{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+    .daily-save-actions .btn-main{margin-top:10px;min-width:0;font-size:1.05rem}
+    .daily-save-actions .compact-primary{margin-top:10px}
+    .fixed-add-form{margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+    .fixed-add-form h3{margin-bottom:8px}
+    .fixed-payment-row{display:flex;align-items:center;gap:10px;margin:8px 0;padding:12px;border:1px solid #36506b;border-radius:12px;background:#0b1727;color:var(--text)}
+    .fixed-payment-row input{width:24px;height:24px;flex-shrink:0;accent-color:#22c55e}
+    .fixed-payment-row span{flex:1;min-width:0}
+    .fixed-payment-row strong,.fixed-payment-row small{display:block}
+    .fixed-payment-row small{color:var(--text-muted);font-size:.85rem}
+    .fixed-payment-row>b{font-size:.82rem;color:var(--success);text-align:right}
+    .fixed-row{margin:10px 0;padding:12px;border:1px solid var(--border);border-radius:12px;background:#0b1727}
+    .fixed-row-main{display:flex;justify-content:space-between;gap:8px;align-items:center}
+    .fixed-row-main>div{display:grid;gap:5px;min-width:0}
+    .fixed-actions{display:flex;gap:8px;margin-top:8px}
+    .fixed-actions button{min-height:38px;padding:5px 12px;border:1px solid var(--border);border-radius:8px;background:#17273b;color:var(--text)}
+    .fixed-editor{padding-top:10px}
+    #labor-income-module .hero-settlement-entry .compact-primary{font-size:.95rem}
+    @media(max-width:380px){.daily-save-actions{grid-template-columns:minmax(0,1fr)}.fixed-payment-row>b{font-size:.75rem}}
+</style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="자산관리">
@@ -341,12 +365,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 <div id="toast"></div>
 
 <div class="container">
-
-  
-  <div class="header">
-    <div><span class="brand-kicker">MY MONEY, MY PACE</span><h1>자산관리 매니저<span class="version-dot"></span></h1></div>
-    <button type="button" class="btn-fixed-popup" data-app-action="open-fixed">⚙️ 고정비 관리</button>
-  </div>
+  <div class="header"><div><span class="brand-kicker">MY MONEY, MY PACE</span><h1>자산관리 매니저<span class="version-dot"></span></h1></div></div>
 
 <section class="attendance-card" aria-label="오늘 출퇴근 기록">
   <div class="attendance-heading"><div><span class="attendance-kicker">TODAY'S WORK</span><h2>오늘 근무 타이머</h2></div><span id="attendance-date" class="attendance-date"></span></div>
@@ -367,98 +386,90 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
   <small class="attendance-undo-note">타이머 버튼을 잘못 눌렀다면 마지막 동작을 한 번 취소할 수 있어요.</small>
 </section>
 
-<section class="hero-card" aria-label="월 누적 공제 후 소득">
- <div class="hero-top"><span id="hero-month">이번 달 누적 합계</span><span class="hero-tag">MONTH TO DATE</span></div>
- <span class="hero-label">월 누적 공제 후 소득</span><strong id="hero-net">0원</strong><p id="hero-status">공제 반영 기준</p>
- <div class="hero-month-expense"><span>이번 달 변동지출</span><strong id="hero-expense">0원</strong></div>
- <div id="hero-settlement-entry" class="hero-settlement-entry">
-  <label for="hero-settlement-period">공제 입력 주간 선택</label>
-  <select id="hero-settlement-period" onchange="renderHeroSettlementEntry()"></select>
-  <label for="hero-deduction-input">실제 주간 공제액 (원)</label>
-  <div class="input-action">
-   <input type="text" inputmode="numeric" id="hero-deduction-input" placeholder="0" oninput="handleHeroSettlementInput(this)">
-   <button type="button" class="compact-primary" data-app-action="save-deduction">정산 저장</button>
+<section class="card" id="labor-income-module">
+  <div class="card-title"><span id="input-status-title">근로소득 입력</span><span id="edit-badge" class="pill" style="display:none">수정 모드</span></div>
+  <div class="section-heading"><div><span class="eyebrow">LABOR INCOME</span><h2>총근로소득 · 공제</h2></div><span class="pill">날짜별 입력</span></div>
+  <label for="input-date">기준 날짜</label>
+  <input type="date" id="input-date" onchange="onDateChanged(this.value)">
+  <label for="input-income">총 근로소득 · 공제 전 (원)</label>
+  <input type="text" inputmode="numeric" id="input-income" placeholder="0" oninput="formatMoneyInput(this); updateCalculationPreview()">
+  <div class="result-grid labor-result-grid">
+    <div class="result-box"><div class="label">총근로소득</div><div class="val" id="disp-labor-gross">0원</div></div>
+    <div class="result-box"><div class="label">공제 후 근로소득</div><div class="val" id="disp-labor-net">0원</div></div>
   </div>
-  <p id="hero-deduction-status" class="small" aria-live="polite"></p>
-  <button type="button" class="text-danger" id="hero-clear-deduction" data-app-action="clear-deduction" hidden>저장된 공제 입력 취소</button>
- </div>
- <p class="hero-footnote">이번 달 수입에서 반영된 공제를 뺀 누적 금액 · 미정산 주간은 잠정 포함</p>
+  <p class="muted small" id="daily-income-note">실제 공제는 수~화 정산 주간을 선택해 금요일에 입력합니다.</p>
+  <div id="hero-settlement-entry" class="hero-settlement-entry">
+    <label for="hero-settlement-period">공제 입력 주간 선택</label>
+    <select id="hero-settlement-period" onchange="renderHeroSettlementEntry()"></select>
+    <label for="hero-deduction-input">실제 주간 공제액 (원)</label>
+    <div class="input-action">
+      <input type="text" inputmode="numeric" id="hero-deduction-input" placeholder="0" oninput="handleHeroSettlementInput(this)">
+      <button type="button" class="compact-primary" data-app-action="save-deduction">금요일 공제 저장</button>
+    </div>
+    <p id="hero-deduction-status" class="small" aria-live="polite"></p>
+    <button type="button" class="text-danger" id="hero-clear-deduction" data-app-action="clear-deduction" hidden>저장된 공제 입력 취소</button>
+  </div>
 </section>
-  <div class="target-banner">
-    <div>
-      <div class="target-label">하루에 확보할 목표금</div>
-      <div style="font-size:1.2000000000000002rem; color:#cbd5e1;">월 목표 <span id="banner-total-fixed">0원</span><br><span id="fixed-split"></span></div>
+
+<details class="secondary-module">
+  <summary><span>추가수익 입력</span><small>근로소득 외 실제 받은 수입</small></summary>
+  <section class="card" id="extra-income-module">
+    <label for="input-extra-description">추가수익 설명</label>
+    <input type="text" id="input-extra-description" placeholder="예: 중고물품 판매, 용돈" autocomplete="off">
+    <label for="input-extra">추가수익 금액 (원)</label>
+    <input type="text" inputmode="numeric" id="input-extra" placeholder="0" oninput="formatMoneyInput(this); updateCalculationPreview()">
+  </section>
+</details>
+
+<section class="card" id="daily-module">
+  <div class="section-heading"><div><span class="eyebrow">DAILY EXPENSE</span><h2>지출 입력</h2></div><span class="pill">선택 날짜</span></div>
+  <div>
+    <label for="select-category">지출 항목 추가</label>
+    <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:8px">
+      <select id="select-category" onchange="onCategoryChanged(this.value)" aria-label="지출 분류">
+        <option value="담배">담배</option><option value="음료">음료</option><option value="커피">커피</option><option value="식비">식비</option><option value="간식비">간식비</option><option value="기타">기타</option>
+      </select>
+      <div id="detail-input-wrap" hidden><input type="text" id="input-detail" placeholder="기타 상세 항목" aria-label="기타 상세 항목" autocomplete="off"></div>
     </div>
-    <div class="target-val" id="banner-daily-target">0원</div>
+    <div class="input-action" style="margin-top:8px">
+      <input type="text" inputmode="numeric" oninput="formatMoneyInput(this);updateCalculationPreview()" id="input-expense-val" placeholder="지출액 (원)">
+      <button type="button" class="compact-primary" id="btn-add-expense" onclick="addExpenseItem()">추가</button>
+    </div>
+    <div class="expense-list" id="expense-tag-container"></div>
   </div>
+  <div class="alert-box" id="food-warning-box">⚠️ 식비·간식비·커피·음료 과소비: 수입의 <span id="food-warning-pct">0</span>% 지출 (권장 15% 이하)</div>
+  <div id="draft-status" role="status" class="muted small"></div>
+  <div class="daily-save-actions"><button type="button" class="btn-main" id="btn-save" onclick="saveDayRecord()">이 날짜 수입·지출 최종 저장</button><button type="button" class="compact-primary" id="btn-edit" onclick="beginRecordEdit()">수정</button></div>
+  <button type="button" class="btn-danger" id="btn-delete" style="display:none" onclick="deleteDayRecord()">해당 날짜 기록 삭제</button>
+</section>
 
-  <div class="card" id="daily-module">
-    <div class="card-title">
-      <span id="input-status-title">일일 정산 등록</span>
-      <span id="edit-badge" style="display:none; font-size:1.125rem; background:#38bdf8; color:#070d1e; padding:2px 8px; border-radius:4px; font-weight:800;">수정 모드</span>
-    </div>
-
-    <div>
-      <label for="input-date">기준 일자 선택</label>
-      <input type="date" id="input-date" onchange="onDateChanged(this.value)">
-    </div>
-
-    <div style="margin-top:12px;">
-      <label for="input-income">배달수입 · 공제 전 (원)</label>
-      <input type="text" inputmode="numeric" id="input-income" placeholder="0" oninput="formatMoneyInput(this); updateCalculationPreview()">
-    </div>
-    <div style="margin-top:14px;"><label for="input-extra">추가수입 · 실제 받은 금액 (원)</label><input type="text" inputmode="numeric" id="input-extra" placeholder="0" oninput="formatMoneyInput(this); updateCalculationPreview()"></div>
-    <p class="muted small" id="daily-income-note"></p>
-
-    <div style="margin-top:14px; border-top:1px dashed var(--border); padding-top:12px;">
-      <label for="select-category">지출 항목 추가 (카테고리)</label>
-      <div style="display:grid; grid-template-columns: minmax(0,1fr); gap:8px;">
-        <select id="select-category" onchange="onCategoryChanged(this.value)" aria-label="지출 분류">
-          <option value="담배">담배</option>
-          <option value="음료">음료</option>
-          <option value="커피">커피</option>
-          <option value="식비">식비</option>
-          <option value="간식비">간식비</option>
-          <option value="기타">기타</option>
-        </select>
-        <div id="detail-input-wrap" hidden><input type="text" id="input-detail" placeholder="기타 상세 항목" aria-label="기타 상세 항목" autocomplete="off"></div>
-      </div>
-      <div style="display:flex; gap:8px; margin-top:8px;">
-        <input type="text" inputmode="numeric" oninput="formatMoneyInput(this); updateCalculationPreview()" id="input-expense-val" placeholder="지출액 (원)" step="500">
-        <button type="button" style="width:85px; height:50px; background:#263554; color:#fff; border:none; border-radius:8px; font-weight:800; font-size:1.4249999999999998rem; cursor:pointer;" id="btn-add-expense" onclick="addExpenseItem()">추가</button>
-      </div>
-
-      <div class="expense-list" id="expense-tag-container"></div>
-    </div>
-
-    <div class="alert-box" id="food-warning-box">
-      ⚠️ 식비·간식비·커피·음료 과소비: 수입의 <span id="food-warning-pct">0</span>% 지출 (권장 15% 이하)
-    </div>
-
+<details class="secondary-module">
+  <summary><span>순수익·지출 결과</span><small>공제 후 수익과 실제 지출 합계</small></summary>
+  <section class="card" id="daily-summary-module">
     <div class="result-grid">
-      <div class="result-box">
-        <div class="label">총소득 · 공제 전</div>
-        <div class="val" id="disp-income" style="color:var(--primary);">0원</div>
-      </div>
-      <div class="result-box">
-        <div class="label">변동지출 후 남은 돈</div>
-        <div class="val" id="disp-net">0원</div>
-      </div>
-      <div class="result-box">
-        <div class="label">총지출액</div>
-        <div class="val" id="disp-expense" style="color:var(--warning);">0원</div>
-      </div>
-      <div class="result-box">
-        <div class="label">목표 대비 여유 · 공제 전</div>
-        <div class="val" id="disp-result">-</div>
-      </div>
+      <div class="result-box"><div class="label">공제 후 근로소득 + 추가수익</div><div class="val" id="disp-income">0원</div></div>
+      <div class="result-box"><div class="label">총 지출 · 투자·고정지출 포함</div><div class="val" id="disp-expense">0원</div></div>
+      <div class="result-box" style="grid-column:1/-1"><div class="label">지출 후 남은 순수익</div><div class="val" id="disp-net">0원</div></div>
     </div>
+    <p class="muted small">공제 후 근로소득과 추가수익을 합한 뒤, 선택 날짜에 기록한 변동지출·투자·실제 납부한 고정지출을 차감합니다.</p>
+  </section>
+</details>
 
-    <div id="draft-status" role="status" style="margin-top:12px;font-size:1.2000000000000002rem;color:var(--text-muted);"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;"><button type="button" class="btn-main" id="btn-save" onclick="saveDayRecord()">최종 저장</button><button type="button" class="btn-main" id="btn-edit" onclick="beginRecordEdit()" style="background:#263554;color:#fff;">수정</button></div>
-    <button type="button" class="btn-danger" id="btn-delete" style="display:none;" onclick="deleteDayRecord()">해당 날짜 기록 삭제</button>
-  </div>
+<details class="secondary-module">
+  <summary><span>투자원금</span><small>누적 금액과 일별 체크</small></summary>
+  <section class="card investment-card" id="investment-module">
+ <div class="section-heading"><div><span class="eyebrow">BUILD YOUR PRINCIPAL</span><h2>매일 쌓는 투자원금</h2></div><span class="pill invest">실제 납입 기준</span></div>
+ <div class="principal"><span>누적 투자원금</span><strong id="invest-total">0원</strong></div>
+ <div class="principal-split"><span>시작 원금 <b id="invest-opening-display">0원</b></span><span>체크한 납입액 <b id="invest-added">0원</b></span></div>
+ <div class="investment-check"><span id="invest-date" class="muted small"></span><h3 id="invest-question">90,000원 투자했나요?</h3><div class="yes-no"><button type="button" id="invest-yes" onclick="markInvestment('yes')" aria-pressed="false">Yes <small>투자했어요</small></button><button type="button" id="invest-no" onclick="markInvestment('no')" aria-pressed="false">No <small>아직 안 했어요</small></button></div><p id="invest-check-status" role="status" class="muted small"></p><button class="text-button" onclick="clearInvestmentDay()">이 날짜 체크 초기화</button></div>
+ <details class="investment-settings"><summary>시작 원금 · 일 투자금 설정</summary><label for="invest-opening">체크 기록을 시작하기 전 투자원금 (원)</label><input type="text" inputmode="numeric" id="invest-opening" oninput="formatMoneyInput(this)"><label for="invest-daily">하루 투자 체크 금액 (원)</label><input type="text" inputmode="numeric" id="invest-daily" oninput="formatMoneyInput(this)"><button class="compact-primary" onclick="saveInvestmentSettings()">투자 설정 저장</button><p class="muted small">기존 체크의 납입 금액은 유지됩니다. 평가금액·투자 손익은 포함하지 않습니다.</p></details>
+ <p class="muted small">날짜는 근로소득 카드의 기준 날짜와 연결됩니다. 실제 투자 체크는 투자원금과 당일 지출에 반영됩니다. 평가금액·투자 손익은 포함하지 않습니다.</p>
+</section>
+</details>
 
-<div class="card" id="stats-module">
+<details class="secondary-module" id="settlement-module">
+  <summary><span>주·월·반기·연 결산</span><small>기간별 수입·지출·시급 분석</small></summary>
+  <div class="card" id="stats-module">
     <div class="tab-nav">
       <button type="button" class="tab-btn active" id="tab-btn-week" data-stats-tab="week">주간 (수~화)</button>
       <button type="button" class="tab-btn" id="tab-btn-month" data-stats-tab="month">월말 결산</button>
@@ -507,17 +518,6 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
       <div id="year-stats-container"></div>
     </div>
   </div>
-
-<details class="secondary-module">
-  <summary><span>투자원금</span><small>누적 금액과 일별 체크</small></summary>
-  <section class="card investment-card" id="investment-module">
- <div class="section-heading"><div><span class="eyebrow">BUILD YOUR PRINCIPAL</span><h2>매일 쌓는 투자원금</h2></div><span class="pill invest">실제 납입 기준</span></div>
- <div class="principal"><span>누적 투자원금</span><strong id="invest-total">0원</strong></div>
- <div class="principal-split"><span>시작 원금 <b id="invest-opening-display">0원</b></span><span>체크한 납입액 <b id="invest-added">0원</b></span></div>
- <div class="investment-check"><span id="invest-date" class="muted small"></span><h3 id="invest-question">90,000원 투자했나요?</h3><div class="yes-no"><button type="button" id="invest-yes" onclick="markInvestment('yes')" aria-pressed="false">Yes <small>투자했어요</small></button><button type="button" id="invest-no" onclick="markInvestment('no')" aria-pressed="false">No <small>아직 안 했어요</small></button></div><p id="invest-check-status" role="status" class="muted small"></p><button class="text-button" onclick="clearInvestmentDay()">이 날짜 체크 초기화</button></div>
- <details class="investment-settings"><summary>시작 원금 · 일 투자금 설정</summary><label for="invest-opening">체크 기록을 시작하기 전 투자원금 (원)</label><input type="text" inputmode="numeric" id="invest-opening" oninput="formatMoneyInput(this)"><label for="invest-daily">하루 투자 체크 금액 (원)</label><input type="text" inputmode="numeric" id="invest-daily" oninput="formatMoneyInput(this)"><button class="compact-primary" onclick="saveInvestmentSettings()">투자 설정 저장</button><p class="muted small">기존 체크의 납입 금액은 유지됩니다. 평가금액·투자 손익은 포함하지 않습니다.</p></details>
- <p class="muted small">날짜는 위의 기준 일자와 연결됩니다. 투자 체크는 원금에만 반영하며 소득·지출에서 다시 차감하지 않습니다.</p>
-</section>
 </details>
 
 <details class="secondary-module">
@@ -548,56 +548,34 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
   </div>
 </details>
 
-<div class="card" id="install-card" style="font-size:1.275rem;">
+<details class="secondary-module">
+  <summary><span>앱 설치</span><small>휴대폰 홈 화면에 추가</small></summary>
+  <div class="card" id="install-card" style="font-size:1.275rem;">
   <div class="card-title">휴대폰에 앱 설치</div>
   <button type="button" class="btn-main" id="install-app" hidden>앱 설치</button>
   <p id="install-help">안드로이드: Chrome 메뉴 → 홈 화면에 추가 / 앱 설치<br>아이폰: Safari 공유 → 홈 화면에 추가</p>
   <p id="offline-status" style="margin-top:8px;color:var(--text-muted);"></p>
 </div>
-</div>
+</details>
 
-<!-- 고정비 관리 모달 팝업 -->
-<div class="modal-overlay" id="fixed-modal" onclick="closeFixedModal(event)">
-  <div class="modal-card" onclick="event.stopPropagation()">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <h2 style="font-size:1.7249999999999999rem; font-weight:800; color:var(--primary);">월 고정비 관리</h2>
-      <button type="button" onclick="closeFixedModal(null)" style="background:none; border:none; color:#fff; font-size:2.0999999999999996rem; cursor:pointer;">✕</button>
-    </div>
-    
-    <!-- 현재 등록된 고정비 목록 (삭제 가능) -->
+<details class="secondary-module" id="fixed-cost-module">
+  <summary><span>고정지출</span><small>지출일에 체크해 해당 날짜 기록에 반영</small></summary>
+  <section class="card" id="fixed-cost-card">
+    <div class="section-heading"><div><span class="eyebrow">SCHEDULED EXPENSE</span><h2>고정지출 관리</h2></div><span id="fixed-payment-date" class="pill"></span></div>
+    <p class="muted small">위에서 선택한 날짜의 예정 고정지출입니다. 실제 납부한 항목을 체크하면 해당 날짜 지출로 기록됩니다.</p>
+    <div id="fixed-payment-list"></div>
+    <h3 class="subheading">등록된 고정지출</h3>
     <div id="fixed-expenses-list-container"></div>
-
-    <!-- 신규 고정비 항목 추가 폼 -->
-    <div style="margin-top:12px; border-top:1px dashed var(--border); padding-top:10px;">
-      <div style="font-size:1.2000000000000002rem; color:var(--text-muted); font-weight:700; margin-bottom:6px;">+ 새 고정비 항목 추가</div>
-      <div style="display:grid; grid-template-columns: 1.2fr 1fr; gap:6px;">
-        <input type="text" id="new-fixed-name" placeholder="항목명 (예: 알뜰폰)" style="height:44px; font-size:1.4249999999999998rem;">
-        <input type="text" inputmode="numeric" oninput="formatMoneyInput(this)" id="new-fixed-amount" placeholder="월 금액 (원)" step="1000" style="height:44px; font-size:1.4249999999999998rem;">
-      </div>
-<div class="input-grid" id="new-fixed-options" style="margin-top:10px;"></div><p class="muted small">출금일이 없는 달은 말일에 표시합니다. 투자 목표는 생활 고정비와 구분해 선택해 주세요.</p>
-      <button type="button" class="btn-main" style="height:44px; margin-top:6px; font-size:1.4249999999999998rem;" onclick="addFixedCostItem()">고정비 항목 추가</button>
+    <div class="fixed-add-form">
+      <h3>고정지출 추가</h3>
+      <label for="new-fixed-name">항목명</label><input type="text" id="new-fixed-name" placeholder="예: 월세, 휴대폰 요금">
+      <label for="new-fixed-amount">금액 (원)</label><input type="text" inputmode="numeric" oninput="formatMoneyInput(this)" id="new-fixed-amount" placeholder="금액 입력">
+      <div class="input-grid" id="new-fixed-options"></div>
+      <button type="button" class="btn-main" onclick="addFixedCostItem()">고정지출 추가</button>
     </div>
-
-
-    <!-- 실시간 합계 및 1일 방어선 -->
-    <div style="margin-top:12px; padding-top:10px; border-top:2px solid var(--border); display:flex; justify-content:space-between; font-size:1.5750000000000002rem; font-weight:900;">
-      <span>월 고정비 + 투자 목표 합계</span>
-      <span style="color:var(--target-neon);" id="modal-fixed-total">0원</span>
-    </div>
-    <div style="display:flex; justify-content:space-between; align-items:center; font-size:1.275rem; color:var(--text-muted); margin-top:4px;">
-      <span>30일 기준 하루 목표금</span>
-      <b style="color:var(--target-neon); font-size:1.7249999999999999rem;" id="modal-daily-target">0원</b>
-    </div>
-
-    <p class="muted small" id="modal-fixed-split"></p>
-    <div style="display:flex; gap:8px; margin-top:14px;">
-      <button type="button" style="flex:1; height:42px; background:#1e293b; color:var(--text-muted); border:1px solid var(--border); border-radius:8px; font-size:1.275rem; font-weight:700; cursor:pointer;" onclick="resetFixedExpensesToDefault()">목록 비우기</button>
-      <button type="button" class="btn-main" style="flex:1; height:42px; margin-top:0;" onclick="closeFixedModal(null)">적용 및 닫기</button>
-    </div>
-  </div>
-</div>
-
-<script>
+  </section>
+</details>
+</div><script>
 const MASTER_STORAGE_KEY = 'delivery_flow_master_db';
 const FIXED_STORAGE_KEY = 'delivery_fixed_expenses_master_db';
 const DRAFT_STORAGE_KEY = 'delivery_flow_drafts_v1';
@@ -688,6 +666,15 @@ function deductionAllocations() {
   } return map;
 }
 const EXPENSE_CATEGORIES=['담배','음료','커피','식비','간식비','기타'];
+function expenseAnalysisLabel(expense){
+  if(expense?.source==='fixed-payment'||expense?.fixedExpenseId||expense?.source==='investment')return null;
+  const category=String(expense?.category||'기타').trim(),detail=String(expense?.detail||'').trim();
+  if(category==='기타')return detail?'기타지출 · '+detail:'기타지출';
+  return expenseAnalysisCategory(expense);
+}
+function isManagedInvestment(expense){return expense?.source==='investment'||expense?.investmentEntry===true;}
+function isManagedFixedExpense(expense){return expense?.source==='fixed-payment'||Boolean(expense?.fixedExpenseId);}
+function fixedItemKey(item,index){return String(item?.id??('legacy-'+index+'-'+String(item?.name||'고정비')+'-'+String(item?.dueDay||'')));}
 function expenseAnalysisCategory(expense){
   const category=String(expense.category||'기타').trim(),detail=String(expense.detail||'').trim();
   if(category==='간식비'&&detail){
@@ -705,25 +692,30 @@ function expenseAnalysisCategory(expense){
   return '기타';
 }
 function aggregate(filter) {
-  const allocation=deductionAllocations(); const data={delivery:0,extra:0,gross:0,deduction:0,expense:0,days:0,categories:{},categoryCounts:{},expenseCount:0,pending:new Set()};
-  for(const [date,rec] of Object.entries(db))if(filter(date)) {
+  const allocation=deductionAllocations();const data={delivery:0,extra:0,gross:0,deduction:0,expense:0,fixedExpense:0,days:0,categories:{},categoryCounts:{},expenseCount:0,pending:new Set()};
+  for(const [date,rec] of Object.entries(db))if(filter(date)){
     const p=incomeParts(rec);data.delivery+=p.delivery;data.extra+=p.extra;data.gross+=p.gross;data.deduction+=allocation[date]||0;data.days++;
     if(p.delivery>0&&!Object.hasOwn(settlements,weekStart(date)))data.pending.add(weekStart(date));
-    for(const expense of rec.expenses||[]){const v=Number(expense.amount)||0;data.expense+=v;data.expenseCount++;const label=expenseAnalysisCategory(expense);data.categories[label]=(data.categories[label]||0)+v;data.categoryCounts[label]=(data.categoryCounts[label]||0)+1;}
+    for(const expense of rec.expenses||[]){
+      const value=Number(expense.amount)||0;if(!value)continue;
+      if(isManagedInvestment(expense))continue;
+      if(isManagedFixedExpense(expense)){data.fixedExpense+=value;continue;}
+      data.expense+=value;data.expenseCount++;const label=expenseAnalysisLabel(expense)||'기타지출';data.categories[label]=(data.categories[label]||0)+value;data.categoryCounts[label]=(data.categoryCounts[label]||0)+1;
+    }
   }
   data.investment=Object.entries(investment.days||{}).filter(([date,row])=>filter(date)&&row?.status==='yes').reduce((sum,[,row])=>sum+(Number(row.amount)||0),0);
-  data.net=data.gross-data.deduction;data.remaining=data.net-data.expense;data.goal=getDailyTarget()*data.days;data.surplus=data.remaining-data.goal;
+  data.net=data.gross-data.deduction;data.remaining=data.net-data.expense-data.fixedExpense-data.investment;data.goal=0;data.surplus=data.remaining;
   return data;
 }
 function metric(label,value,tone='') { return `<div class="metric ${tone}"><span>${esc(label)}</span><strong>${money(value)}</strong></div>`; }
 function spendingChart(data) {
   if(!data.expense)return '<div class="empty-state">지출을 기록하면 항목별 합계와 비율을 보여드려요.</div>';
-  const rows=EXPENSE_CATEGORIES.map(name=>({name,value:data.categories[name]||0,count:data.categoryCounts[name]||0})).filter(row=>row.value>0);
+  const rows=Object.entries(data.categories).map(([name,value])=>({name,value,count:data.categoryCounts[name]||0})).filter(row=>row.value>0).sort((a,b)=>b.value-a.value||a.name.localeCompare(b.name,'ko'));
   const top=[...rows].sort((a,b)=>b.value-a.value)[0],topPct=top.value/data.expense*100;
   return `<div class="spend-summary"><span class="spend-summary-label">총 지출 · ${data.expenseCount}건</span><strong class="spend-summary-total">${money(data.expense)}</strong><div class="spend-summary-top"><span>가장 많이 쓴 항목</span><strong>${esc(top.name)} · ${money(top.value)} (${topPct.toFixed(1)}%)</strong></div></div>
     <div class="expense-compact-list" aria-label="분류별 지출 합계">${rows.map(({name,value,count})=>{const pct=value/data.expense*100;return `<div class="expense-compact-row"><div class="expense-compact-head"><span class="expense-compact-name">${esc(name)} · ${count}회</span><span class="expense-compact-value">${money(value)} <small>${pct.toFixed(1)}%</small></span></div><div class="expense-compact-track"><span style="width:${pct}%"></span></div></div>`;}).join('')}</div>`;
 }
-function fixedCostForPeriod(period){const monthly=fixedExpenses.filter(item=>!isInvestment(item)).reduce((sum,item)=>sum+(Number(item.amount)||0),0);if(period==='week')return Math.round(monthly*12/52);if(period==='half')return monthly*6;if(period==='year')return monthly*12;return monthly;}
+function fixedCostForPeriod(period){return 0;}
 function dailyHourlyMarkup(filter,period='week'){
   const dates=Object.keys(attendance||{}).filter(date=>filter(date)&&attendanceDay(date).sessions.length>0).sort();
   const rows=dates.map(date=>{
@@ -736,7 +728,7 @@ function dailyHourlyMarkup(filter,period='week'){
   return period==='week'? `<section class="hourly-panel">${summary}</section>`:`<details class="hourly-panel"><summary><span>날짜별 환산 시급</span><span class="pill">${dates.length}일</span></summary><div class="hourly-list">${rows||'<p class="muted small">이 기간에 출퇴근 타이머 기록이 없습니다.</p>'}<p class="muted small hourly-note">당일 배달·기타 총수입 ÷ 타이머 실근무시간으로 계산합니다. 공제는 반영하지 않습니다.</p></div></details>`;
 }
 function overviewMarkup(data,period='week',filter=()=>true) {
-  const provisional=data.pending.size>0,periodFixed=fixedCostForPeriod(period);
+  const provisional=data.pending.size>0,periodFixed=Number(data.fixedExpense)||0;
   const afterFixed=data.gross-data.deduction-data.expense-(data.investment||0)-periodFixed;
   return `<div class="settlement-summary-grid">
     ${metric(provisional?'총수입 · 잠정':'총수입',data.gross,'blue')}
@@ -747,7 +739,7 @@ function overviewMarkup(data,period='week',filter=()=>true) {
   <p class="muted small">수입 구성: 배달 ${money(data.delivery)} + 기타수입 ${money(data.extra)}${provisional?` · 공제 미입력 ${data.pending.size}주`:''}</p>
   <div class="settlement-period-costs">
     ${metric('실제 투자금',data.investment||0,'mint')}
-    ${metric('기간 고정비',periodFixed)}
+    ${metric('실제 납부 고정지출',periodFixed)}
   </div>
   <div class="balance-band settlement-final"><span>공제·지출·투자금·고정비 제외 후 남은 금액${provisional?' · 잠정':''}</span><strong class="${afterFixed<0?'negative':'positive'}">${money(afterFixed)}</strong><small class="settlement-formula">총수입 ${money(data.gross)} − 공제 ${money(data.deduction)} − 총지출 ${money(data.expense)} − 실제 투자금 ${money(data.investment||0)} − 기간 고정비 ${money(periodFixed)}</small></div>${dailyHourlyMarkup(filter,period)}`;
 }
@@ -810,11 +802,11 @@ function refreshHourlySettlementViews(){
 function saveDraft(){
   if(recordLocked)return;const date=$('input-date').value;if(!date)return;
   const delivery=parseMoney($('input-income').value)||0,extra=parseMoney($('input-extra').value)||0;
-  const rec={income:delivery+extra,deliveryIncome:delivery,extraIncome:extra,expenses:clone(currentExpenses),category:$('select-category').value,detail:$('input-detail').value,pendingAmount:$('input-expense-val').value};
+  const rec={income:delivery+extra,deliveryIncome:delivery,extraIncome:extra,extraDescription:$('input-extra-description').value.trim(),expenses:clone(currentExpenses),category:$('select-category').value,detail:$('input-detail').value,pendingAmount:$('input-expense-val').value};
   const next={...drafts,[date]:rec};
   try{persist(DRAFT_STORAGE_KEY,next);drafts=next;localStorage.setItem(LAST_DATE_KEY,date);$('draft-status').textContent='임시저장 완료 · 지금 나가도 이어서 입력할 수 있어요.';$('btn-delete').style.display='block';}catch{$('draft-status').textContent='임시저장 실패 · 저장 공간을 확인해 주세요.';}
 }
-function updateRecordControls(){for(const id of ['input-income','input-extra','select-category','input-detail','input-expense-val','btn-add-expense'])$(id).disabled=recordLocked;$('btn-save').disabled=recordLocked;$('btn-edit').disabled=!recordLocked;document.querySelectorAll('#expense-tag-container button').forEach(b=>b.disabled=recordLocked);}
+function updateRecordControls(){for(const id of ['input-income','input-extra','input-extra-description','select-category','input-detail','input-expense-val','btn-add-expense'])$(id).disabled=recordLocked;$('btn-save').disabled=recordLocked;$('btn-edit').disabled=!recordLocked;document.querySelectorAll('#expense-tag-container button').forEach(b=>b.disabled=recordLocked);}
 function beginRecordEdit(){recordLocked=false;$('input-status-title').textContent='정산 수정';$('edit-badge').style.display='inline-block';updateRecordControls();saveDraft();}
 function onDateChanged(date){
   if(!validDate(date))return; $('input-date').value=date;localStorage.setItem(LAST_DATE_KEY,date);currentDate=dateOf(date);
@@ -823,9 +815,9 @@ function onDateChanged(date){
   $('input-status-title').textContent=recordLocked?'최종 저장된 정산':draft?'이어서 입력하기':'오늘의 수입과 지출';
   $('edit-badge').style.display=draft&&db[date]?'inline-block':'none';$('btn-delete').style.display=record?'block':'none';
   $('draft-status').textContent=recordLocked?'최종 저장 완료 · 변경하려면 수정을 눌러 주세요.':draft?'임시저장 내용을 복원했어요.':'입력하면 자동으로 임시저장됩니다.';
-  $('input-income').value=p.delivery?formatMoneyValue(p.delivery):'';$('input-extra').value=p.extra?formatMoneyValue(p.extra):'';
+  $('input-income').value=p.delivery?formatMoneyValue(p.delivery):'';$('input-extra').value=p.extra?formatMoneyValue(p.extra):'';$('input-extra-description').value=record?.extraDescription||'';
   currentExpenses=clone(record?.expenses||[]);$('select-category').value=EXPENSE_CATEGORIES.includes(draft?.category)?draft.category:'식비';$('input-detail').value=draft?.detail||'';$('input-expense-val').value=draft?.pendingAmount||'';
-  onCategoryChanged($('select-category').value,false);renderExpenseTags();updateCalculationPreview();updateRecordControls();renderInvestment();renderCalendar();renderWeeklyStats();
+  onCategoryChanged($('select-category').value,false);renderExpenseTags();updateCalculationPreview();updateRecordControls();renderInvestment();renderCalendar();renderFixedPaymentChecklist();renderWeeklyStats();
 }
 function onCategoryChanged(value,focus=true){
   const isOther=value==='기타',wrap=$('detail-input-wrap'),detailInput=$('input-detail');
@@ -842,15 +834,33 @@ function addExpenseItem(){
 }
 function removeExpenseItem(index){if(recordLocked)return;currentExpenses.splice(index,1);renderExpenseTags();updateCalculationPreview();saveDraft();}
 function renderExpenseTags(){
-  $('expense-tag-container').innerHTML=currentExpenses.map((item,i)=>{const detail=item.category==='기타'&&item.detail?' · '+esc(item.detail):'';return `<div class="expense-tag"><span>${esc(item.category)}${detail}<b>${money(item.amount)}</b></span><button aria-label="${esc(item.category)} 지출 삭제" onclick="removeExpenseItem(${i})" ${recordLocked?'disabled':''}>✕</button></div>`;}).join('');
+  $('expense-tag-container').innerHTML=currentExpenses.map((item,i)=>{
+    const name=item.source==='fixed-payment'?'고정지출 · '+(item.detail||''):isManagedInvestment(item)?'투자 · '+(item.detail||'일일 투자금'):item.category==='기타'&&item.detail?'기타 · '+item.detail:item.category;
+    const managed=isManagedFixedExpense(item)||isManagedInvestment(item);
+    return `<div class="expense-tag"><span>${esc(name)}<b>${money(item.amount)}</b></span>${managed?'<span class="pill">연결 기록</span>':`<button aria-label="${esc(name)} 지출 삭제" onclick="removeExpenseItem(${i})" ${recordLocked?'disabled':''}>✕</button>`}</div>`;
+  }).join('');
+}
+function dailyDeductionForDate(date,deliveryOverride){
+  const entry=settlements[weekStart(date)];if(!entry||!Number(entry.deduction))return 0;
+  const rowsByDate={};
+  for(const [savedDate,rec] of Object.entries(db))if(weekStart(savedDate)===weekStart(date))rowsByDate[savedDate]=incomeParts(rec).delivery;
+  if(date===$('input-date')?.value&&Number.isFinite(deliveryOverride))rowsByDate[date]=deliveryOverride;
+  const total=Object.values(rowsByDate).reduce((sum,value)=>sum+(value>0?value:0),0);if(!total)return 0;
+  const rows=Object.entries(rowsByDate).filter(([,amount])=>amount>0).map(([savedDate,amount])=>{const raw=entry.deduction*amount/total;return {date:savedDate,amount:Math.floor(raw),fraction:raw-Math.floor(raw)};});
+  let remainder=entry.deduction-rows.reduce((sum,row)=>sum+row.amount,0);rows.sort((a,b)=>b.fraction-a.fraction||a.date.localeCompare(b.date));
+  for(let i=0;i<remainder;i++)rows[i%rows.length].amount++;
+  return rows.find(row=>row.date===date)?.amount||0;
 }
 function updateCalculationPreview(){
-  const gross=(parseMoney($('input-income').value)||0)+(parseMoney($('input-extra').value)||0);
-  const expenses=currentExpenses.reduce((s,i)=>s+i.amount,0)+(parseMoney($('input-expense-val').value)||0); const remaining=gross-expenses;
-  $('disp-income').textContent=money(gross);$('disp-expense').textContent=money(expenses);$('disp-net').textContent=money(remaining);
-  $('disp-result').textContent=money(remaining-getDailyTarget());$('disp-result').style.color=remaining>=getDailyTarget()?'var(--success)':'var(--danger)';
-  $('daily-income-note').textContent='일일 금액은 공제 전 기준 · 실제 공제는 주간 결산에서 금요일에 입력';
-  const food=currentExpenses.filter(i=>['식비','간식비','커피','음료'].includes(expenseAnalysisCategory(i))).reduce((s,i)=>s+i.amount,0);
+  const date=$('input-date').value,delivery=parseMoney($('input-income').value)||0,extra=parseMoney($('input-extra').value)||0;
+  const deduction=validDate(date)?dailyDeductionForDate(date,delivery):0,netLabor=delivery-deduction,incomeAfterDeduction=netLabor+extra;
+  const listedExpense=currentExpenses.reduce((sum,item)=>sum+(Number(item.amount)||0),0)+(parseMoney($('input-expense-val').value)||0);
+  const legacyInvestment=investment.days[date]?.status==='yes'&&!currentExpenses.some(isManagedInvestment)?Number(investment.days[date].amount)||0:0;
+  const expenses=listedExpense+legacyInvestment,remaining=incomeAfterDeduction-expenses,gross=delivery+extra;
+  if($('disp-labor-gross'))$('disp-labor-gross').textContent=money(delivery);if($('disp-labor-net'))$('disp-labor-net').textContent=money(netLabor);
+  $('disp-income').textContent=money(incomeAfterDeduction);$('disp-expense').textContent=money(expenses);$('disp-net').textContent=money(remaining);
+  $('daily-income-note').textContent=deduction?'선택 날짜에 배분된 주간 공제 '+money(deduction)+' 반영 · 실제 공제는 금요일에 입력':'실제 공제는 수~화 정산 주간을 선택해 금요일에 입력합니다.';
+  const food=currentExpenses.filter(item=>!isManagedFixedExpense(item)&&!isManagedInvestment(item)&&['식비','간식비','커피','음료'].includes(expenseAnalysisCategory(item))).reduce((sum,item)=>sum+item.amount,0);
   $('food-warning-box').style.display=gross>0&&food/gross>0.15?'block':'none';$('food-warning-pct').textContent=gross?Math.round(food/gross*100):0;
 }
 function saveDayRecord(){
@@ -858,7 +868,7 @@ function saveDayRecord(){
   if($('input-expense-val').value && (parseMoney($('input-expense-val').value)||0)>0 && !addExpenseItem())return;
   const delivery=parseMoney($('input-income').value)||0,extra=parseMoney($('input-extra').value)||0;
   if(!amountOK(delivery)||!amountOK(extra)||!amountOK(delivery+extra)){showToast('수입은 0원 이상의 정수로 입력해 주세요.',false);return;}
-  const next={...db,[date]:{income:delivery+extra,deliveryIncome:delivery,extraIncome:extra,expenses:clone(currentExpenses)}};
+  const next={...db,[date]:{income:delivery+extra,deliveryIncome:delivery,extraIncome:extra,extraDescription:$('input-extra-description').value.trim(),expenses:clone(currentExpenses)}};
   if(!canKeepSettlement(next,weekStart(date)))return;
   const nextDraft={...drafts};delete nextDraft[date];
   try{writeBatch([[MASTER_STORAGE_KEY,next],[DRAFT_STORAGE_KEY,nextDraft]]);}catch{showToast('최종 저장에 실패했습니다.',false);return;}
@@ -882,24 +892,44 @@ function saveFixedExpenses(){persist(FIXED_STORAGE_KEY,fixedExpenses);}
 function dueDaySelect(id,value){return `<select id="${id}" aria-label="매월 출금일"><option value="">출금일 미설정</option>${Array.from({length:31},(_,i)=>`<option value="${i+1}" ${Number(value)===i+1?'selected':''}>매월 ${i+1}일</option>`).join('')}</select>`;}
 function kindSelect(id,value){return `<select id="${id}" aria-label="고정비 유형"><option value="living" ${value!=='investment'?'selected':''}>생활 고정비</option><option value="investment" ${value==='investment'?'selected':''}>투자 목표금</option></select>`;}
 function renderFixedExpensesList(){
-  $('fixed-expenses-list-container').innerHTML=fixedExpenses.map((item,i)=>`<div class="fixed-row"><div class="fixed-row-main"><div><span class="pill ${isInvestment(item)?'invest':''}">${isInvestment(item)?'투자 목표':'생활 고정비'}</span><strong>${esc(item.name)}</strong><span class="muted small">${item.dueDay?'매월 '+item.dueDay+'일 출금 예정':'출금일 미설정'}</span></div><b>${money(item.amount)}</b></div><div class="fixed-actions"><button onclick="$('fixed-editor-${i}').hidden=!$('fixed-editor-${i}').hidden">수정</button><button class="text-danger" onclick="deleteFixedCostItem(${i})">삭제</button></div><div id="fixed-editor-${i}" hidden class="fixed-editor"><label for="fixed-name-${i}">항목명</label><input type="text" id="fixed-name-${i}" value="${esc(item.name)}"><label for="fixed-amount-${i}">월 금액 (원)</label><input type="text" inputmode="numeric" id="fixed-amount-${i}" value="${formatMoneyValue(item.amount)}" oninput="formatMoneyInput(this)"><div class="input-grid">${dueDaySelect('fixed-due-'+i,item.dueDay)}${kindSelect('fixed-kind-'+i,isInvestment(item)?'investment':'living')}</div><button class="compact-primary" onclick="updateFixedCostItem(${i})">수정 저장</button></div></div>`).join('')||'<div class="empty-state">생활 고정비와 투자 목표를 추가해 보세요.</div>';
+  const host=$('fixed-expenses-list-container');if(!host)return;
+  host.innerHTML=fixedExpenses.map((item,i)=>`<div class="fixed-row"><div class="fixed-row-main"><div><span class="pill">${isInvestment(item)?'투자 목표':'고정지출'}</span><strong>${esc(item.name)}</strong><span class="muted small">${item.dueDay?'매월 '+item.dueDay+'일 예정':'지출일 미설정'}</span></div><b>${money(item.amount)}</b></div><div class="fixed-actions"><button onclick="$('fixed-editor-${i}').hidden=!$('fixed-editor-${i}').hidden">수정</button><button class="text-danger" onclick="deleteFixedCostItem(${i})">삭제</button></div><div id="fixed-editor-${i}" hidden class="fixed-editor"><label for="fixed-name-${i}">항목명</label><input type="text" id="fixed-name-${i}" value="${esc(item.name)}"><label for="fixed-amount-${i}">월 금액 (원)</label><input type="text" inputmode="numeric" id="fixed-amount-${i}" value="${formatMoneyValue(item.amount)}" oninput="formatMoneyInput(this)"><label for="fixed-due-${i}">매월 지출일</label><div class="input-grid">${dueDaySelect('fixed-due-'+i,item.dueDay)}${kindSelect('fixed-kind-'+i,isInvestment(item)?'investment':'living')}</div><button class="compact-primary" onclick="updateFixedCostItem(${i})">수정 저장</button></div></div>`).join('')||'<div class="empty-state">고정지출을 항목별로 등록해 주세요.</div>';
+}
+function renderFixedPaymentChecklist(){
+  const host=$('fixed-payment-list');if(!host)return;
+  const date=$('input-date')?.value||getKSTDateString();$('fixed-payment-date').textContent=date;
+  const due=duesFor(date).map(item=>({item,index:fixedExpenses.indexOf(item)})).filter(row=>!isInvestment(row.item));
+  if(!due.length){host.innerHTML='<div class="empty-state">선택한 날짜에 예정된 고정지출이 없습니다.</div>';return;}
+  const record=drafts[date]||db[date]||{},expenses=record.expenses||[];
+  host.innerHTML=due.map(({item,index})=>{
+    const key=fixedItemKey(item,index),checked=expenses.some(exp=>exp.fixedExpenseId===key);
+    return `<label class="fixed-payment-row"><input type="checkbox" ${checked?'checked':''} onchange="toggleFixedPayment(${index},this.checked)"><span><strong>${esc(item.name)}</strong><small>예정 ${money(item.amount)}</small></span><b>${checked?'지출 반영됨':'실제 납부 체크'}</b></label>`;
+  }).join('');
+}
+function toggleFixedPayment(index,checked){
+  const date=$('input-date').value,item=fixedExpenses[index];if(!validDate(date)||!item||isInvestment(item))return;
+  const key=fixedItemKey(item,index),marker=checked?{source:'fixed-payment',fixedExpenseId:key,category:'고정지출',detail:item.name,amount:Number(item.amount)||0}:null;
+  const records=managedExpenseRecordUpdates(date,expense=>expense.fixedExpenseId===key,marker);
+  try{writeBatch([[MASTER_STORAGE_KEY,records.db],[DRAFT_STORAGE_KEY,records.drafts]]);db=records.db;drafts=records.drafts;refreshDateExpenseView(date);showToast(checked?'고정지출을 해당 날짜 지출에 기록했습니다.':'고정지출 기록을 해당 날짜에서 취소했습니다.');}
+  catch{showToast('고정지출 기록을 저장하지 못했습니다.',false);}
 }
 function updateFixedCostItem(i){
   const name=$('fixed-name-'+i).value.trim(),amount=parseMoney($('fixed-amount-'+i).value),due=Number($('fixed-due-'+i).value)||null;
-  if(!name||!amountOK(amount)||!amount){showToast('항목명과 월 금액을 확인해 주세요.',false);return;}
-  const next=clone(fixedExpenses);next[i]={...next[i],name,amount,dueDay:due,kind:$('fixed-kind-'+i).value};
+  if(!name||!amountOK(amount)||!amount||(!due&&$('fixed-kind-'+i).value!=='investment')){showToast('항목명·금액·매월 지출일을 확인해 주세요.',false);return;}
+  const next=clone(fixedExpenses);next[i]={...next[i],id:next[i].id??fixedItemKey(next[i],i),name,amount,dueDay:due,kind:$('fixed-kind-'+i).value};
   try{persist(FIXED_STORAGE_KEY,next);fixedExpenses=next;renderAll();showToast('고정비를 수정했습니다.');}catch{showToast('저장에 실패했습니다.',false);}
 }
 function addFixedCostItem(){
   const name=$('new-fixed-name').value.trim(),amount=parseMoney($('new-fixed-amount').value);
   if(!name||!amountOK(amount)||amount<=0){showToast('항목명과 월 금액을 확인해 주세요.',false);return;}
-  const next=[...fixedExpenses,{id:Date.now(),name,amount,dueDay:Number($('new-fixed-due').value)||null,kind:$('new-fixed-kind').value}];
+  const dueDay=Number($('new-fixed-due').value)||null;if(!dueDay){showToast('실제 지출 체크를 위해 매월 지출일을 지정해 주세요.',false);return;}
+  const next=[...fixedExpenses,{id:String(Date.now())+'-'+Math.floor(Math.random()*1000),name,amount,dueDay,kind:'living'}];
   try{persist(FIXED_STORAGE_KEY,next);fixedExpenses=next;$('new-fixed-name').value='';$('new-fixed-amount').value='';renderAll();showToast('고정비를 추가했습니다.');}catch{showToast('저장에 실패했습니다.',false);}
 }
 function deleteFixedCostItem(i){if(!confirm('이 고정비를 삭제할까요?'))return;const next=fixedExpenses.filter((_,idx)=>idx!==i);try{persist(FIXED_STORAGE_KEY,next);fixedExpenses=next;renderAll();}catch{showToast('삭제에 실패했습니다.',false);}}
 function resetFixedExpensesToDefault(){if(!confirm('고정비 목록 전체를 비울까요? 투자 체크 이력과 원금은 유지됩니다.'))return;try{persist(FIXED_STORAGE_KEY,[]);fixedExpenses=[];renderAll();}catch{showToast('초기화에 실패했습니다.',false);}}
-function openFixedModal(){renderFixedExpensesList();$('fixed-modal').style.display='flex';}
-function closeFixedModal(){ $('fixed-modal').style.display='none'; }
+function openFixedModal(){const module=$('fixed-cost-module');if(module){module.open=true;module.scrollIntoView({behavior:'smooth',block:'center'});}}
+function closeFixedModal(){const modal=$('fixed-modal');if(modal)modal.style.display='none';}
 function investmentTotal(){return investment.openingPrincipal+Object.values(investment.days).reduce((s,r)=>s+(r.status==='yes'?r.amount:0),0);}
 function renderInvestment(){
   const date=$('input-date').value||getKSTDateString();const day=investment.days[date];
@@ -908,22 +938,43 @@ function renderInvestment(){
   $('invest-date').textContent=date;$('invest-question').textContent=`${money(day?.status==='yes'?day.amount:investment.dailyAmount)} 투자했나요?`;
   $('invest-yes').classList.toggle('selected',day?.status==='yes');$('invest-no').classList.toggle('selected',day?.status==='no');
   $('invest-yes').setAttribute('aria-pressed',String(day?.status==='yes'));$('invest-no').setAttribute('aria-pressed',String(day?.status==='no'));
-  $('invest-check-status').textContent=day?.status==='yes'?'투자 완료 · 원금에 반영했어요.':day?.status==='no'?'미실행으로 기록했어요. 원금에 반영하지 않습니다.':'아직 체크하지 않았어요.';
+  $('invest-check-status').textContent=day?.status==='yes'?'투자 완료 · 원금과 해당 날짜 지출에 반영했어요.':day?.status==='no'?'미실행으로 기록했어요. 원금과 지출에 반영하지 않습니다.':'아직 체크하지 않았어요.';
   $('invest-opening').value=formatMoneyValue(investment.openingPrincipal);$('invest-daily').value=formatMoneyValue(investment.dailyAmount);
+}
+function managedExpenseRecordUpdates(date,matches,replacement){
+  const nextDb=clone(db||{}),nextDrafts=clone(drafts||{}),hasDb=Object.hasOwn(nextDb,date),hasDraft=Object.hasOwn(nextDrafts,date);
+  const empty={income:0,deliveryIncome:0,extraIncome:0,extraDescription:'',expenses:[]};
+  const apply=rec=>{const base=rec||empty,expenses=(base.expenses||[]).filter(item=>!matches(item));if(replacement)expenses.push(clone(replacement));return {...base,expenses};};
+  if(hasDb)nextDb[date]=apply(nextDb[date]);
+  if(hasDraft)nextDrafts[date]=apply(nextDrafts[date]);
+  if(!hasDb&&!hasDraft&&replacement)nextDrafts[date]=apply(empty);
+  return {db:nextDb,drafts:nextDrafts};
+}
+function refreshDateExpenseView(date){
+  if($('input-date').value===date)onDateChanged(date);
+  renderAll();
 }
 function markInvestment(status){
   const date=$('input-date').value;if(!validDate(date))return;
-  const old=investment.days[date];const amount=status==='yes'?(old?.status==='yes'?old.amount:investment.dailyAmount):0;
+  const old=investment.days[date],amount=status==='yes'?(old?.status==='yes'?old.amount:investment.dailyAmount):0;
   const next={...investment,days:{...investment.days,[date]:{status,amount}}};
-  try{persist(INVESTMENT_KEY,next);investment=next;renderInvestment();renderCalendar();showToast(status==='yes'?'투자 완료를 기록했습니다.':'미실행을 기록했습니다.');}catch{showToast('투자 기록 저장에 실패했습니다.',false);}
+  const marker=amount>0?{source:'investment',category:'투자',detail:'일일 실제 투자금',amount}:null;
+  const records=managedExpenseRecordUpdates(date,isManagedInvestment,marker);
+  try{writeBatch([[INVESTMENT_KEY,next],[MASTER_STORAGE_KEY,records.db],[DRAFT_STORAGE_KEY,records.drafts]]);investment=next;db=records.db;drafts=records.drafts;refreshDateExpenseView(date);showToast(status==='yes'?'투자 완료를 기록하고 해당 날짜 지출에 반영했습니다.':'미실행으로 기록했습니다.');}
+  catch{showToast('투자 기록을 저장하지 못했습니다.',false);}
 }
-function clearInvestmentDay(){const date=$('input-date').value;const next=clone(investment);delete next.days[date];try{persist(INVESTMENT_KEY,next);investment=next;renderInvestment();renderCalendar();}catch{showToast('저장에 실패했습니다.',false);}}
+function clearInvestmentDay(){
+  const date=$('input-date').value,next=clone(investment);delete next.days[date];
+  const records=managedExpenseRecordUpdates(date,isManagedInvestment,null);
+  try{writeBatch([[INVESTMENT_KEY,next],[MASTER_STORAGE_KEY,records.db],[DRAFT_STORAGE_KEY,records.drafts]]);investment=next;db=records.db;drafts=records.drafts;refreshDateExpenseView(date);showToast('투자 체크와 연결된 지출을 초기화했습니다.');}
+  catch{showToast('저장에 실패했습니다.',false);}
+}
 function saveInvestmentSettings(){
   const openingPrincipal=parseMoney($('invest-opening').value),dailyAmount=parseMoney($('invest-daily').value);
   if(!amountOK(openingPrincipal)||!amountOK(dailyAmount)||!dailyAmount){showToast('원금과 일 투자금은 올바른 정수로 입력해 주세요.',false);return;}
   const next={...investment,openingPrincipal,dailyAmount};try{persist(INVESTMENT_KEY,next);investment=next;renderInvestment();showToast('투자 설정을 저장했습니다. 기존 체크 금액은 유지됩니다.');}catch{showToast('저장에 실패했습니다.',false);}
 }
-function duesFor(date){const d=dateOf(date),last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return fixedExpenses.filter(item=>item.dueDay&&Math.min(Number(item.dueDay),last)===d.getDate());}
+function duesFor(date){const d=dateOf(date),last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return fixedExpenses.filter(item=>!isInvestment(item)&&item.dueDay&&Math.min(Number(item.dueDay),last)===d.getDate());}
 function renderCalendar(){
   const y=currentDate.getFullYear(),m=currentDate.getMonth(),last=new Date(y,m+1,0).getDate(),first=new Date(y,m,1).getDay();
   $('cal-month-title').textContent=`${y}년 ${m+1}월`;const grid=$('cal-cells');grid.innerHTML='';
@@ -1025,13 +1076,7 @@ function undoAttendanceAction(){
   catch{showToast('동작을 취소하지 못했습니다. 저장 공간을 확인해 주세요.',false);}
 }
 function renderAll(){
-  renderAttendance();
-  $('banner-total-fixed').textContent=money(getMonthlyFixedTotal());$('banner-daily-target').textContent=money(getDailyTarget());$('modal-fixed-total').textContent=money(getMonthlyFixedTotal());$('modal-daily-target').textContent=money(getDailyTarget());
-  const invest=fixedExpenses.filter(isInvestment).reduce((s,i)=>s+i.amount,0);$('fixed-split').textContent=`생활 고정비 ${money(getMonthlyFixedTotal()-invest)} · 투자 목표 ${money(invest)}`;
-  $('modal-fixed-split').textContent=$('fixed-split').textContent;
-  const today=getKSTDateString(),month=today.slice(0,7),data=aggregate(d=>d.startsWith(month));
-  $('hero-month').textContent=`${Number(month.slice(5))}월 누적 합계`;$('hero-net').textContent=money(data.net);$('hero-status').textContent=data.pending.size?`미정산 공제 ${data.pending.size}주 · 잠정 포함`:'공제 반영 기준';$('hero-expense').textContent=money(data.expense);
-  renderFixedExpensesList();updateCalculationPreview();renderInvestment();renderCalendar();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();
+  renderAttendance();renderFixedExpensesList();renderFixedPaymentChecklist();updateCalculationPreview();renderInvestment();renderCalendar();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();
 }
 function recomputeAllSystem(notice=false){renderAll();if(notice)showToast('고정비와 통계를 갱신했습니다.');}
 function backupPayload(){return {version:'master_v3',exportDate:getKSTDateString(),db,drafts,fixedExpenses,settlements,investment,attendance,settlementDrafts:readStore('delivery_settlement_drafts_v3',{})};}
@@ -1056,7 +1101,8 @@ function restoreBackup(parsed){
 }
 function importData(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);validateBackup(parsed);if(!confirm('백업 내용으로 현재 기록 전체를 교체할까요?'))return;restoreBackup(parsed);showToast('백업을 복원했습니다.');}catch{showToast('복원하지 못했습니다. 백업 형식과 저장 공간을 확인해 주세요.',false);}finally{event.target.value='';}};reader.readAsText(file);}
 function initApp(){
-  $('new-fixed-options').innerHTML=dueDaySelect('new-fixed-due',null)+kindSelect('new-fixed-kind','living');
+  if(fixedExpenses.some((item,index)=>!item.id)){fixedExpenses=fixedExpenses.map((item,index)=>item.id?item:{...item,id:'legacy-'+index+'-'+String(item.name||'fixed')+'-'+String(item.dueDay||'')});try{persist(FIXED_STORAGE_KEY,fixedExpenses);}catch{}}
+  $('new-fixed-options').innerHTML=dueDaySelect('new-fixed-due',null);
   const years=new Set([new Date().getFullYear()-1,new Date().getFullYear(),new Date().getFullYear()+1,...Object.keys(db).map(d=>Number(d.slice(0,4)))]);
   for(const id of ['month-year-select','half-year-select','year-select'])$(id).innerHTML=[...years].sort().map(y=>`<option value="${y}" ${y===new Date().getFullYear()?'selected':''}>${y}년</option>`).join('');
   $('month-select').value=new Date().getMonth()+1;$('half-select').value=new Date().getMonth()<6?'1':'2';$('year-select').value=String(new Date().getFullYear());
@@ -1066,7 +1112,7 @@ function initApp(){
   window.addEventListener('focus',renderAttendance);
   window.addEventListener('pageshow',renderAttendance);
 }
-document.addEventListener('input',e=>{if(['input-income','input-extra','input-detail','input-expense-val'].includes(e.target.id)){saveDraft();if(['input-income','input-extra'].includes(e.target.id)){renderAttendance();refreshHourlySettlementViews();}}});
+document.addEventListener('input',e=>{if(['input-income','input-extra','input-extra-description','input-detail','input-expense-val'].includes(e.target.id)){saveDraft();if(['input-income','input-extra'].includes(e.target.id)){renderAttendance();refreshHourlySettlementViews();}if(e.target.id==='input-income')updateCalculationPreview();}});
 document.addEventListener('change',e=>{if(e.target.id==='select-category')saveDraft();});
 document.addEventListener('click',e=>{
   const action=e.target.closest('[data-app-action]');
