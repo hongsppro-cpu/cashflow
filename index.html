@@ -657,6 +657,7 @@ if(!Array.isArray(fixedExpenses))fixedExpenses=[];
 investment={openingPrincipal:0,dailyAmount:90000,days:{},...investment};
 let currentDate=new Date();
 let currentExpenses=[];
+let tobaccoAmountCommitted=false;
 let recordLocked=false;
 let activeStats='week';
 function incomeParts(rec={}) {
@@ -822,7 +823,7 @@ function refreshHourlySettlementViews(){
 function saveDraft(){
   if(recordLocked)return;const date=$('input-date').value;if(!date)return;
   const delivery=parseMoney($('input-income').value)||0,extra=parseMoney($('input-extra').value)||0;
-  const rec={income:delivery+extra,deliveryIncome:delivery,extraIncome:extra,extraDescription:$('input-extra-description').value.trim(),expenses:clone(currentExpenses),category:$('select-category').value,detail:$('input-detail').value,pendingAmount:$('input-expense-val').value};
+  const rec={income:delivery+extra,deliveryIncome:delivery,extraIncome:extra,extraDescription:$('input-extra-description').value.trim(),expenses:clone(currentExpenses),category:$('select-category').value,detail:$('input-detail').value,pendingAmount:(tobaccoAmountCommitted&&$('select-category').value==='담배')?'':$('input-expense-val').value};
   const next={...drafts,[date]:rec};
   try{persist(DRAFT_STORAGE_KEY,next);drafts=next;localStorage.setItem(LAST_DATE_KEY,date);$('draft-status').textContent='임시저장 완료 · 지금 나가도 이어서 입력할 수 있어요.';$('btn-delete').style.display='block';}catch{$('draft-status').textContent='임시저장 실패 · 저장 공간을 확인해 주세요.';}
 }
@@ -837,10 +838,12 @@ function onDateChanged(date){
   $('draft-status').textContent=recordLocked?'최종 저장 완료 · 변경하려면 수정을 눌러 주세요.':draft?'임시저장 내용을 복원했어요.':'입력하면 자동으로 임시저장됩니다.';
   $('input-income').value=p.delivery?formatMoneyValue(p.delivery):'';$('input-extra').value=p.extra?formatMoneyValue(p.extra):'';$('input-extra-description').value=record?.extraDescription||'';
   currentExpenses=clone(record?.expenses||[]);$('select-category').value=EXPENSE_CATEGORIES.includes(draft?.category)?draft.category:'식비';$('input-detail').value=draft?.detail||'';$('input-expense-val').value=draft?.pendingAmount||'';
+  tobaccoAmountCommitted=$('select-category').value==='담배'&&!draft?.pendingAmount&&currentExpenses.some(item=>item.category==='담배');
   onCategoryChanged($('select-category').value,false);renderExpenseTags();updateCalculationPreview();updateRecordControls();renderInvestment();renderCalendar();renderFixedPaymentChecklist();renderWeeklyStats();
 }
 function onCategoryChanged(value,focus=true){
   const isOther=value==='기타',wrap=$('detail-input-wrap'),detailInput=$('input-detail'),amountInput=$('input-expense-val');
+  if(focus)tobaccoAmountCommitted=false;
   wrap.hidden=!isOther;detailInput.placeholder=isOther?'기타 상세 항목 입력 (필수)':'';
   if(value==='담배'){amountInput.value=formatMoneyValue(4500);amountInput.readOnly=true;amountInput.setAttribute('aria-label','담배 지출액 4,500원으로 고정');}
   else{if(focus&&amountInput.readOnly)amountInput.value='';amountInput.readOnly=false;amountInput.setAttribute('aria-label','지출액 (원)');}
@@ -852,9 +855,9 @@ function addExpenseItem(){
   if(!EXPENSE_CATEGORIES.includes(category)){showToast('지출 분류를 선택해 주세요.',false);return false;}
   if(!amountOK(amount)||amount<=0){showToast('지출액을 1원 이상으로 입력해 주세요.',false);return false;}
   if(category==='기타'&&!detail){showToast('기타 상세 항목을 입력해 주세요.',false);return false;}
-  currentExpenses.push({category,detail,amount});$('input-expense-val').value='';$('input-detail').value='';
-  if(category==='담배'){$('select-category').value='식비';onCategoryChanged('식비',false);}
-  renderExpenseTags();updateCalculationPreview();saveDraft();return true;
+  currentExpenses.push({category,detail,amount});
+  if(category==='담배')tobaccoAmountCommitted=true;else $('input-expense-val').value='';
+  $('input-detail').value='';renderExpenseTags();updateCalculationPreview();saveDraft();return true;
 }
 function removeExpenseItem(index){if(recordLocked)return;currentExpenses.splice(index,1);renderExpenseTags();updateCalculationPreview();saveDraft();}
 function renderExpenseTags(){
@@ -878,7 +881,8 @@ function dailyDeductionForDate(date,deliveryOverride){
 function updateCalculationPreview(){
   const date=$('input-date').value,delivery=parseMoney($('input-income').value)||0,extra=parseMoney($('input-extra').value)||0;
   const deduction=validDate(date)?dailyDeductionForDate(date,delivery):0,netLabor=delivery-deduction,incomeAfterDeduction=netLabor+extra;
-  const listedExpense=currentExpenses.reduce((sum,item)=>sum+(Number(item.amount)||0),0)+(parseMoney($('input-expense-val').value)||0);
+  const pendingExpense=tobaccoAmountCommitted&&$('select-category').value==='담배'?0:(parseMoney($('input-expense-val').value)||0);
+  const listedExpense=currentExpenses.reduce((sum,item)=>sum+(Number(item.amount)||0),0)+pendingExpense;
   const legacyInvestment=investment.days[date]?.status==='yes'&&!currentExpenses.some(isManagedInvestment)?Number(investment.days[date].amount)||0:0;
   const expenses=listedExpense+legacyInvestment,remaining=incomeAfterDeduction-expenses,gross=delivery+extra;
   if($('disp-labor-gross'))$('disp-labor-gross').textContent=money(delivery);if($('disp-labor-net'))$('disp-labor-net').textContent=money(netLabor);
