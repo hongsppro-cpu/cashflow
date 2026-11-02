@@ -221,7 +221,6 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     .attendance-rate{margin-top:10px;padding:12px;border-radius:13px;background:#e9f6ef}
     .attendance-rate strong{display:block;margin-top:2px;color:#166534;font-size:1.55rem;font-variant-numeric:tabular-nums}
     .attendance-rate small{display:block;color:#64748b;font-size:.75rem}
-    .attendance-undo-note{display:block;margin-top:7px;color:#64748b;font-size:.76rem;line-height:1.4}
     .attendance-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
     .attendance-buttons button{min-height:46px;border:0;border-radius:11px;background:#e2e8f0;color:#1e293b;font-size:1rem;font-weight:800;cursor:pointer}
     .attendance-buttons button[data-app-action="clock-in"]{background:#1d4ed8;color:#fff;box-shadow:0 3px 8px #1d4ed833}
@@ -230,8 +229,15 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     .attendance-buttons button[data-app-action="resume-work"]{background:#15803d;color:#fff;box-shadow:0 3px 8px #15803d33}
     .attendance-buttons button:active:not(:disabled){transform:translateY(1px);filter:brightness(.92)}
     .attendance-buttons button:disabled{opacity:.42;cursor:default;box-shadow:none}
-    .attendance-buttons .attendance-undo{grid-column:1/-1;min-height:42px;background:#e2e8f0;color:#334155;border:1px dashed #94a3b8;box-shadow:none}
-    .attendance-buttons .attendance-undo:disabled{background:#f1f5f9;color:#94a3b8;border-color:#cbd5e1}
+    .attendance-adjustments{margin-top:14px;padding:13px;border:1px solid #dbe3ec;border-radius:14px;background:#fff}
+    .attendance-adjustments>p{color:#64748b;font-size:.78rem;line-height:1.45}
+    .attendance-adjust-row{margin-top:10px}
+    .attendance-adjust-row>strong{display:block;margin-bottom:6px;color:#475569;font-size:.82rem}
+    .attendance-adjust-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+    .attendance-adjust-buttons button{min-width:0;min-height:42px;padding:5px 2px;border:1px solid #cbd5e1;border-radius:9px;background:#f1f5f9;color:#1e293b;font-size:.85rem;font-weight:800;cursor:pointer}
+    .attendance-adjust-buttons button[data-minutes^="-"]{background:#fff1f2;border-color:#fecdd3;color:#9f1239}
+    .attendance-adjust-buttons button:active:not(:disabled){transform:translateY(1px);filter:brightness(.94)}
+    .attendance-adjustment-status{display:block;margin-top:9px;color:#475569;font-size:.78rem;font-weight:700}
     .hero-month-expense{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:13px 0 2px;padding:12px 14px;border:1px solid #ffffff55;border-radius:13px;background:#ffffff18;color:#f8fafc}
     .hero-month-expense span{font-size:1rem;color:#e4edf8}
     .hero-month-expense strong{font-size:1.35rem;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;text-align:right}
@@ -381,9 +387,23 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     <button type="button" data-app-action="clock-out">퇴근</button>
     <button type="button" data-app-action="pause-work">멈춤</button>
     <button type="button" data-app-action="resume-work">다시시작</button>
-    <button type="button" class="attendance-undo" data-app-action="undo-attendance" disabled>마지막 동작 취소</button>
   </div>
-  <small class="attendance-undo-note">타이머 버튼을 잘못 눌렀다면 마지막 동작을 한 번 취소할 수 있어요.</small>
+  <div class="attendance-adjustments" aria-label="오늘 근무시간 보정">
+    <p>출근을 늦게 기록했다면 실제 퇴근 기록은 유지하면서 오늘 근무시간 합계를 보정할 수 있어요.</p>
+    <div class="attendance-adjust-row"><strong>시간 더하기</strong><div class="attendance-adjust-buttons">
+      <button type="button" data-app-action="adjust-time" data-minutes="5">+5분</button>
+      <button type="button" data-app-action="adjust-time" data-minutes="10">+10분</button>
+      <button type="button" data-app-action="adjust-time" data-minutes="30">+30분</button>
+      <button type="button" data-app-action="adjust-time" data-minutes="60">+60분</button>
+    </div></div>
+    <div class="attendance-adjust-row"><strong>시간 빼기</strong><div class="attendance-adjust-buttons">
+      <button type="button" data-app-action="adjust-time" data-minutes="-5">−5분</button>
+      <button type="button" data-app-action="adjust-time" data-minutes="-10">−10분</button>
+      <button type="button" data-app-action="adjust-time" data-minutes="-30">−30분</button>
+      <button type="button" data-app-action="adjust-time" data-minutes="-60">−60분</button>
+    </div></div>
+    <small id="attendance-adjustment-status" class="attendance-adjustment-status">수동 보정 없음</small>
+  </div>
 </section>
 
 <section class="card" id="labor-income-module">
@@ -583,7 +603,6 @@ const LAST_DATE_KEY = 'delivery_flow_last_date';
 const SETTLEMENT_KEY = 'delivery_settlements_v3';
 const INVESTMENT_KEY = 'delivery_investment_v3';
 const ATTENDANCE_KEY = 'delivery_attendance_v1';
-const ATTENDANCE_UNDO_KEY = 'delivery_attendance_undo_v1';
 const DEFAULT_FIXED_EXPENSES = [];
 const $ = id => document.getElementById(id);
 const money = value => Math.round(Number(value) || 0).toLocaleString('ko-KR') + '원';
@@ -632,7 +651,6 @@ let fixedExpenses=readStore(FIXED_STORAGE_KEY,clone(DEFAULT_FIXED_EXPENSES));
 let settlements=readStore(SETTLEMENT_KEY,{});
 let investment=readStore(INVESTMENT_KEY,{openingPrincipal:0,dailyAmount:90000,days:{}});
 let attendance=readStore(ATTENDANCE_KEY,{});
-let attendanceUndo=readStore(ATTENDANCE_UNDO_KEY,null);
 if(!Array.isArray(fixedExpenses))fixedExpenses=[];
 investment={openingPrincipal:0,dailyAmount:90000,days:{},...investment};
 let currentDate=new Date();
@@ -719,7 +737,7 @@ function fixedCostForPeriod(period){return 0;}
 function dailyHourlyMarkup(filter,period='week'){
   const dates=Object.keys(attendance||{}).filter(date=>filter(date)&&attendanceDay(date).sessions.length>0).sort();
   const rows=dates.map(date=>{
-    const day=attendanceDay(date),workMs=day.sessions.reduce((sum,session)=>sum+sessionWorkMs(session),0),gross=dailyAttendanceIncome(date);
+    const day=attendanceDay(date),workMs=attendanceWorkMs(day),gross=dailyAttendanceIncome(date);
     const rate=workMs>0&&gross>0?money(gross*3600000/workMs)+' /시간':'수입 또는 근무시간 확인';
     const weekday=['일','월','화','수','목','금','토'][dateOf(date).getDay()];
     return `<div class="hourly-row"><div><strong>${date.slice(5).replace('-','/')} (${weekday})</strong><small>당일 수입 ${money(gross)} · 실근무 ${formatDuration(workMs)}</small></div><b>${rate}</b></div>`;
@@ -998,6 +1016,10 @@ function goToSettlement(start){currentDate=dateOf(start);renderWeeklyStats();swi
 function attendanceDay(date=getKSTDateString()){
   const row=attendance&&attendance[date];return row&&Array.isArray(row.sessions)?row:{sessions:[]};
 }
+function attendanceWorkMs(day,now=Date.now()){
+  const recorded=day.sessions.reduce((sum,session)=>sum+sessionWorkMs(session,now),0);
+  return Math.max(0,recorded+(Number(day.adjustmentMs)||0));
+}
 function activeAttendanceSession(day=attendanceDay()){
   for(let i=day.sessions.length-1;i>=0;i--)if(!day.sessions[i].endAt)return day.sessions[i];
   return null;
@@ -1027,7 +1049,7 @@ function dailyAttendanceIncome(date){
 function renderAttendance(){
   if(!$('attendance-clock'))return;
   const today=getKSTDateString(),day=attendanceDay(today),now=Date.now(),active=activeAttendanceSession(day);
-  const workMs=day.sessions.reduce((sum,session)=>sum+sessionWorkMs(session,now),0);
+  const workMs=attendanceWorkMs(day,now);
   const breakMs=day.sessions.reduce((sum,session)=>sum+sessionBreakMs(session,now),0);
   $('attendance-date').textContent=today;
   $('attendance-clock').textContent=formatDuration(workMs,true);
@@ -1040,8 +1062,8 @@ function renderAttendance(){
   $('attendance-state').classList.toggle('is-paused',!!active&&!!active.pausedAt);
   $('attendance-state').classList.toggle('is-done',!active&&day.sessions.length>0);
   const paused=!!(active&&active.pausedAt);
-  const undoButton=document.querySelector('[data-app-action="undo-attendance"]');
-  if(undoButton){const canUndo=!!attendanceUndo&&attendanceUndo.date===today;undoButton.disabled=!canUndo;undoButton.title=canUndo?'마지막 타이머 동작을 취소합니다.':'취소할 타이머 동작이 없습니다.';}
+  const adjustment=Number(day.adjustmentMs)||0;
+  $('attendance-adjustment-status').textContent=adjustment===0?'수동 보정 없음':'수동 보정 '+(adjustment>0?'+':'')+Math.trunc(adjustment/60000)+'분';
   document.querySelector('[data-app-action="clock-in"]').disabled=!!active;
   document.querySelector('[data-app-action="clock-out"]').disabled=!active;
   document.querySelector('[data-app-action="pause-work"]').disabled=!active||paused;
@@ -1049,7 +1071,6 @@ function renderAttendance(){
 }
 function attendanceAction(action){
   const date=getKSTDateString(),next=clone(attendance||{}),day=next[date]&&Array.isArray(next[date].sessions)?next[date]:{sessions:[]},now=new Date(),stamp=now.toISOString();
-  const previous=Object.hasOwn(attendance||{},date)?clone(attendance[date]):null;
   let session=activeAttendanceSession(day);
   if(action==='clock-in'){
     if(session){showToast('현재 근무 기록을 먼저 퇴근 처리해 주세요.',false);return;}
@@ -1065,16 +1086,22 @@ function attendanceAction(action){
     session.endAt=stamp;
   }
   next[date]=day;
-  const undo={date,previous,action,createdAt:stamp};
-  try{writeBatch([[ATTENDANCE_KEY,next],[ATTENDANCE_UNDO_KEY,undo]]);attendance=next;attendanceUndo=undo;renderAttendance();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();showToast(action==='clock-in'?'출근 시간을 기록했습니다.':action==='clock-out'?'퇴근 시간을 기록하고 근무시간을 계산했습니다.':action==='pause'?'휴식 시작을 기록했습니다.':'근무를 다시 시작했습니다.');}
+  try{persist(ATTENDANCE_KEY,next);attendance=next;renderAttendance();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();showToast(action==='clock-in'?'출근 시간을 기록했습니다.':action==='clock-out'?'퇴근 시간을 기록하고 근무시간을 계산했습니다.':action==='pause'?'휴식 시작을 기록했습니다.':'근무를 다시 시작했습니다.');}
   catch{showToast('출퇴근 기록을 저장하지 못했습니다.',false);}
 }
-function undoAttendanceAction(){
-  if(!attendanceUndo||attendanceUndo.date!==getKSTDateString()){showToast('취소할 타이머 동작이 없습니다.',false);return;}
-  const undo=attendanceUndo,next=clone(attendance||{});
-  if(undo.previous)next[undo.date]=clone(undo.previous);else delete next[undo.date];
-  try{writeBatch([[ATTENDANCE_KEY,next],[ATTENDANCE_UNDO_KEY,null]]);attendance=next;attendanceUndo=null;renderAttendance();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();showToast('마지막 타이머 동작을 취소했습니다.');}
-  catch{showToast('동작을 취소하지 못했습니다. 저장 공간을 확인해 주세요.',false);}
+function adjustAttendanceTime(minutes){
+  const allowed=[-60,-30,-10,-5,5,10,30,60];
+  if(!allowed.includes(minutes)){showToast('선택한 보정 시간을 확인해 주세요.',false);return;}
+  const date=getKSTDateString(),next=clone(attendance||{}),day=next[date]&&Array.isArray(next[date].sessions)?next[date]:{sessions:[]};
+  const recorded=day.sessions.reduce((sum,session)=>sum+sessionWorkMs(session),0);
+  let adjustment=(Number(day.adjustmentMs)||0)+minutes*60000;
+  if(recorded+adjustment<0)adjustment=Math.ceil(-recorded);
+  day.adjustmentMs=adjustment;
+  next[date]=day;
+  try{
+    persist(ATTENDANCE_KEY,next);attendance=next;renderAttendance();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();
+    showToast('오늘 근무시간을 '+(minutes>0?'+':'')+minutes+'분 보정했습니다.');
+  }catch{showToast('근무시간 보정을 저장하지 못했습니다.',false);}
 }
 function renderAll(){
   renderAttendance();renderFixedExpensesList();renderFixedPaymentChecklist();updateCalculationPreview();renderInvestment();renderCalendar();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();
@@ -1091,14 +1118,18 @@ function validateBackup(parsed){
   const fixed=parsed.fixedExpenses??fixedExpenses;if(!Array.isArray(fixed)||fixed.some(i=>!i||typeof i.name!=='string'||!amountOK(i.amount)||(i.dueDay!=null&&(!Number.isInteger(i.dueDay)||i.dueDay<1||i.dueDay>31))))throw Error('고정비');
   const settlement=parsed.settlements||{};if(!isMap(settlement)||Object.entries(settlement).some(([d,r])=>!validDate(d)||weekStart(d)!==d||!r||!amountOK(r.deduction)))throw Error('공제');
   const inv=parsed.investment||{openingPrincipal:0,dailyAmount:90000,days:{}};if(!amountOK(inv.openingPrincipal)||!amountOK(inv.dailyAmount)||!inv.dailyAmount||!isMap(inv.days)||Object.entries(inv.days).some(([d,r])=>!validDate(d)||!r||!['yes','no'].includes(r.status)||!amountOK(r.amount)))throw Error('투자');
-  const attendanceData=parsed.attendance??readStore(ATTENDANCE_KEY,{});if(!isMap(attendanceData)||Object.entries(attendanceData).some(([d,r])=>!validDate(d)||!isMap(r)||!Array.isArray(r.sessions)||r.sessions.some(x=>!x||!Number.isFinite(Date.parse(x.startAt))||(x.endAt!=null&&!Number.isFinite(Date.parse(x.endAt)))||(x.pausedAt!=null&&!Number.isFinite(Date.parse(x.pausedAt)))||!Number.isSafeInteger(Number(x.pausedMs)||0)||(Number(x.pausedMs)||0)<0)))throw Error('출퇴근');
+  const attendanceData=parsed.attendance??readStore(ATTENDANCE_KEY,{});
+  const invalidAttendance=!isMap(attendanceData)||Object.entries(attendanceData).some(([d,r])=>{
+    return !validDate(d)||!isMap(r)||!Array.isArray(r.sessions)||r.sessions.some(x=>!x||!Number.isFinite(Date.parse(x.startAt))||(x.endAt!=null&&!Number.isFinite(Date.parse(x.endAt)))||(x.pausedAt!=null&&!Number.isFinite(Date.parse(x.pausedAt)))||!Number.isSafeInteger(Number(x.pausedMs)||0)||(Number(x.pausedMs)||0)<0)||(r.adjustmentMs!==undefined&&!Number.isSafeInteger(Number(r.adjustmentMs)));
+  });
+  if(invalidAttendance)throw Error('출퇴근');
   return {records,fixed,settlement,inv,attendance:attendanceData,draft:parsed.drafts||{},settlementDrafts:isMap(parsed.settlementDrafts)?parsed.settlementDrafts:{}};
 }
 function restoreBackup(parsed){
-  const data=validateBackup(parsed);const entries=[[MASTER_STORAGE_KEY,data.records],[FIXED_STORAGE_KEY,data.fixed],[DRAFT_STORAGE_KEY,data.draft],[SETTLEMENT_KEY,data.settlement],[INVESTMENT_KEY,data.inv],[ATTENDANCE_KEY,data.attendance],[ATTENDANCE_UNDO_KEY,null],['delivery_settlement_drafts_v3',data.settlementDrafts]];
+  const data=validateBackup(parsed);const entries=[[MASTER_STORAGE_KEY,data.records],[FIXED_STORAGE_KEY,data.fixed],[DRAFT_STORAGE_KEY,data.draft],[SETTLEMENT_KEY,data.settlement],[INVESTMENT_KEY,data.inv],[ATTENDANCE_KEY,data.attendance],['delivery_settlement_drafts_v3',data.settlementDrafts]];
   const previous=entries.map(([key])=>[key,localStorage.getItem(key)]);
   try{for(const [key,value]of entries)persist(key,value);}catch(error){for(const [key,value]of previous)try{if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,value);}catch{}throw error;}
-  db=loadDatabase();fixedExpenses=data.fixed;drafts=data.draft;settlements=data.settlement;investment=clone(data.inv);attendance=clone(data.attendance);attendanceUndo=null;onDateChanged($('input-date').value);renderAll();
+  db=loadDatabase();fixedExpenses=data.fixed;drafts=data.draft;settlements=data.settlement;investment=clone(data.inv);attendance=clone(data.attendance);onDateChanged($('input-date').value);renderAll();
 }
 function importData(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const parsed=JSON.parse(reader.result);validateBackup(parsed);if(!confirm('백업 내용으로 현재 기록 전체를 교체할까요?'))return;restoreBackup(parsed);showToast('백업을 복원했습니다.');}catch{showToast('복원하지 못했습니다. 백업 형식과 저장 공간을 확인해 주세요.',false);}finally{event.target.value='';}};reader.readAsText(file);}
 function initApp(){
@@ -1126,7 +1157,7 @@ document.addEventListener('click',e=>{
       else if(action.dataset.appAction==='clock-out')attendanceAction('clock-out');
       else if(action.dataset.appAction==='pause-work')attendanceAction('pause');
       else if(action.dataset.appAction==='resume-work')attendanceAction('resume');
-      else if(action.dataset.appAction==='undo-attendance')undoAttendanceAction();
+      else if(action.dataset.appAction==='adjust-time')adjustAttendanceTime(Number(action.dataset.minutes));
     }catch(error){console.error('화면 조작 오류:',error);showToast('화면을 처리하지 못했습니다. 새로고침 후 다시 시도해 주세요.',false);}
     return;
   }
