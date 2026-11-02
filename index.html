@@ -245,18 +245,20 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
       #detail-input-wrap[hidden]{display:none!important}
     #detail-input-wrap{min-width:0}
     .spend-summary{display:grid;grid-template-columns:1fr auto;gap:8px 12px;padding:14px;border:1px solid #d6e4dc;border-radius:14px;background:#f1f8f4;color:#1e293b}
-    .spend-summary-label{color:#52685b;font-size:.9rem;font-weight:750}
-    .spend-summary-total{color:#14532d;font-size:1.4rem;font-weight:850;font-variant-numeric:tabular-nums}
-    .spend-summary-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:9px;border-top:1px solid #d7e7dc;font-size:.9rem}
-    .spend-summary-top strong{color:#166534;text-align:right}
+    .spend-summary-label{color:#263b31;font-size:.95rem;font-weight:850}
+    .spend-summary-total{color:#064e3b;font-size:1.55rem;font-weight:900;font-variant-numeric:tabular-nums}
+    .spend-summary-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:9px;border-top:1px solid #b8d3c2;font-size:.92rem;color:#263b31;font-weight:750}
+    .spend-summary-top strong{color:#065f46;text-align:right;font-weight:900}
     .expense-compact-list{display:grid;gap:10px;margin-top:14px}
     .expense-compact-row{min-width:0}
-    .expense-compact-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.92rem}
-    .expense-compact-name{min-width:0;color:#334155;font-weight:750;overflow-wrap:anywhere}
-    .expense-compact-value{flex-shrink:0;color:#0f172a;font-variant-numeric:tabular-nums;text-align:right}
-    .expense-compact-value small{color:#64748b;font-size:.8rem}
-    .expense-compact-track{height:7px;margin-top:5px;border-radius:8px;background:#e2e8f0;overflow:hidden}
-    .expense-compact-track>span{display:block;height:100%;border-radius:inherit;background:#48a879}
+    .expense-compact-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.95rem}
+    .expense-compact-name{min-width:0;color:#111827;font-weight:850;overflow-wrap:anywhere}
+    .expense-compact-value{flex-shrink:0;color:#064e3b;font-weight:850;font-variant-numeric:tabular-nums;text-align:right}
+    .expense-compact-value small{color:#334155;font-size:.84rem;font-weight:800}
+    .expense-compact-track{height:9px;margin-top:6px;border-radius:8px;background:#cbd5e1;overflow:hidden}
+    .expense-compact-track>span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#059669,#047857)}
+    .expense-compact-total{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px;padding:11px 12px;border-top:2px solid #94a3b8;border-radius:0 0 10px 10px;background:#eef6f1;color:#263b31;font-size:.94rem;font-weight:850}
+    .expense-compact-total strong{color:#064e3b;font-size:1.12rem;font-weight:900;font-variant-numeric:tabular-nums}
     @media(max-width:360px){.spend-summary{padding:11px}.expense-compact-head{font-size:.84rem}.expense-compact-value small{font-size:.73rem}}
       html,body{width:100%;max-width:100%;overflow-x:hidden}
     .container{width:100%;min-width:0}
@@ -447,7 +449,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     <label for="select-category">지출 항목 추가</label>
     <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:8px">
       <select id="select-category" onchange="onCategoryChanged(this.value)" aria-label="지출 분류">
-        <option value="담배">담배</option><option value="음료">음료</option><option value="커피">커피</option><option value="식비">식비</option><option value="간식비">간식비</option><option value="기타">기타</option>
+        <option value="담배">담배</option><option value="음료">음료</option><option value="커피">커피</option><option value="식비">식비</option><option value="간식비">간식비</option><option value="주유">주유</option><option value="기타">기타</option>
       </select>
       <div id="detail-input-wrap" hidden><input type="text" id="input-detail" placeholder="기타 상세 항목" aria-label="기타 상세 항목" autocomplete="off"></div>
     </div>
@@ -683,7 +685,7 @@ function deductionAllocations() {
     for(const row of rows)map[row.date]=row.amount;
   } return map;
 }
-const EXPENSE_CATEGORIES=['담배','음료','커피','식비','간식비','기타'];
+const EXPENSE_CATEGORIES=['담배','음료','커피','식비','간식비','주유','기타'];
 function expenseAnalysisLabel(expense){
   if(expense?.source==='fixed-payment'||expense?.fixedExpenseId||expense?.source==='investment')return null;
   const category=String(expense?.category||'기타').trim(),detail=String(expense?.detail||'').trim();
@@ -730,17 +732,17 @@ function spendingChart(data) {
   if(!data.expense)return '<div class="empty-state">지출을 기록하면 항목별 합계와 비율을 보여드려요.</div>';
   const rows=Object.entries(data.categories).map(([name,value])=>({name,value,count:data.categoryCounts[name]||0})).filter(row=>row.value>0).sort((a,b)=>b.value-a.value||a.name.localeCompare(b.name,'ko'));
   const top=[...rows].sort((a,b)=>b.value-a.value)[0],topPct=top.value/data.expense*100;
-  return `<div class="spend-summary"><span class="spend-summary-label">총 지출 · ${data.expenseCount}건</span><strong class="spend-summary-total">${money(data.expense)}</strong><div class="spend-summary-top"><span>가장 많이 쓴 항목</span><strong>${esc(top.name)} · ${money(top.value)} (${topPct.toFixed(1)}%)</strong></div></div>
-    <div class="expense-compact-list" aria-label="분류별 지출 합계">${rows.map(({name,value,count})=>{const pct=value/data.expense*100;return `<div class="expense-compact-row"><div class="expense-compact-head"><span class="expense-compact-name">${esc(name)} · ${count}회</span><span class="expense-compact-value">${money(value)} <small>${pct.toFixed(1)}%</small></span></div><div class="expense-compact-track"><span style="width:${pct}%"></span></div></div>`;}).join('')}</div>`;
+  return `<div class="spend-summary" aria-label="기간 지출 내역 합계"><span class="spend-summary-label">기간 지출 합계 · ${data.expenseCount}건</span><strong class="spend-summary-total">${money(data.expense)}</strong><div class="spend-summary-top"><span>가장 많이 쓴 항목</span><strong>${esc(top.name)} · ${money(top.value)} (${topPct.toFixed(1)}%)</strong></div></div>
+    <div class="expense-compact-list" aria-label="분류별 지출 내역">${rows.map(({name,value,count})=>{const pct=value/data.expense*100;return `<div class="expense-compact-row"><div class="expense-compact-head"><span class="expense-compact-name">${esc(name)} · ${count}회</span><span class="expense-compact-value">${money(value)} <small>${pct.toFixed(1)}%</small></span></div><div class="expense-compact-track"><span style="width:${pct}%"></span></div></div>`;}).join('')}<div class="expense-compact-total"><span>지출 내역 총합</span><strong>${money(data.expense)}</strong></div></div>`;
 }
 function fixedCostForPeriod(period){return 0;}
 function dailyHourlyMarkup(filter,period='week'){
   const dates=Object.keys(attendance||{}).filter(date=>filter(date)&&attendanceDay(date).sessions.length>0).sort();
   const rows=dates.map(date=>{
-    const day=attendanceDay(date),workMs=attendanceWorkMs(day),gross=dailyAttendanceIncome(date);
+    const day=attendanceDay(date),workMs=attendanceWorkMs(day),breakMs=day.sessions.reduce((sum,session)=>sum+sessionBreakMs(session),0),gross=dailyAttendanceIncome(date);
     const rate=workMs>0&&gross>0?money(gross*3600000/workMs)+' /시간':'수입 또는 근무시간 확인';
     const weekday=['일','월','화','수','목','금','토'][dateOf(date).getDay()];
-    return `<div class="hourly-row"><div><strong>${date.slice(5).replace('-','/')} (${weekday})</strong><small>당일 수입 ${money(gross)} · 실근무 ${formatDuration(workMs)}</small></div><b>${rate}</b></div>`;
+    return `<div class="hourly-row"><div><strong>${date.slice(5).replace('-','/')} (${weekday})</strong><small>당일 수입 ${money(gross)} · 실근무 ${formatDuration(workMs)} · 휴식 ${formatDuration(breakMs)}</small></div><b>${rate}</b></div>`;
   }).join('');
   const summary=`<div class="hourly-heading"><strong>날짜별 환산 시급</strong><span class="pill">${dates.length}일</span></div>${rows||'<p class="muted small">이 기간에 출퇴근 타이머 기록이 없습니다.</p>'}<p class="muted small hourly-note">당일 배달·기타 총수입 ÷ 타이머 실근무시간으로 계산합니다. 공제는 반영하지 않습니다.</p>`;
   return period==='week'? `<section class="hourly-panel">${summary}</section>`:`<details class="hourly-panel"><summary><span>날짜별 환산 시급</span><span class="pill">${dates.length}일</span></summary><div class="hourly-list">${rows||'<p class="muted small">이 기간에 출퇴근 타이머 기록이 없습니다.</p>'}<p class="muted small hourly-note">당일 배달·기타 총수입 ÷ 타이머 실근무시간으로 계산합니다. 공제는 반영하지 않습니다.</p></div></details>`;
@@ -838,17 +840,21 @@ function onDateChanged(date){
   onCategoryChanged($('select-category').value,false);renderExpenseTags();updateCalculationPreview();updateRecordControls();renderInvestment();renderCalendar();renderFixedPaymentChecklist();renderWeeklyStats();
 }
 function onCategoryChanged(value,focus=true){
-  const isOther=value==='기타',wrap=$('detail-input-wrap'),detailInput=$('input-detail');
+  const isOther=value==='기타',wrap=$('detail-input-wrap'),detailInput=$('input-detail'),amountInput=$('input-expense-val');
   wrap.hidden=!isOther;detailInput.placeholder=isOther?'기타 상세 항목 입력 (필수)':'';
+  if(value==='담배'){amountInput.value=formatMoneyValue(4500);amountInput.readOnly=true;amountInput.setAttribute('aria-label','담배 지출액 4,500원으로 고정');}
+  else{if(focus&&amountInput.readOnly)amountInput.value='';amountInput.readOnly=false;amountInput.setAttribute('aria-label','지출액 (원)');}
   if(!isOther&&focus)detailInput.value='';
   if(isOther&&focus)detailInput.focus();
 }
 function addExpenseItem(){
-  if(recordLocked)return false;const category=$('select-category').value,detail=category==='기타'?$('input-detail').value.trim():'',amount=parseMoney($('input-expense-val').value);
+  if(recordLocked)return false;const category=$('select-category').value,detail=category==='기타'?$('input-detail').value.trim():'',amount=category==='담배'?4500:parseMoney($('input-expense-val').value);
   if(!EXPENSE_CATEGORIES.includes(category)){showToast('지출 분류를 선택해 주세요.',false);return false;}
   if(!amountOK(amount)||amount<=0){showToast('지출액을 1원 이상으로 입력해 주세요.',false);return false;}
   if(category==='기타'&&!detail){showToast('기타 상세 항목을 입력해 주세요.',false);return false;}
-  currentExpenses.push({category,detail,amount});$('input-expense-val').value='';$('input-detail').value='';renderExpenseTags();updateCalculationPreview();saveDraft();return true;
+  currentExpenses.push({category,detail,amount});$('input-expense-val').value='';$('input-detail').value='';
+  if(category==='담배'){$('select-category').value='식비';onCategoryChanged('식비',false);}
+  renderExpenseTags();updateCalculationPreview();saveDraft();return true;
 }
 function removeExpenseItem(index){if(recordLocked)return;currentExpenses.splice(index,1);renderExpenseTags();updateCalculationPreview();saveDraft();}
 function renderExpenseTags(){
