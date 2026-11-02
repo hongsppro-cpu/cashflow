@@ -206,7 +206,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
       .monthly-summary-value { font-size:.92rem; }
     }
 
-    .attendance-card{margin:0 0 20px;padding:20px;border:1px solid #cbd5e1;border-radius:20px;background:#f8fafc;color:#1e293b;box-shadow:0 6px 20px rgba(15,23,42,.08)}
+    .attendance-card{margin:0 0 20px;padding:20px;border:1px solid #cbd5e1;border-radius:20px;background:#e5e7eb;color:#1e293b;box-shadow:0 6px 20px rgba(15,23,42,.12)}
     .attendance-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}
     .attendance-kicker{display:block;font-size:.72rem;letter-spacing:1.5px;color:#64748b;font-weight:800}
     .attendance-heading h2{margin:2px 0 0;color:#0f172a;font-size:1.35rem}
@@ -222,12 +222,12 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     .attendance-rate strong{display:block;margin-top:2px;color:#166534;font-size:1.55rem;font-variant-numeric:tabular-nums}
     .attendance-rate small{display:block;color:#64748b;font-size:.75rem}
     .attendance-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
-    .attendance-buttons button{min-height:46px;border:0;border-radius:11px;background:#e2e8f0;color:#1e293b;font-size:1rem;font-weight:800;cursor:pointer}
-    .attendance-buttons button[data-app-action="clock-in"]{background:#1d4ed8;color:#fff;box-shadow:0 3px 8px #1d4ed833}
-    .attendance-buttons button[data-app-action="clock-out"]{background:#b91c1c;color:#fff;box-shadow:0 3px 8px #b91c1c33}
-    .attendance-buttons button[data-app-action="pause-work"]{background:#fde68a;color:#713f12;box-shadow:0 3px 8px #d9770633}
-    .attendance-buttons button[data-app-action="resume-work"]{background:#15803d;color:#fff;box-shadow:0 3px 8px #15803d33}
-    .attendance-buttons button:active:not(:disabled){transform:translateY(1px);filter:brightness(.92)}
+    .attendance-buttons button{min-height:50px;border:1px solid #ffffff80;border-radius:12px;background:linear-gradient(180deg,#f8fafc,#cbd5e1);color:#1e293b;font-size:1rem;font-weight:850;cursor:pointer;box-shadow:inset 0 1px 0 #ffffffcc,0 4px 0 #94a3b8,0 7px 12px #0f172a2b;transition:transform .12s ease,filter .12s ease,box-shadow .12s ease}
+    .attendance-buttons button[data-app-action="clock-in"]{background:linear-gradient(180deg,#60a5fa 0%,#2563eb 55%,#1d4ed8 100%);color:#fff;box-shadow:inset 0 1px 0 #ffffff99,0 4px 0 #1e40af,0 7px 12px #1d4ed855}
+    .attendance-buttons button[data-app-action="clock-out"]{background:linear-gradient(180deg,#fb7185 0%,#e11d48 55%,#be123c 100%);color:#fff;box-shadow:inset 0 1px 0 #ffffff99,0 4px 0 #9f1239,0 7px 12px #be123c55}
+    .attendance-buttons button[data-app-action="pause-work"]{background:linear-gradient(180deg,#fde68a 0%,#fbbf24 55%,#d97706 100%);color:#422006;box-shadow:inset 0 1px 0 #ffffffcc,0 4px 0 #b45309,0 7px 12px #d9770655}
+    .attendance-buttons button[data-app-action="resume-work"]{background:linear-gradient(180deg,#86efac 0%,#22c55e 55%,#15803d 100%);color:#fff;box-shadow:inset 0 1px 0 #ffffff99,0 4px 0 #166534,0 7px 12px #15803d55}
+    .attendance-buttons button:active:not(:disabled){transform:translateY(3px);filter:brightness(.97);box-shadow:inset 0 1px 0 #ffffff66,0 1px 2px #0f172a33!important}
     .attendance-buttons button:disabled{opacity:.42;cursor:default;box-shadow:none}
     .attendance-adjustments{margin-top:14px;padding:13px;border:1px solid #dbe3ec;border-radius:14px;background:#fff}
     .attendance-adjustments>p{color:#64748b;font-size:.78rem;line-height:1.45}
