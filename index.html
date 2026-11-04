@@ -1278,7 +1278,7 @@ installButton.addEventListener('click', async () => {
 });
 window.addEventListener('appinstalled', () => { document.getElementById('install-card').hidden = true; });
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('./sw.js').then(() => navigator.serviceWorker.ready).then(() => {
+  navigator.serviceWorker.register('./sw-v3.3.js').then(() => navigator.serviceWorker.ready).then(() => {
     document.getElementById('offline-status').textContent = '오프라인 사용 준비 완료';
   }).catch(() => { document.getElementById('offline-status').textContent = '오프라인 준비가 완료되지 않았습니다. 인터넷 연결 후 다시 열어 주세요.'; });
 }
