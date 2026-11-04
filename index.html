@@ -362,11 +362,34 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     .fixed-editor{padding-top:10px}
     #labor-income-module .hero-settlement-entry .compact-primary{font-size:.95rem}
     @media(max-width:380px){.daily-save-actions{grid-template-columns:minmax(0,1fr)}.fixed-payment-row>b{font-size:.75rem}}
+
+:root{--bg:#f3f6fa;--card-bg:#fff;--border:#d9e2ec;--text:#17263b;--text-muted:#52647a;--primary:#2563eb;--success:#16834a;--danger:#c2413b;--warning:#a85e08}
+body{background:#f3f6fa;color:#17263b;font-size:16px;line-height:1.5;padding:16px 14px 32px}.container{max-width:760px}.header{margin:4px 0 12px;padding:0 2px 4px}.header h1{color:#17263b;font-size:1.6rem}
+.category-nav{position:sticky;top:0;z-index:50;display:flex;gap:7px;overflow-x:auto;padding:9px 2px 12px;margin:0 0 15px;background:#f3f6faef;backdrop-filter:blur(12px);scrollbar-width:thin}
+.category-nav button{--nav-color:#475569;flex:0 0 auto;min-height:44px;padding:0 14px;border:1px solid color-mix(in srgb,var(--nav-color) 38%,white);border-radius:13px;background:color-mix(in srgb,var(--nav-color) 8%,white);color:var(--nav-color);font-size:.94rem;font-weight:800;cursor:pointer}
+.category-nav [data-category=work]{--nav-color:#1d4ed8}.category-nav [data-category=income]{--nav-color:#0e7490}.category-nav [data-category=extra]{--nav-color:#0f766e}.category-nav [data-category=expense]{--nav-color:#c2410c}.category-nav [data-category=summary]{--nav-color:#7c3aed}.category-nav [data-category=investment]{--nav-color:#15803d}.category-nav [data-category=settlement]{--nav-color:#6d28d9}.category-nav [data-category=calendar]{--nav-color:#4338ca}.category-nav [data-category=fixed]{--nav-color:#b45309}
+.category-module{--module-accent:#475569;background:#fff!important;color:#17263b;border:1px solid #dbe3ec;border-top:4px solid var(--module-accent)!important;box-shadow:0 8px 26px #17263b0c!important}
+.category-work{--module-accent:#1d4ed8}.category-income{--module-accent:#0e7490}.category-extra{--module-accent:#0f766e}.category-expense{--module-accent:#c2410c}.category-summary{--module-accent:#7c3aed}.category-investment{--module-accent:#15803d}.category-settlement{--module-accent:#6d28d9}.category-calendar{--module-accent:#4338ca}.category-fixed{--module-accent:#b45309}
+.category-module h2,.category-module h3,.category-module .card-title{color:#17263b}.category-module .eyebrow{color:var(--module-accent)}.category-module .result-box,.category-module .expense-tag,.category-module .chart-container,.category-module .week-card,.category-module .metric,.category-module .fixed-editor,.category-module .attendance-adjustments,.category-module .day-cell{background:#f7f9fc!important;color:#17263b!important;border-color:#dce4ee}
+.category-module .result-box .label,.category-module .muted,.category-module label{color:#52647a}.category-module input[type=text],.category-module input[type=number],.category-module input[type=date],.category-module select{background:#fff;color:#17263b;border-color:#cbd5e1;color-scheme:light}
+.category-module .btn-main,.category-module .compact-primary{background:var(--module-accent);color:#fff}.category-module .tab-btn.active{background:var(--module-accent);color:#fff}
+.secondary-module{background:#fff;border-color:#dbe3ec;box-shadow:0 5px 18px #17263b09}.secondary-module>summary{font-size:1rem}.attendance-card{background:#f1f5f9;border-color:#d7e0ea}.attendance-card h2{color:#17263b}
+.attendance-rate-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.attendance-rate{margin-top:0;min-width:0;background:#eaf3ff;border:1px solid #c9dcfa;padding:12px;border-radius:13px}.average-rate{background:#eaf8f5;border-color:#c7e9dd}
+.attendance-rate>span{font-size:.8rem}.attendance-rate strong{font-size:clamp(1.12rem,4.4vw,1.5rem);overflow-wrap:anywhere}.attendance-rate small{font-size:.72rem;line-height:1.35;margin-top:3px}.attendance-count-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 3px 0;color:#52647a;font-size:.86rem}.attendance-count-row b{color:#17263b}.attendance-count-row .link-button{color:#1d4ed8}
+.attendance-results b{color:#17263b}.attendance-adjust-buttons button{color:#334155!important}.fixed-total-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px;margin:0 0 16px;background:#fff7e8;border:1px solid #f4d49b;border-left:5px solid #b45309;border-radius:15px}.fixed-total-card span{font-size:.9rem;color:#78501c;font-weight:700}.fixed-total-card strong{font-size:1.35rem;color:#92400e;font-variant-numeric:tabular-nums}
+.calendar-due-star{position:absolute;top:1px;right:3px;color:#e6a700;font-size:1.45rem;line-height:1;text-shadow:0 1px 4px #8a5b0033;z-index:1}.fixed-alert-overlay{z-index:1200;background:#17263b99}.fixed-alert-dialog{border:1px solid #f0c36b;background:#fffdf8;color:#17263b}.fixed-alert-dialog h2,.delivery-count-dialog h2{color:#17263b;margin:3px 0 8px}
+.fixed-alert-item{padding:13px 0;border-top:1px solid #f1dfbd}.fixed-alert-item p{margin:0 0 8px;font-size:1rem;line-height:1.5;color:#533b1a}.fixed-alert-item button{background:#b45309;min-height:46px}.fixed-alert-check{display:flex!important;align-items:center;gap:10px;padding:9px 0;color:#533b1a!important;font-weight:800}.fixed-alert-check input{width:22px;height:22px;accent-color:#b45309;flex:0 0 auto}.delivery-count-dialog{background:#fff;border-color:#bfd4f0}.delivery-count-dialog label{color:#334155}.delivery-count-dialog input{background:#fff;color:#17263b;border-color:#94a3b8}
+.modal-error{min-height:1.2em;color:#b91c1c;font-size:.84rem}.modal-actions{display:flex;justify-content:flex-end;align-items:center;gap:14px;margin-top:8px}.modal-actions .compact-primary{min-width:132px}
+#calendar-module .day-cell{background:#fff!important}#calendar-module .day-cell.selected{background:#edf4ff!important;border-color:#4338ca!important}#calendar-module .calendar-legend{color:#52647a}.due-dot{background:#e6a700}
+@media(max-width:480px){body{padding:12px 10px 24px}.category-nav{margin-left:-10px;margin-right:-10px;padding-left:10px;padding-right:10px}.category-nav button{min-height:44px;padding:0 13px}.attendance-rate-grid{gap:7px}.attendance-rate{padding:10px}.fixed-total-card{padding:13px}.fixed-total-card strong{font-size:1.18rem}}
+@media(min-width:700px){.category-nav{flex-wrap:wrap;overflow:visible}.category-module{padding:24px}}
+
+@media(max-width:600px){.category-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));overflow:visible;gap:6px}.category-nav button{min-width:0;padding:0 3px;font-size:.78rem;white-space:nowrap}}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="자산관리">
-<meta name="app-version" content="2026.10.22-v3.2">
+<meta name="app-version" content="2026.11.05-v3.3">
 </head>
 <body>
 
@@ -375,7 +398,9 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 <div class="container">
   <div class="header"><div><span class="brand-kicker">MY MONEY, MY PACE</span><h1>자산관리 매니저<span class="version-dot"></span></h1></div></div>
 
-<section class="attendance-card" aria-label="오늘 출퇴근 기록">
+<nav class="category-nav" aria-label="앱 카테고리">
+<button type="button" data-category="work" onclick="navigateCategory('attendance-module')">근무</button><button type="button" data-category="income" onclick="navigateCategory('labor-income-module')">소득</button><button type="button" data-category="extra" onclick="navigateCategory(&quot;extra-income-module&quot;)">추가수익</button><button type="button" data-category="expense" onclick="navigateCategory('daily-module')">지출</button><button type="button" data-category="summary" onclick="navigateCategory('daily-summary-module')">요약</button><button type="button" data-category="investment" onclick="navigateCategory('investment-module')">투자</button><button type="button" data-category="settlement" onclick="navigateCategory('settlement-module')">결산</button><button type="button" data-category="calendar" onclick="navigateCategory('calendar-module')">달력</button><button type="button" data-category="fixed" onclick="navigateCategory('fixed-cost-module')">고정지출</button></nav>
+<section id="attendance-module" class="attendance-card category-module category-work" aria-label="오늘 출퇴근 기록">
   <div class="attendance-heading"><div><span class="attendance-kicker">TODAY'S WORK</span><h2>오늘 근무 타이머</h2></div><span id="attendance-date" class="attendance-date"></span></div>
   <div id="attendance-state" class="attendance-state" role="status">출근 기록 대기</div>
   <strong id="attendance-clock" class="attendance-clock">00:00:00</strong>
@@ -383,7 +408,8 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     <div><span>실근무시간</span><b id="attendance-work-time">00:00</b></div>
     <div><span>휴식시간</span><b id="attendance-break-time">00:00</b></div>
   </div>
-  <div class="attendance-rate"><span>당일 수입 기준 환산 시급</span><strong id="attendance-hourly-rate">—</strong><small>해당 날짜 수입 ÷ 해당 날짜 실근무시간</small></div>
+  <div class="attendance-rate-grid"><div class="attendance-rate"><span>배달수입 기준 환산시급</span><strong id="attendance-hourly-rate">—</strong><small>당일 배달수입 ÷ 실제 근무시간</small></div><div class="attendance-rate average-rate"><span>건당 평균단가</span><strong id="attendance-average-price">—</strong><small id="attendance-count-label">배달건수 입력 전</small></div></div>
+  <div class="attendance-count-row"><span>오늘 배달건수 <b id="attendance-delivery-count">미입력</b></span><button type="button" class="link-button" data-app-action="edit-delivery-count">건수 수정</button></div>
   <div class="attendance-buttons">
     <button type="button" data-app-action="clock-in">출근</button>
     <button type="button" data-app-action="clock-out">퇴근</button>
@@ -408,7 +434,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
   </div>
 </section>
 
-<section class="card" id="labor-income-module">
+<section class="card category-module category-income" id="labor-income-module">
   <div class="card-title"><span id="input-status-title">근로소득 입력</span><span id="edit-badge" class="pill" style="display:none">수정 모드</span></div>
   <div class="section-heading"><div><span class="eyebrow">LABOR INCOME</span><h2>총근로소득 · 공제</h2></div><span class="pill">날짜별 입력</span></div>
   <label for="input-date">기준 날짜</label>
@@ -435,7 +461,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 
 <details class="secondary-module">
   <summary><span>추가수익 입력</span><small>근로소득 외 실제 받은 수입</small></summary>
-  <section class="card" id="extra-income-module">
+  <section class="card category-module category-extra" id="extra-income-module">
     <label for="input-extra-description">추가수익 설명</label>
     <input type="text" id="input-extra-description" placeholder="예: 중고물품 판매, 용돈" autocomplete="off">
     <label for="input-extra">추가수익 금액 (원)</label>
@@ -443,7 +469,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
   </section>
 </details>
 
-<section class="card" id="daily-module">
+<section class="card category-module category-expense" id="daily-module">
   <div class="section-heading"><div><span class="eyebrow">DAILY EXPENSE</span><h2>지출 입력</h2></div><span class="pill">선택 날짜</span></div>
   <div>
     <label for="select-category">지출 항목 추가</label>
@@ -467,7 +493,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 
 <details class="secondary-module">
   <summary><span>순수익·지출 결과</span><small>공제 후 수익과 실제 지출 합계</small></summary>
-  <section class="card" id="daily-summary-module">
+  <section class="card category-module category-summary" id="daily-summary-module">
     <div class="result-grid">
       <div class="result-box"><div class="label">공제 후 근로소득 + 추가수익</div><div class="val" id="disp-income">0원</div></div>
       <div class="result-box"><div class="label">총 지출 · 투자·고정지출 포함</div><div class="val" id="disp-expense">0원</div></div>
@@ -479,7 +505,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 
 <details class="secondary-module">
   <summary><span>투자원금</span><small>누적 금액과 일별 체크</small></summary>
-  <section class="card investment-card" id="investment-module">
+  <section class="card investment-card category-module category-investment" id="investment-module">
  <div class="section-heading"><div><span class="eyebrow">BUILD YOUR PRINCIPAL</span><h2>매일 쌓는 투자원금</h2></div><span class="pill invest">실제 납입 기준</span></div>
  <div class="principal"><span>누적 투자원금</span><strong id="invest-total">0원</strong></div>
  <div class="principal-split"><span>시작 원금 <b id="invest-opening-display">0원</b></span><span>체크한 납입액 <b id="invest-added">0원</b></span></div>
@@ -491,7 +517,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 
 <details class="secondary-module" id="settlement-module">
   <summary><span>주·월·반기·연 결산</span><small>기간별 수입·지출·시급 분석</small></summary>
-  <div class="card" id="stats-module">
+  <div class="card category-module category-settlement" id="stats-module">
     <div class="tab-nav">
       <button type="button" class="tab-btn active" id="tab-btn-week" data-stats-tab="week">주간 (수~화)</button>
       <button type="button" class="tab-btn" id="tab-btn-month" data-stats-tab="month">월말 결산</button>
@@ -544,7 +570,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 
 <details class="secondary-module">
   <summary><span>달력·출금 일정</span><small>날짜별 수입과 고정비 예정 확인</small></summary>
-  <div class="card" id="calendar-module">
+  <div class="card category-module category-calendar" id="calendar-module">
     <div class="cal-header">
       <button type="button" onclick="changeMonth(-1)" style="background:none;border:none;color:#fff;font-size:1.9500000000000002rem;cursor:pointer;padding:0 10px;">◀</button>
       <span id="cal-month-title">2026년 10월</span>
@@ -582,7 +608,8 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
 
 <details class="secondary-module" id="fixed-cost-module">
   <summary><span>고정지출</span><small>지출일에 체크해 해당 날짜 기록에 반영</small></summary>
-  <section class="card" id="fixed-cost-card">
+  <section class="card category-module category-fixed" id="fixed-cost-card">
+    <div class="fixed-total-card"><span>등록된 월 고정지출 합계</span><strong id="fixed-total-amount">0원</strong></div>
     <div class="section-heading"><div><span class="eyebrow">SCHEDULED EXPENSE</span><h2>고정지출 관리</h2></div><span id="fixed-payment-date" class="pill"></span></div>
     <p class="muted small">등록한 고정지출이 모두 표시됩니다. 실제 납부한 날짜를 위 근로소득 카드에서 선택한 뒤 체크하세요. 예정일보다 일찍 또는 늦게 납부해도 선택한 날짜의 지출로 기록됩니다.</p>
     <div id="fixed-payment-list"></div>
@@ -597,7 +624,10 @@ button:focus-visible,summary:focus-visible{outline:2px solid #b5d9ff;outline-off
     </div>
   </section>
 </details>
-</div><script>
+</div>
+<div class="modal-overlay" id="delivery-count-modal" role="dialog" aria-modal="true" aria-labelledby="delivery-count-title"><div class="modal-card delivery-count-dialog"><span class="eyebrow">SHIFT CLOSE</span><h2 id="delivery-count-title">퇴근 기록</h2><p class="muted small">오늘 완료한 총 배달 건수를 입력하면 환산시급과 건당 평균단가를 계산합니다.</p><label for="delivery-count-input">오늘 총 배달건수</label><input type="number" id="delivery-count-input" min="0" step="1" inputmode="numeric" placeholder="예: 18"><p id="delivery-count-error" class="modal-error" role="alert"></p><div class="modal-actions"><button type="button" class="text-button" onclick="closeDeliveryCountModal()">계속 근무</button><button type="button" class="compact-primary" onclick="confirmDeliveryCount()">퇴근 기록 저장</button></div></div></div>
+<div class="modal-overlay fixed-alert-overlay" id="fixed-alert-modal" role="dialog" aria-modal="true" aria-labelledby="fixed-alert-title"><div class="modal-card fixed-alert-dialog"><span class="eyebrow">TOMORROW'S PAYMENT</span><h2 id="fixed-alert-title">내일 출금 예정</h2><p class="muted small">확인할 때까지 앱을 열 때마다 이 안내가 표시됩니다.</p><div id="fixed-alert-items"></div></div></div>
+<script>
 const MASTER_STORAGE_KEY = 'delivery_flow_master_db';
 const FIXED_STORAGE_KEY = 'delivery_fixed_expenses_master_db';
 const DRAFT_STORAGE_KEY = 'delivery_flow_drafts_v1';
@@ -605,11 +635,14 @@ const LAST_DATE_KEY = 'delivery_flow_last_date';
 const SETTLEMENT_KEY = 'delivery_settlements_v3';
 const INVESTMENT_KEY = 'delivery_investment_v3';
 const ATTENDANCE_KEY = 'delivery_attendance_v1';
+const FIXED_ALERT_ACK_KEY = 'delivery_fixed_alert_ack_v1';
+const FIXED_ALERT_PENDING_KEY = 'delivery_fixed_alert_pending_v1';
 const DEFAULT_FIXED_EXPENSES = [];
 const $ = id => document.getElementById(id);
 const money = value => Math.round(Number(value) || 0).toLocaleString('ko-KR') + '원';
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const clone = value => JSON.parse(JSON.stringify(value));
+function navigateCategory(id){const target=$(id);if(!target)return;const disclosure=target.closest('details');if(disclosure)disclosure.open=true;target.scrollIntoView({behavior:'smooth',block:'start'});}
 function readStore(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } }
 function persist(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
 function writeBatch(entries) {
@@ -742,8 +775,11 @@ function dailyHourlyMarkup(filter,period='week'){
   const rows=dates.map(date=>{
     const day=attendanceDay(date),workMs=attendanceWorkMs(day),breakMs=day.sessions.reduce((sum,session)=>sum+sessionBreakMs(session),0),gross=dailyAttendanceIncome(date);
     const rate=workMs>0&&gross>0?money(gross*3600000/workMs)+' /시간':'수입 또는 근무시간 확인';
+    const count=Number.isSafeInteger(day.deliveryCount)&&day.deliveryCount>=0?day.deliveryCount:null;
+    const deliveryLabel=count===null?'배달건수 미입력':'배달건수 '+count+'건';
+    const averagePrice=count>0&&gross>0?money(gross/count):'—';
     const weekday=['일','월','화','수','목','금','토'][dateOf(date).getDay()];
-    return `<div class="hourly-row"><div><strong>${date.slice(5).replace('-','/')} (${weekday})</strong><small>당일 수입 ${money(gross)} · 실근무 ${formatDuration(workMs)} · 휴식 ${formatDuration(breakMs)}</small></div><b>${rate}</b></div>`;
+    return `<div class="hourly-row"><div><strong>${date.slice(5).replace('-','/')} (${weekday})</strong><small>배달수입 ${money(gross)} · ${deliveryLabel} · 평균단가 ${averagePrice} · 근무 ${formatDuration(workMs)} · 휴식 ${formatDuration(breakMs)}</small></div><b>${rate}</b></div>`;
   }).join('');
   const summary=`<div class="hourly-heading"><strong>날짜별 환산 시급</strong><span class="pill">${dates.length}일</span></div>${rows||'<p class="muted small">이 기간에 출퇴근 타이머 기록이 없습니다.</p>'}<p class="muted small hourly-note">당일 배달·기타 총수입 ÷ 타이머 실근무시간으로 계산합니다. 공제는 반영하지 않습니다.</p>`;
   return period==='week'? `<section class="hourly-panel">${summary}</section>`:`<details class="hourly-panel"><summary><span>날짜별 환산 시급</span><span class="pill">${dates.length}일</span></summary><div class="hourly-list">${rows||'<p class="muted small">이 기간에 출퇴근 타이머 기록이 없습니다.</p>'}<p class="muted small hourly-note">당일 배달·기타 총수입 ÷ 타이머 실근무시간으로 계산합니다. 공제는 반영하지 않습니다.</p></div></details>`;
@@ -920,6 +956,7 @@ function saveFixedExpenses(){persist(FIXED_STORAGE_KEY,fixedExpenses);}
 function dueDaySelect(id,value){return `<select id="${id}" aria-label="매월 출금일"><option value="">출금일 미설정</option>${Array.from({length:31},(_,i)=>`<option value="${i+1}" ${Number(value)===i+1?'selected':''}>매월 ${i+1}일</option>`).join('')}</select>`;}
 function kindSelect(id,value){return `<select id="${id}" aria-label="고정비 유형"><option value="living" ${value!=='investment'?'selected':''}>생활 고정비</option><option value="investment" ${value==='investment'?'selected':''}>투자 목표금</option></select>`;}
 function renderFixedExpensesList(){
+  const total=$('fixed-total-amount');if(total)total.textContent=money(fixedExpenses.filter(item=>!isInvestment(item)).reduce((sum,item)=>sum+(Number(item.amount)||0),0));
   const host=$('fixed-expenses-list-container');if(!host)return;
   host.innerHTML=fixedExpenses.map((item,i)=>`<div class="fixed-row"><div class="fixed-row-main"><div><span class="pill">${isInvestment(item)?'투자 목표':'고정지출'}</span><strong>${esc(item.name)}</strong><span class="muted small">${item.dueDay?'매월 '+item.dueDay+'일 예정':'지출일 미설정'}</span></div><b>${money(item.amount)}</b></div><div class="fixed-actions"><button onclick="$('fixed-editor-${i}').hidden=!$('fixed-editor-${i}').hidden">수정</button><button class="text-danger" onclick="deleteFixedCostItem(${i})">삭제</button></div><div id="fixed-editor-${i}" hidden class="fixed-editor"><label for="fixed-name-${i}">항목명</label><input type="text" id="fixed-name-${i}" value="${esc(item.name)}"><label for="fixed-amount-${i}">월 금액 (원)</label><input type="text" inputmode="numeric" id="fixed-amount-${i}" value="${formatMoneyValue(item.amount)}" oninput="formatMoneyInput(this)"><label for="fixed-due-${i}">매월 지출일</label><div class="input-grid">${dueDaySelect('fixed-due-'+i,item.dueDay)}${kindSelect('fixed-kind-'+i,isInvestment(item)?'investment':'living')}</div><button class="compact-primary" onclick="updateFixedCostItem(${i})">수정 저장</button></div></div>`).join('')||'<div class="empty-state">고정지출을 항목별로 등록해 주세요.</div>';
 }
@@ -955,10 +992,31 @@ function addFixedCostItem(){
   const next=[...fixedExpenses,{id:String(Date.now())+'-'+Math.floor(Math.random()*1000),name,amount,dueDay,kind:'living'}];
   try{persist(FIXED_STORAGE_KEY,next);fixedExpenses=next;$('new-fixed-name').value='';$('new-fixed-amount').value='';renderAll();showToast('고정비를 추가했습니다.');}catch{showToast('저장에 실패했습니다.',false);}
 }
-function deleteFixedCostItem(i){if(!confirm('이 고정비를 삭제할까요?'))return;const next=fixedExpenses.filter((_,idx)=>idx!==i);try{persist(FIXED_STORAGE_KEY,next);fixedExpenses=next;renderAll();}catch{showToast('삭제에 실패했습니다.',false);}}
+function deleteFixedCostItem(i){if(!confirm('이 항목을 삭제할까요?'))return;const removed=fixedExpenses[i],next=fixedExpenses.filter((_,idx)=>idx!==i);try{persist(FIXED_STORAGE_KEY,next);fixedExpenses=next;if(removed){const prefix=String(removed.id||removed.name)+':',ack=readStore(FIXED_ALERT_ACK_KEY,{}),pending=readStore(FIXED_ALERT_PENDING_KEY,{});for(const key of Object.keys(ack))if(key.startsWith(prefix))delete ack[key];for(const key of Object.keys(pending))if(key.startsWith(prefix))delete pending[key];persist(FIXED_ALERT_ACK_KEY,ack);persist(FIXED_ALERT_PENDING_KEY,pending);}renderAll();}catch{showToast('삭제하지 못했습니다.',false);}}
 function resetFixedExpensesToDefault(){if(!confirm('고정비 목록 전체를 비울까요? 투자 체크 이력과 원금은 유지됩니다.'))return;try{persist(FIXED_STORAGE_KEY,[]);fixedExpenses=[];renderAll();}catch{showToast('초기화에 실패했습니다.',false);}}
 function openFixedModal(){const module=$('fixed-cost-module');if(module){module.open=true;module.scrollIntoView({behavior:'smooth',block:'center'});}}
 function closeFixedModal(){const modal=$('fixed-modal');if(modal)modal.style.display='none';}
+
+function renderFixedAlertPopup(){
+  const modal=$('fixed-alert-modal'),host=$('fixed-alert-items');if(!modal||!host)return;
+  const today=getKSTDateString(),tomorrow=plusDays(today,1),ack=readStore(FIXED_ALERT_ACK_KEY,{}),pendingMap=readStore(FIXED_ALERT_PENDING_KEY,{});
+  duesFor(tomorrow).forEach(item=>{const id=String(item.id||item.name),key=id+':'+tomorrow;if(!ack[key]&&!pendingMap[key])pendingMap[key]={id,name:item.name,amount:item.amount,dueDate:tomorrow};});
+  try{persist(FIXED_ALERT_PENDING_KEY,pendingMap);}catch{}
+  const pending=Object.entries(pendingMap).filter(([key,item])=>!ack[key]&&item&&item.name).map(([key,item])=>({key,...item}));
+  if(!pending.length){modal.style.display='none';host.innerHTML='';return;}
+  host.innerHTML=pending.map(item=>{
+    const lead=item.dueDate===tomorrow?'내일은 ':item.dueDate===today?'오늘은 ':'출금 예정일이 지났습니다. ';
+    const suffix=item.dueDate===tomorrow||item.dueDate===today?' 출금 일자입니다. 계좌를 확인해주세요.':' 계좌를 확인해주세요.';
+    return '<div class="fixed-alert-item"><p>'+lead+'<strong>'+esc(item.name)+'</strong>'+suffix+' <b>'+money(item.amount)+'</b></p><label class="fixed-alert-check"><input type="checkbox" data-alert-key="'+esc(item.key)+'" aria-label="'+esc(item.name)+' 계좌 확인 완료"><span>계좌 확인 완료</span></label></div>';
+  }).join('');
+  host.querySelectorAll('[data-alert-key]').forEach(box=>box.onchange=()=>{if(box.checked)acknowledgeFixedAlert(box.dataset.alertKey);});
+  modal.style.display='flex';
+}
+function acknowledgeFixedAlert(key){
+  const ack=readStore(FIXED_ALERT_ACK_KEY,{});ack[key]=true;
+  try{persist(FIXED_ALERT_ACK_KEY,ack);renderFixedAlertPopup();}
+  catch{showToast('알림 확인을 저장하지 못했습니다. 다시 시도해 주세요.',false);}
+}
 function investmentTotal(){return investment.openingPrincipal+Object.values(investment.days).reduce((s,r)=>s+(r.status==='yes'?r.amount:0),0);}
 function renderInvestment(){
   const date=$('input-date').value||getKSTDateString();const day=investment.days[date];
@@ -1014,7 +1072,7 @@ function renderCalendar(){
     const cell=document.createElement('button');cell.type='button';cell.className='day-cell'+(date===selected?' selected':'')+(date===getKSTDateString()?' today':'');cell.id='cell-'+date;
     cell.setAttribute('aria-label',`${date}${dues.length?' 출금 예정 '+dues.map(i=>i.name+' '+money(i.amount)).join(', '):''}${isFriday?' 금요일 공제 정산':''}`);
     let result='';if(rec){const available=incomeParts(rec).gross-(alloc[date]||0)-(rec.expenses||[]).reduce((s,i)=>s+i.amount,0)-getDailyTarget();result=`<span class="cal-result ${available<0?'negative':'positive'}">${available>=0?'+':''}${Math.round(available/1000)}천</span>`;}
-    cell.innerHTML=`<span class="day-num">${day}</span>${result}<div class="day-markers">${dues.length?'<i class="due-dot" title="출금 예정"></i>':''}${isFriday?'<i class="friday-dot" title="공제 정산"></i>':''}${inv?.status==='yes'?'<i class="invest-dot" title="투자 완료"></i>':''}</div>${dues.length?`<span class="due-count">출금 ${dues.length}</span>`:''}`;
+    cell.innerHTML=`<span class="day-num">${day}</span>${dues.length?'<span class="calendar-due-star" aria-label="고정지출 출금일">★</span>':''}${result}<div class="day-markers">${dues.length?'<i class="due-dot" title="출금 예정"></i>':''}${isFriday?'<i class="friday-dot" title="공제 정산"></i>':''}${inv?.status==='yes'?'<i class="invest-dot" title="투자 완료"></i>':''}</div>${dues.length?`<span class="due-count">출금 ${dues.length}</span>`:''}`;
     cell.onclick=()=>onDateChanged(date);grid.appendChild(cell);
   }
   const dues=validDate(selected)?duesFor(selected):[];
@@ -1051,10 +1109,8 @@ function formatDuration(ms,seconds=false){
 function dailyAttendanceIncome(date){
   // The attendance rate uses only the income recorded for the attendance date.
   // If that date is selected in the form, use its current values, including an intentional zero.
-  if($('input-date')?.value===date){
-    return (parseMoney($('input-income').value)||0)+(parseMoney($('input-extra').value)||0);
-  }
-  return incomeParts(drafts[date]||db[date]||{}).gross;
+  if($('input-date')?.value===date)return parseMoney($('input-income').value)||0;
+  return incomeParts(drafts[date]||db[date]||{}).delivery;
 }
 function renderAttendance(){
   if(!$('attendance-clock'))return;
@@ -1067,6 +1123,10 @@ function renderAttendance(){
   $('attendance-break-time').textContent=formatDuration(breakMs);
   const dailyGross=dailyAttendanceIncome(today);
   $('attendance-hourly-rate').textContent=workMs>0&&dailyGross>0?money(dailyGross*3600000/workMs):workMs>0?'오늘 수입 입력 후 표시':'—';
+  const deliveryCount=Number.isSafeInteger(day.deliveryCount)&&day.deliveryCount>=0?day.deliveryCount:null;
+  $('attendance-delivery-count').textContent=deliveryCount===null?'미입력':deliveryCount+'건';
+  $('attendance-average-price').textContent=deliveryCount>0&&dailyGross>0?money(dailyGross/deliveryCount):'—';
+  $('attendance-count-label').textContent=deliveryCount===null?'퇴근 시 배달건수를 입력':deliveryCount===0?'배달건수 0건':'배달수입 기준 · '+deliveryCount+'건';
   $('attendance-state').textContent=active?(active.pausedAt?'휴식 중':'근무 중')+' · '+new Date(active.startAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}):day.sessions.length?'오늘 근무 종료 · 다시 출근을 기록할 수 있어요.':'출근 기록 대기';
   $('attendance-state').classList.toggle('is-working',!!active&&!active.pausedAt);
   $('attendance-state').classList.toggle('is-paused',!!active&&!!active.pausedAt);
@@ -1079,7 +1139,31 @@ function renderAttendance(){
   document.querySelector('[data-app-action="pause-work"]').disabled=!active||paused;
   document.querySelector('[data-app-action="resume-work"]').disabled=!active||!paused;
 }
-function attendanceAction(action){
+
+function openDeliveryCountModal(editOnly){
+  const day=attendanceDay(getKSTDateString());
+  $('delivery-count-input').value=Number.isInteger(day.deliveryCount)?String(day.deliveryCount):'';
+  $('delivery-count-error').textContent='';$('delivery-count-modal').dataset.editOnly=editOnly?'true':'false';
+  $('delivery-count-title').textContent=editOnly?'오늘 배달건수 수정':'퇴근 기록';
+  $('delivery-count-modal').style.display='flex';$('delivery-count-input').focus();
+}
+function closeDeliveryCountModal(){$('delivery-count-modal').style.display='none';}
+function confirmDeliveryCount(){
+  const raw=$('delivery-count-input').value,count=Number(raw);
+  if(raw===''||!Number.isSafeInteger(count)||count<0){$('delivery-count-error').textContent='0 이상의 정수로 배달건수를 입력해 주세요.';return;}
+  closeDeliveryCountModal();
+  if($('delivery-count-modal').dataset.editOnly==='true')saveTodayDeliveryCount(count);
+  else attendanceAction('clock-out',count);
+}
+function saveTodayDeliveryCount(count){
+  const date=getKSTDateString(),next=clone(attendance||{}),day=next[date]&&Array.isArray(next[date].sessions)?next[date]:{sessions:[]};
+  day.deliveryCount=count;next[date]=day;
+  try{persist(ATTENDANCE_KEY,next);attendance=next;renderAttendance();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();showToast('오늘 배달건수를 저장했습니다.');}
+  catch{showToast('배달건수를 저장하지 못했습니다.',false);}
+}
+
+function attendanceAction(action,deliveryCount){
+  if(action==='clock-out'&&deliveryCount===undefined){openDeliveryCountModal(false);return;}
   const date=getKSTDateString(),next=clone(attendance||{}),day=next[date]&&Array.isArray(next[date].sessions)?next[date]:{sessions:[]},now=new Date(),stamp=now.toISOString();
   let session=activeAttendanceSession(day);
   if(action==='clock-in'){
@@ -1092,6 +1176,8 @@ function attendanceAction(action){
     if(!session.pausedAt){showToast('현재 멈춤 상태가 아닙니다.',false);return;}
     session.pausedMs=(Number(session.pausedMs)||0)+Math.max(0,now-Date.parse(session.pausedAt));session.pausedAt=null;
   }else if(action==='clock-out'){
+    if(!Number.isSafeInteger(deliveryCount)||deliveryCount<0){showToast('배달건수를 확인해 주세요.',false);return;}
+    day.deliveryCount=deliveryCount;
     if(session.pausedAt){session.pausedMs=(Number(session.pausedMs)||0)+Math.max(0,now-Date.parse(session.pausedAt));session.pausedAt=null;}
     session.endAt=stamp;
   }
@@ -1114,10 +1200,10 @@ function adjustAttendanceTime(minutes){
   }catch{showToast('근무시간 보정을 저장하지 못했습니다.',false);}
 }
 function renderAll(){
-  renderAttendance();renderFixedExpensesList();renderFixedPaymentChecklist();updateCalculationPreview();renderInvestment();renderCalendar();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();
+  renderAttendance();renderFixedExpensesList();renderFixedPaymentChecklist();updateCalculationPreview();renderInvestment();renderCalendar();renderWeeklyStats();renderMonthStats();renderHalfStats();renderYearStats();renderFixedAlertPopup();
 }
 function recomputeAllSystem(notice=false){renderAll();if(notice)showToast('고정비와 통계를 갱신했습니다.');}
-function backupPayload(){return {version:'master_v3',exportDate:getKSTDateString(),db,drafts,fixedExpenses,settlements,investment,attendance,settlementDrafts:readStore('delivery_settlement_drafts_v3',{})};}
+function backupPayload(){return {version:'master_v3',exportDate:getKSTDateString(),db,drafts,fixedExpenses,settlements,investment,attendance,fixedAlertAcks:readStore(FIXED_ALERT_ACK_KEY,{}),fixedAlertPending:readStore(FIXED_ALERT_PENDING_KEY,{}),settlementDrafts:readStore('delivery_settlement_drafts_v3',{})};}
 function exportData(){const url=URL.createObjectURL(new Blob([JSON.stringify(backupPayload(),null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`budget_backup_${getKSTDateString()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast('수입·공제·투자·고정비를 백업했습니다.');}
 function validateBackup(parsed){
   if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))throw Error('형식');
@@ -1130,13 +1216,13 @@ function validateBackup(parsed){
   const inv=parsed.investment||{openingPrincipal:0,dailyAmount:90000,days:{}};if(!amountOK(inv.openingPrincipal)||!amountOK(inv.dailyAmount)||!inv.dailyAmount||!isMap(inv.days)||Object.entries(inv.days).some(([d,r])=>!validDate(d)||!r||!['yes','no'].includes(r.status)||!amountOK(r.amount)))throw Error('투자');
   const attendanceData=parsed.attendance??readStore(ATTENDANCE_KEY,{});
   const invalidAttendance=!isMap(attendanceData)||Object.entries(attendanceData).some(([d,r])=>{
-    return !validDate(d)||!isMap(r)||!Array.isArray(r.sessions)||r.sessions.some(x=>!x||!Number.isFinite(Date.parse(x.startAt))||(x.endAt!=null&&!Number.isFinite(Date.parse(x.endAt)))||(x.pausedAt!=null&&!Number.isFinite(Date.parse(x.pausedAt)))||!Number.isSafeInteger(Number(x.pausedMs)||0)||(Number(x.pausedMs)||0)<0)||(r.adjustmentMs!==undefined&&!Number.isSafeInteger(Number(r.adjustmentMs)));
+    return !validDate(d)||!isMap(r)||!Array.isArray(r.sessions)||r.sessions.some(x=>!x||!Number.isFinite(Date.parse(x.startAt))||(x.endAt!=null&&!Number.isFinite(Date.parse(x.endAt)))||(x.pausedAt!=null&&!Number.isFinite(Date.parse(x.pausedAt)))||!Number.isSafeInteger(Number(x.pausedMs)||0)||(Number(x.pausedMs)||0)<0)||(r.adjustmentMs!==undefined&&!Number.isSafeInteger(Number(r.adjustmentMs)))||(r.deliveryCount!==undefined&&(!Number.isSafeInteger(r.deliveryCount)||r.deliveryCount<0));
   });
   if(invalidAttendance)throw Error('출퇴근');
-  return {records,fixed,settlement,inv,attendance:attendanceData,draft:parsed.drafts||{},settlementDrafts:isMap(parsed.settlementDrafts)?parsed.settlementDrafts:{}};
+  return {records,fixed,settlement,inv,attendance:attendanceData,draft:parsed.drafts||{},settlementDrafts:isMap(parsed.settlementDrafts)?parsed.settlementDrafts:{},fixedAlertAcks:isMap(parsed.fixedAlertAcks)?parsed.fixedAlertAcks:readStore(FIXED_ALERT_ACK_KEY,{}),fixedAlertPending:isMap(parsed.fixedAlertPending)?parsed.fixedAlertPending:readStore(FIXED_ALERT_PENDING_KEY,{})};
 }
 function restoreBackup(parsed){
-  const data=validateBackup(parsed);const entries=[[MASTER_STORAGE_KEY,data.records],[FIXED_STORAGE_KEY,data.fixed],[DRAFT_STORAGE_KEY,data.draft],[SETTLEMENT_KEY,data.settlement],[INVESTMENT_KEY,data.inv],[ATTENDANCE_KEY,data.attendance],['delivery_settlement_drafts_v3',data.settlementDrafts]];
+  const data=validateBackup(parsed);const entries=[[MASTER_STORAGE_KEY,data.records],[FIXED_STORAGE_KEY,data.fixed],[DRAFT_STORAGE_KEY,data.draft],[SETTLEMENT_KEY,data.settlement],[INVESTMENT_KEY,data.inv],[ATTENDANCE_KEY,data.attendance],[FIXED_ALERT_ACK_KEY,data.fixedAlertAcks],[FIXED_ALERT_PENDING_KEY,data.fixedAlertPending],['delivery_settlement_drafts_v3',data.settlementDrafts]];
   const previous=entries.map(([key])=>[key,localStorage.getItem(key)]);
   try{for(const [key,value]of entries)persist(key,value);}catch(error){for(const [key,value]of previous)try{if(value===null)localStorage.removeItem(key);else localStorage.setItem(key,value);}catch{}throw error;}
   db=loadDatabase();fixedExpenses=data.fixed;drafts=data.draft;settlements=data.settlement;investment=clone(data.inv);attendance=clone(data.attendance);onDateChanged($('input-date').value);renderAll();
@@ -1148,7 +1234,7 @@ function initApp(){
   const years=new Set([new Date().getFullYear()-1,new Date().getFullYear(),new Date().getFullYear()+1,...Object.keys(db).map(d=>Number(d.slice(0,4)))]);
   for(const id of ['month-year-select','half-year-select','year-select'])$(id).innerHTML=[...years].sort().map(y=>`<option value="${y}" ${y===new Date().getFullYear()?'selected':''}>${y}년</option>`).join('');
   $('month-select').value=new Date().getMonth()+1;$('half-select').value=new Date().getMonth()<6?'1':'2';$('year-select').value=String(new Date().getFullYear());
-  const last=localStorage.getItem(LAST_DATE_KEY),date=validDate(last)?last:getKSTDateString();currentDate=dateOf(date);onDateChanged(date);renderAll();
+  const date=getKSTDateString();currentDate=dateOf(date);onDateChanged(date);renderAll();
   window.setInterval(()=>{if(!document.hidden)renderAttendance();},1000);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderAttendance();});
   window.addEventListener('focus',renderAttendance);
@@ -1165,6 +1251,7 @@ document.addEventListener('click',e=>{
       else if(action.dataset.appAction==='clear-deduction')clearSettlement($('hero-settlement-period').value);
       else if(action.dataset.appAction==='clock-in')attendanceAction('clock-in');
       else if(action.dataset.appAction==='clock-out')attendanceAction('clock-out');
+      else if(action.dataset.appAction==='edit-delivery-count')openDeliveryCountModal(true);
       else if(action.dataset.appAction==='pause-work')attendanceAction('pause');
       else if(action.dataset.appAction==='resume-work')attendanceAction('resume');
       else if(action.dataset.appAction==='adjust-time')adjustAttendanceTime(Number(action.dataset.minutes));
