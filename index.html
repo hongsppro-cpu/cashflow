@@ -385,6 +385,19 @@ body{background:#f3f6fa;color:#17263b;font-size:16px;line-height:1.5;padding:16p
 @media(min-width:700px){.category-nav{flex-wrap:wrap;overflow:visible}.category-module{padding:24px}}
 
 @media(max-width:600px){.category-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));overflow:visible;gap:6px}.category-nav button{min-width:0;padding:0 3px;font-size:.78rem;white-space:nowrap}}
+
+/* High contrast on light cards, especially on mobile. */
+:root{--text-muted:#475569}
+.category-module .hero-month-expense{background:#eef5ff;border-color:#cbdcf5;color:#17263b}
+.category-module .hero-month-expense span{color:#475569!important}
+.category-module .settlement-final{background:#ecfdf5;border-color:#b7e4ca}
+.category-module .settlement-final>span,.category-module .settlement-formula{color:#475569!important;opacity:1}
+.category-module .settlement-final>strong:not(.negative){color:#166534}
+.category-module .settlement-final>strong.negative{color:#b91c1c!important}
+.category-module .muted,.category-module .small:not(.positive):not(.negative),.category-module .result-box .label,.category-module .metric>span,.category-module .attendance-rate>span,.category-module .attendance-rate small,.category-module .pill:not(.done):not(.invest){color:#475569!important;opacity:1}
+.category-module input::placeholder,.category-module textarea::placeholder{color:#64748b;opacity:1}
+.category-module button:disabled{opacity:.78;filter:saturate(.65)}
+.attendance-rate>span,.attendance-rate small{font-size:.875rem}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -1278,7 +1291,7 @@ installButton.addEventListener('click', async () => {
 });
 window.addEventListener('appinstalled', () => { document.getElementById('install-card').hidden = true; });
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('./sw-v3.3.js').then(() => navigator.serviceWorker.ready).then(() => {
+  navigator.serviceWorker.register('./sw-v3.4.js').then(() => navigator.serviceWorker.ready).then(() => {
     document.getElementById('offline-status').textContent = '오프라인 사용 준비 완료';
   }).catch(() => { document.getElementById('offline-status').textContent = '오프라인 준비가 완료되지 않았습니다. 인터넷 연결 후 다시 열어 주세요.'; });
 }
