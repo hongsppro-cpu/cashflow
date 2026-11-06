@@ -447,11 +447,34 @@ option{background:#000;color:#f8fafc}
 .chart-bar-bg,.spend-summary,.calendar-agenda,.fixed-payment-row,.settlement-period-costs>*,.investment-check{background:#000!important;color:#f8fafc!important;border-color:#3f3f46!important}
 .secondary-module>summary::after,.category-module details:not(.secondary-module)>summary::after{content:'+';background:#000!important;color:#facc15!important;border-color:#facc15!important}
 .secondary-module[open]>summary::after,.category-module details:not(.secondary-module)[open]>summary::after{content:'−'}
+/* Keep any intentional white tiles readable; restore the full category palette. */
+.category-module .attendance-results>div{background:#fff!important;color:#111827!important;border:1px solid #d1d5db!important}
+.category-module .attendance-results>div :where(*){color:#111827!important}
+.category-module .hourly-panel{background:#000!important;color:#f8fafc!important;border-color:#3f3f46!important}
+.category-module .hourly-panel>summary{color:#f8fafc!important}
+.category-module .hourly-panel>summary::after{background:#000!important;color:#facc15!important;border-color:#facc15!important}
+.category-nav [data-category=work]{--nav-color:#1d4ed8}
+.category-nav [data-category=income]{--nav-color:#0e7490}
+.category-nav [data-category=extra]{--nav-color:#0f766e}
+.category-nav [data-category=expense]{--nav-color:#c2410c}
+.category-nav [data-category=summary]{--nav-color:#7c3aed}
+.category-nav [data-category=investment]{--nav-color:#15803d}
+.category-nav [data-category=settlement]{--nav-color:#6d28d9}
+.category-nav [data-category=calendar]{--nav-color:#4338ca}
+.category-nav [data-category=fixed]{--nav-color:#b45309}
+.category-nav button{background:color-mix(in srgb,var(--nav-color) 11%,white)!important;color:var(--nav-color)!important;border-color:color-mix(in srgb,var(--nav-color) 42%,white)!important;font-size:1rem!important;font-weight:800;min-height:48px}
+.category-nav button:hover,.category-nav button:focus-visible{background:color-mix(in srgb,var(--nav-color) 18%,white)!important;color:var(--nav-color)!important;border-color:var(--nav-color)!important;outline:2px solid var(--nav-color);outline-offset:2px}
+@media(max-width:600px){.category-nav{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px}.category-nav button{min-width:0;min-height:48px;padding:6px 4px;font-size:.98rem!important;line-height:1.2;white-space:normal}}
+/* Three-column category navigation with the established category colors. */
+.category-nav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;max-width:760px;margin-left:auto;margin-right:auto;overflow:visible!important}
+.category-nav button{min-width:0;min-height:48px;padding:7px 8px;text-align:center;font-size:1rem!important;line-height:1.2;white-space:normal;background:color-mix(in srgb,var(--nav-color) 7%,white)!important;color:var(--nav-color)!important;border:1px solid color-mix(in srgb,var(--nav-color) 42%,white)!important;border-radius:13px}
+.category-nav button:hover,.category-nav button:focus-visible{background:color-mix(in srgb,var(--nav-color) 13%,white)!important;color:var(--nav-color)!important;border-color:var(--nav-color)!important;outline:2px solid var(--nav-color);outline-offset:2px}
+.category-module .attendance-results>div,.category-module .attendance-results>div :where(*){color:#111827!important}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="자산관리">
-<meta name="app-version" content="2026.11.06-v3.6">
+<meta name="app-version" content="2026.11.06-v3.8">
 </head>
 <body>
 
@@ -1346,7 +1369,7 @@ installButton.addEventListener('click', async () => {
 });
 window.addEventListener('appinstalled', () => { document.getElementById('install-card').hidden = true; });
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('./sw-v3.6.js').then(() => navigator.serviceWorker.ready).then(() => {
+  navigator.serviceWorker.register('./sw-v3.8.js').then(() => navigator.serviceWorker.ready).then(() => {
     document.getElementById('offline-status').textContent = '오프라인 사용 준비 완료';
   }).catch(() => { document.getElementById('offline-status').textContent = '오프라인 준비가 완료되지 않았습니다. 인터넷 연결 후 다시 열어 주세요.'; });
 }
