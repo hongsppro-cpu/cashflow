@@ -488,11 +488,11 @@ option{background:#000;color:#f8fafc}
 .category-module .chart-container .spend-summary-label,.category-module .chart-container .spend-summary-top,.category-module .chart-container .spend-summary-top span,.category-module .chart-container .spend-summary-top strong{color:#f8fafc!important}
 .category-module .chart-container .spend-summary-total{color:#facc15!important}
 .category-module .day-cell:not(.selected) .calendar-due-star{color:#facc15!important}
-</style>
+.fixed-total-card{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fixed-total-item{display:flex;flex-direction:column;gap:3px;min-width:0}.fixed-total-item span{font-size:.88rem}.fixed-total-item strong{font-size:1.35rem;overflow-wrap:anywhere}.fixed-daily-note{grid-column:1/-1;color:#cbd5e1!important;font-size:.8rem;line-height:1.35}@media(max-width:480px){.fixed-total-card{gap:8px;padding:13px}.fixed-total-item strong{font-size:1.1rem}.fixed-total-item span{font-size:.76rem}}</style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="자산관리">
-<meta name="app-version" content="2026.11.06-v4.0">
+<meta name="app-version" content="2026.11.06-v4.1">
 </head>
 <body>
 
@@ -705,20 +705,12 @@ option{background:#000;color:#f8fafc}
   </div>
 </details>
 
-<details class="secondary-module">
-  <summary><span>앱 설치</span><small>휴대폰 홈 화면에 추가</small></summary>
-  <div class="card" id="install-card" style="font-size:1.275rem;">
-  <div class="card-title">휴대폰에 앱 설치</div>
-  <button type="button" class="btn-main" id="install-app" hidden>앱 설치</button>
-  <p id="install-help">안드로이드: Chrome 메뉴 → 홈 화면에 추가 / 앱 설치<br>아이폰: Safari 공유 → 홈 화면에 추가</p>
-  <p id="offline-status" style="margin-top:8px;color:var(--text-muted);"></p>
-</div>
-</details>
+
 
 <details class="secondary-module" id="fixed-cost-module">
   <summary><span>고정지출</span><small>지출일에 체크해 해당 날짜 기록에 반영</small></summary>
   <section class="card category-module category-fixed" id="fixed-cost-card">
-    <div class="fixed-total-card"><span>등록된 월 고정지출 합계</span><strong id="fixed-total-amount">0원</strong></div>
+    <div class="fixed-total-card"><div class="fixed-total-item"><span>&#50900; &#44256;&#51221;&#51648;&#52636; &#54633;&#44228;</span><strong id="fixed-total-amount">0&#50896;</strong></div><div class="fixed-total-item"><span>&#54616;&#47336; &#54596;&#50836; &#44552;&#50529; (&#51060;&#48264; &#45804;)</span><strong id="fixed-daily-amount">0&#50896;</strong></div><small class="fixed-daily-note">&#51060;&#48264; &#45804; &#52509; &#44256;&#51221;&#51648;&#52636; &#54633;&#44228; &#247; &#51060;&#48264; &#45804; &#51068;&#49688;</small></div>
     <div class="section-heading"><div><span class="eyebrow">SCHEDULED EXPENSE</span><h2>고정지출 관리</h2></div><span id="fixed-payment-date" class="pill"></span></div>
     <p class="muted small">등록한 고정지출이 모두 표시됩니다. 실제 납부한 날짜를 위 근로소득 카드에서 선택한 뒤 체크하세요. 예정일보다 일찍 또는 늦게 납부해도 선택한 날짜의 지출로 기록됩니다.</p>
     <div id="fixed-payment-list"></div>
@@ -1065,7 +1057,7 @@ function saveFixedExpenses(){persist(FIXED_STORAGE_KEY,fixedExpenses);}
 function dueDaySelect(id,value){return `<select id="${id}" aria-label="매월 출금일"><option value="">출금일 미설정</option>${Array.from({length:31},(_,i)=>`<option value="${i+1}" ${Number(value)===i+1?'selected':''}>매월 ${i+1}일</option>`).join('')}</select>`;}
 function kindSelect(id,value){return `<select id="${id}" aria-label="고정비 유형"><option value="living" ${value!=='investment'?'selected':''}>생활 고정비</option><option value="investment" ${value==='investment'?'selected':''}>투자 목표금</option></select>`;}
 function renderFixedExpensesList(){
-  const total=$('fixed-total-amount');if(total)total.textContent=money(fixedExpenses.filter(item=>!isInvestment(item)).reduce((sum,item)=>sum+(Number(item.amount)||0),0));
+  const monthlyTotal=fixedExpenses.filter(item=>!isInvestment(item)).reduce((sum,item)=>sum+(Number(item.amount)||0),0);const total=$('fixed-total-amount');if(total)total.textContent=money(monthlyTotal);const daily=$('fixed-daily-amount');if(daily){const [year,month]=getKSTDateString().split('-').map(Number);const daysInMonth=new Date(year,month,0).getDate();daily.textContent=money(Math.ceil(monthlyTotal/daysInMonth));}
   const host=$('fixed-expenses-list-container');if(!host)return;
   host.innerHTML=fixedExpenses.map((item,i)=>`<div class="fixed-row"><div class="fixed-row-main"><div><span class="pill">${isInvestment(item)?'투자 목표':'고정지출'}</span><strong>${esc(item.name)}</strong><span class="muted small">${item.dueDay?'매월 '+item.dueDay+'일 예정':'지출일 미설정'}</span></div><b>${money(item.amount)}</b></div><div class="fixed-actions"><button onclick="$('fixed-editor-${i}').hidden=!$('fixed-editor-${i}').hidden">수정</button><button class="text-danger" onclick="deleteFixedCostItem(${i})">삭제</button></div><div id="fixed-editor-${i}" hidden class="fixed-editor"><label for="fixed-name-${i}">항목명</label><input type="text" id="fixed-name-${i}" value="${esc(item.name)}"><label for="fixed-amount-${i}">월 금액 (원)</label><input type="text" inputmode="numeric" id="fixed-amount-${i}" value="${formatMoneyValue(item.amount)}" oninput="formatMoneyInput(this)"><label for="fixed-due-${i}">매월 지출일</label><div class="input-grid">${dueDaySelect('fixed-due-'+i,item.dueDay)}${kindSelect('fixed-kind-'+i,isInvestment(item)?'investment':'living')}</div><button class="compact-primary" onclick="updateFixedCostItem(${i})">수정 저장</button></div></div>`).join('')||'<div class="empty-state">고정지출을 항목별로 등록해 주세요.</div>';
 }
@@ -1387,7 +1379,7 @@ installButton.addEventListener('click', async () => {
 });
 window.addEventListener('appinstalled', () => { document.getElementById('install-card').hidden = true; });
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('./sw-v4.0.js').then(() => navigator.serviceWorker.ready).then(() => {
+  navigator.serviceWorker.register('./sw-v4.1.js').then(() => navigator.serviceWorker.ready).then(() => {
     document.getElementById('offline-status').textContent = '오프라인 사용 준비 완료';
   }).catch(() => { document.getElementById('offline-status').textContent = '오프라인 준비가 완료되지 않았습니다. 인터넷 연결 후 다시 열어 주세요.'; });
 }
