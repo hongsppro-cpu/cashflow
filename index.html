@@ -470,11 +470,18 @@ option{background:#000;color:#f8fafc}
 .category-nav button{min-width:0;min-height:48px;padding:7px 8px;text-align:center;font-size:1rem!important;line-height:1.2;white-space:normal;background:color-mix(in srgb,var(--nav-color) 7%,white)!important;color:var(--nav-color)!important;border:1px solid color-mix(in srgb,var(--nav-color) 42%,white)!important;border-radius:13px}
 .category-nav button:hover,.category-nav button:focus-visible{background:color-mix(in srgb,var(--nav-color) 13%,white)!important;color:var(--nav-color)!important;border-color:var(--nav-color)!important;outline:2px solid var(--nav-color);outline-offset:2px}
 .category-module .attendance-results>div,.category-module .attendance-results>div :where(*){color:#111827!important}
+/* Match every app container to the cumulative-principal panel. */
+.card,.category-module,.attendance-card,.secondary-module,.secondary-module>summary,.secondary-module>.card,.hero-card,.target-banner,.monthly-summary-card,.result-box,.metric,.week-card,.week-card>summary,.chart-container,.chart-bar-bg,.expense-tag,.day-cell,.fixed-editor,.attendance-adjustments,.attendance-adjust-row,.attendance-rate,.attendance-results>div,.fixed-total-card,.hero-settlement-entry,.settlement-box,.balance-band,.spend-focus,.spend-summary,.hero-month-expense,.settlement-period-costs>*,.tab-nav,.investment-settings,.hourly-panel,.modal-card,.fixed-alert-dialog,.delivery-count-dialog{background:#000!important;color:#f8fafc!important;border-color:#3f3f46!important;font-family:inherit}
+.category-module .attendance-results>div{background:#000!important;color:#f8fafc!important;border:1px solid #3f3f46!important}
+.category-module .attendance-results>div :where(*){color:#cbd5e1!important;font-family:inherit}
+.category-module .attendance-results>div b{color:#facc15!important;font-weight:800}
+.category-module .principal span,.category-module .result-box .label,.category-module .metric>span,.category-module .attendance-rate>span,.category-module .fixed-total-card span,.category-module .muted,.category-module label,.category-module .eyebrow,.category-module small{color:#cbd5e1!important;font-family:inherit;opacity:1!important}
+.category-module .principal>strong,.category-module .result-box .val,.category-module .metric strong,.category-module .attendance-rate strong,.category-module .fixed-total-card strong,.category-module .balance-band strong:not(.negative),.category-module .spend-summary strong,.category-module #attendance-clock,.category-module #attendance-hourly-rate,.category-module #attendance-average-price{color:#facc15!important;font-family:inherit;font-weight:800;font-variant-numeric:tabular-nums}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="자산관리">
-<meta name="app-version" content="2026.11.06-v3.8">
+<meta name="app-version" content="2026.11.06-v3.9">
 </head>
 <body>
 
@@ -1369,7 +1376,7 @@ installButton.addEventListener('click', async () => {
 });
 window.addEventListener('appinstalled', () => { document.getElementById('install-card').hidden = true; });
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('./sw-v3.8.js').then(() => navigator.serviceWorker.ready).then(() => {
+  navigator.serviceWorker.register('./sw-v3.9.js').then(() => navigator.serviceWorker.ready).then(() => {
     document.getElementById('offline-status').textContent = '오프라인 사용 준비 완료';
   }).catch(() => { document.getElementById('offline-status').textContent = '오프라인 준비가 완료되지 않았습니다. 인터넷 연결 후 다시 열어 주세요.'; });
 }
