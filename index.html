@@ -477,11 +477,22 @@ option{background:#000;color:#f8fafc}
 .category-module .attendance-results>div b{color:#facc15!important;font-weight:800}
 .category-module .principal span,.category-module .result-box .label,.category-module .metric>span,.category-module .attendance-rate>span,.category-module .fixed-total-card span,.category-module .muted,.category-module label,.category-module .eyebrow,.category-module small{color:#cbd5e1!important;font-family:inherit;opacity:1!important}
 .category-module .principal>strong,.category-module .result-box .val,.category-module .metric strong,.category-module .attendance-rate strong,.category-module .fixed-total-card strong,.category-module .balance-band strong:not(.negative),.category-module .spend-summary strong,.category-module #attendance-clock,.category-module #attendance-hourly-rate,.category-module #attendance-average-price{color:#facc15!important;font-family:inherit;font-weight:800;font-variant-numeric:tabular-nums}
+/* Black lettering on every light metric and chart surface. */
+.category-module .result-box,.category-module .metric,.category-module .expense-tag,.category-module .chart-container,.category-module .week-card,.category-module .fixed-editor,.category-module .attendance-adjustments,.category-module .day-cell:not(.selected){color:#111827!important}
+.category-module .result-box .label,.category-module .result-box .val,.category-module .metric>span,.category-module .metric strong,.category-module .metric small,.category-module .expense-tag span,.category-module .expense-tag b,.category-module .week-card>summary,.category-module .week-card>summary strong,.category-module .week-card>summary small,.category-module .week-card .muted,.category-module .week-card .eyebrow,.category-module .fixed-editor span,.category-module .fixed-editor label,.category-module .fixed-editor p,.category-module .attendance-adjustments span,.category-module .attendance-adjustments strong,.category-module .attendance-adjustments small,.category-module .attendance-adjustments p,.category-module .day-cell:not(.selected) .day-num,.category-module .day-cell:not(.selected) .cal-result,.category-module .day-cell:not(.selected) .due-count{color:#111827!important}
+.category-module .chart-container .chart-bar-label,.category-module .chart-container .chart-bar-label *,.category-module .chart-container .expense-compact-name,.category-module .chart-container .expense-compact-value,.category-module .chart-container .expense-compact-value small{color:#111827!important}
+.category-module .week-card .balance-band,.category-module .week-card .balance-band :where(span,small){color:#cbd5e1!important}
+.category-module .week-card .balance-band strong:not(.negative){color:#facc15!important}
+.category-module .week-card .balance-band{background:#000!important}
+.category-module .chart-container .spend-summary,.category-module .chart-container .spend-summary-top{background:#000!important;color:#f8fafc!important}
+.category-module .chart-container .spend-summary-label,.category-module .chart-container .spend-summary-top,.category-module .chart-container .spend-summary-top span,.category-module .chart-container .spend-summary-top strong{color:#f8fafc!important}
+.category-module .chart-container .spend-summary-total{color:#facc15!important}
+.category-module .day-cell:not(.selected) .calendar-due-star{color:#facc15!important}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="자산관리">
-<meta name="app-version" content="2026.11.06-v3.9">
+<meta name="app-version" content="2026.11.06-v4.0">
 </head>
 <body>
 
@@ -1376,7 +1387,7 @@ installButton.addEventListener('click', async () => {
 });
 window.addEventListener('appinstalled', () => { document.getElementById('install-card').hidden = true; });
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('./sw-v3.9.js').then(() => navigator.serviceWorker.ready).then(() => {
+  navigator.serviceWorker.register('./sw-v4.0.js').then(() => navigator.serviceWorker.ready).then(() => {
     document.getElementById('offline-status').textContent = '오프라인 사용 준비 완료';
   }).catch(() => { document.getElementById('offline-status').textContent = '오프라인 준비가 완료되지 않았습니다. 인터넷 연결 후 다시 열어 주세요.'; });
 }
