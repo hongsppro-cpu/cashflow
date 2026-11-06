@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#070d1e">
+  <meta name="theme-color" content="#000000">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -409,11 +409,49 @@ body{background:#f3f6fa;color:#17263b;font-size:16px;line-height:1.5;padding:16p
 .secondary-module[open]>summary::after,.category-module details:not(.secondary-module)[open]>summary::after{content:'−'}
 .category-module details:not(.secondary-module)>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none}
 .category-module details:not(.secondary-module)>summary::-webkit-details-marker{display:none}
+/* Unified black surfaces with bright text and yellow emphasis. */
+:root{--bg:#f3f6fa;--card-bg:#000;--text:#f8fafc;--text-muted:#cbd5e1;--border:#3f3f46;--primary:#facc15;--success:#facc15;--warning:#facc15;--target-neon:#facc15;--danger:#f87171}
+.card,.category-module,.attendance-card,.secondary-module,.secondary-module>summary,.secondary-module>.card,.hero-card,.target-banner,.monthly-summary-card,.result-box,.metric,.week-card,.week-card>summary,.chart-container,.expense-tag,.day-cell,.fixed-editor,.attendance-adjustments,.attendance-adjust-row,.attendance-rate,.fixed-total-card,.hero-settlement-entry,.settlement-box,.balance-band,.spend-focus,.hero-month-expense,.settlement-period-costs>*,.tab-nav,.investment-settings,.modal-card,.fixed-alert-dialog,.delivery-count-dialog{background:#000!important;color:#f8fafc!important;border-color:#3f3f46!important}
+.category-module{border-top-color:#facc15!important;box-shadow:0 8px 26px #0002!important}
+.category-module h2,.category-module h3,.category-module .card-title,.secondary-module>summary>span,.secondary-module>summary small{color:#f8fafc!important}
+.category-module label,.category-module .muted,.category-module .small:not(.positive):not(.negative),.category-module small,.category-module .eyebrow,.category-module .result-box .label,.category-module .metric>span,.category-module .attendance-rate>span,.category-module .attendance-rate small,.secondary-module>summary small,.category-module .settlement-formula,.category-module .calendar-legend{color:#cbd5e1!important;opacity:1!important}
+.category-module .hero-month-expense span,.category-module .settlement-final>span{color:#cbd5e1!important}
+.category-module .result-box .val,.category-module .hero-card>strong,.category-module .target-val,.category-module .metric strong,.category-module .principal>strong,.category-module .balance-band strong:not(.negative),.category-module .fixed-total-card strong,.category-module .attendance-rate strong,.category-module .hero-month-expense strong,.category-module .spend-summary strong,.category-module .attendance-clock,.category-module #attendance-hourly-rate,.category-module #attendance-average-price{color:#facc15!important}
+.category-module .negative,.category-module .text-danger,.category-module .btn-danger,.category-module .modal-error{color:#f87171!important}
+.category-module input[type=text],.category-module input[type=number],.category-module input[type=date],.category-module select,.category-module textarea,.modal-card input,.modal-card select{background:#000!important;color:#f8fafc!important;border:1px solid #71717a!important;color-scheme:dark}
+.category-module input::placeholder,.category-module textarea::placeholder,.modal-card input::placeholder{color:#cbd5e1!important;opacity:1}
+.category-module input:focus,.category-module select:focus,.category-module textarea:focus,.modal-card input:focus{border-color:#facc15!important;box-shadow:0 0 0 3px #facc1540!important;outline:none}
+.category-module .btn-main,.category-module .compact-primary,.category-module .tab-btn.active,.fixed-alert-item button{background:#facc15!important;color:#000!important;border-color:#facc15!important}
+.category-module .tab-btn:not(.active),.category-module .text-button,.category-module .link-button,.category-module .attendance-adjust-buttons button{background:#111!important;color:#f8fafc!important;border-color:#52525b!important}
+.category-module .pill:not(.done):not(.invest),.category-nav button{background:#111!important;color:#f8fafc!important;border-color:#52525b!important}
+.category-module .pill.done,.category-module .pill.invest,.category-module .positive{background:#171500!important;color:#facc15!important;border-color:#facc15!important}
+.category-nav{background:#f3f6faef!important}
+.category-nav button:hover,.category-nav button:focus-visible{border-color:#facc15!important;outline:2px solid #facc15;outline-offset:2px}
+.category-nav [data-category]{--nav-color:#facc15}
+.secondary-module>summary::after,.category-module details:not(.secondary-module)>summary::after{background:#000!important;color:#facc15!important;border-color:#facc15!important}
+.secondary-module>summary{border-color:#3f3f46!important}
+.category-module button:disabled{opacity:1!important;filter:none!important;background:#27272a!important;color:#a1a1aa!important;border-color:#52525b!important}
+.day-cell.selected,#calendar-module .day-cell.selected{background:#171500!important;border-color:#facc15!important}
+.calendar-due-star,.due-dot{color:#facc15!important;background:#facc15!important}
+option{background:#000;color:#f8fafc}
+/* Force readable text on every dark module, then restore semantic accents. */
+.category-module :where(*){color:#f8fafc!important}
+.category-module .muted,.category-module .small:not(.positive):not(.negative),.category-module small,.category-module label,.category-module .eyebrow,.category-module .result-box .label,.category-module .metric>span,.category-module .attendance-rate>span,.category-module .attendance-rate small,.category-module .calendar-legend,.category-module .settlement-formula,.category-module .fixed-total-card span,.category-module .attendance-results>div>span{color:#cbd5e1!important;opacity:1!important}
+.category-module .result-box .val,.category-module .metric strong,.category-module .principal>strong,.category-module .attendance-rate strong,.category-module .fixed-total-card strong,.category-module .balance-band strong:not(.negative),.category-module .spend-summary strong,.category-module #attendance-clock,.category-module #attendance-hourly-rate,.category-module #attendance-average-price,.category-module .attendance-results b{color:#facc15!important}
+.category-module .positive,.category-module .pill.done,.category-module .pill.invest{color:#facc15!important}
+.category-module .negative,.category-module .text-danger,.category-module .btn-danger,.category-module .modal-error{color:#f87171!important}
+.modal-card :where(*){color:#f8fafc!important}
+.modal-card :where(p,small,label,.muted,.fixed-alert-check){color:#cbd5e1!important}
+.modal-card h2,.modal-card .eyebrow{color:#facc15!important}
+.modal-card .compact-primary,.modal-card button:not(.text-button){background:#facc15!important;color:#000!important;border-color:#facc15!important}
+.chart-bar-bg,.spend-summary,.calendar-agenda,.fixed-payment-row,.settlement-period-costs>*,.investment-check{background:#000!important;color:#f8fafc!important;border-color:#3f3f46!important}
+.secondary-module>summary::after,.category-module details:not(.secondary-module)>summary::after{content:'+';background:#000!important;color:#facc15!important;border-color:#facc15!important}
+.secondary-module[open]>summary::after,.category-module details:not(.secondary-module)[open]>summary::after{content:'−'}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="자산관리">
-<meta name="app-version" content="2026.11.05-v3.3">
+<meta name="app-version" content="2026.11.06-v3.6">
 </head>
 <body>
 
@@ -1308,7 +1346,7 @@ installButton.addEventListener('click', async () => {
 });
 window.addEventListener('appinstalled', () => { document.getElementById('install-card').hidden = true; });
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('./sw-v3.5.js').then(() => navigator.serviceWorker.ready).then(() => {
+  navigator.serviceWorker.register('./sw-v3.6.js').then(() => navigator.serviceWorker.ready).then(() => {
     document.getElementById('offline-status').textContent = '오프라인 사용 준비 완료';
   }).catch(() => { document.getElementById('offline-status').textContent = '오프라인 준비가 완료되지 않았습니다. 인터넷 연결 후 다시 열어 주세요.'; });
 }
