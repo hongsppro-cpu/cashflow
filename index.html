@@ -398,6 +398,17 @@ body{background:#f3f6fa;color:#17263b;font-size:16px;line-height:1.5;padding:16p
 .category-module input::placeholder,.category-module textarea::placeholder{color:#64748b;opacity:1}
 .category-module button:disabled{opacity:.78;filter:saturate(.65)}
 .attendance-rate>span,.attendance-rate small{font-size:.875rem}
+.category-module .result-box .val{color:#17263b!important}
+.category-income .hero-settlement-entry{background:#f7f9fc!important;border:1px solid #d9e2ec!important;border-radius:14px}
+.category-income .hero-settlement-entry label,.category-income .hero-settlement-entry p,.category-income .hero-settlement-entry .small{color:#475569!important}
+.category-income .hero-settlement-entry .text-danger{color:#b91c1c!important}
+.secondary-module>summary{gap:10px}
+.secondary-module>summary>span{flex:1;min-width:0}
+.secondary-module>summary small{max-width:48%;color:#475569!important;font-size:.875rem!important;line-height:1.35}
+.secondary-module>summary::after,.category-module details:not(.secondary-module)>summary::after{content:'+';display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border:1px solid #94a3b8;border-radius:50%;background:#fff;color:#334155;font-size:1.35rem;font-weight:700;line-height:1}
+.secondary-module[open]>summary::after,.category-module details:not(.secondary-module)[open]>summary::after{content:'−'}
+.category-module details:not(.secondary-module)>summary{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;list-style:none}
+.category-module details:not(.secondary-module)>summary::-webkit-details-marker{display:none}
 </style>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
@@ -447,6 +458,8 @@ body{background:#f3f6fa;color:#17263b;font-size:16px;line-height:1.5;padding:16p
   </div>
 </section>
 
+<details class="secondary-module">
+  <summary><span>근로소득·공제 입력</span><small>날짜별 근로소득과 실제 공제액</small></summary>
 <section class="card category-module category-income" id="labor-income-module">
   <div class="card-title"><span id="input-status-title">근로소득 입력</span><span id="edit-badge" class="pill" style="display:none">수정 모드</span></div>
   <div class="section-heading"><div><span class="eyebrow">LABOR INCOME</span><h2>총근로소득 · 공제</h2></div><span class="pill">날짜별 입력</span></div>
@@ -471,6 +484,7 @@ body{background:#f3f6fa;color:#17263b;font-size:16px;line-height:1.5;padding:16p
     <button type="button" class="text-danger" id="hero-clear-deduction" data-app-action="clear-deduction" hidden>저장된 공제 입력 취소</button>
   </div>
 </section>
+</details>
 
 <details class="secondary-module">
   <summary><span>추가수익 입력</span><small>근로소득 외 실제 받은 수입</small></summary>
@@ -482,6 +496,8 @@ body{background:#f3f6fa;color:#17263b;font-size:16px;line-height:1.5;padding:16p
   </section>
 </details>
 
+<details class="secondary-module">
+  <summary><span>지출 입력</span><small>항목을 선택해 당일 지출을 기록</small></summary>
 <section class="card category-module category-expense" id="daily-module">
   <div class="section-heading"><div><span class="eyebrow">DAILY EXPENSE</span><h2>지출 입력</h2></div><span class="pill">선택 날짜</span></div>
   <div>
@@ -503,6 +519,7 @@ body{background:#f3f6fa;color:#17263b;font-size:16px;line-height:1.5;padding:16p
   <div class="daily-save-actions"><button type="button" class="btn-main" id="btn-save" onclick="saveDayRecord()">이 날짜 수입·지출 최종 저장</button><button type="button" class="compact-primary" id="btn-edit" onclick="beginRecordEdit()">수정</button></div>
   <button type="button" class="btn-danger" id="btn-delete" style="display:none" onclick="deleteDayRecord()">해당 날짜 기록 삭제</button>
 </section>
+</details>
 
 <details class="secondary-module">
   <summary><span>순수익·지출 결과</span><small>공제 후 수익과 실제 지출 합계</small></summary>
@@ -1291,7 +1308,7 @@ installButton.addEventListener('click', async () => {
 });
 window.addEventListener('appinstalled', () => { document.getElementById('install-card').hidden = true; });
 if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('./sw-v3.4.js').then(() => navigator.serviceWorker.ready).then(() => {
+  navigator.serviceWorker.register('./sw-v3.5.js').then(() => navigator.serviceWorker.ready).then(() => {
     document.getElementById('offline-status').textContent = '오프라인 사용 준비 완료';
   }).catch(() => { document.getElementById('offline-status').textContent = '오프라인 준비가 완료되지 않았습니다. 인터넷 연결 후 다시 열어 주세요.'; });
 }
